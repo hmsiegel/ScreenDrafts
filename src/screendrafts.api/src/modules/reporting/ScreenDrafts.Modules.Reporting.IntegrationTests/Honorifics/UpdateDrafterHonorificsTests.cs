@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Honorifics;
+﻿namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Honorifics;
 
 public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppFactory factory)
   : ReportingIntegrationTest(factory)
@@ -22,8 +22,10 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     // Assert
     result.IsSuccess.Should().BeTrue();
 
-    var appearance = await DbContext.DrafterCanonicalAppearances
-      .FirstOrDefaultAsync(a => a.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var appearance = await DbContext.DrafterCanonicalAppearances.FirstOrDefaultAsync(
+      a => a.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     appearance.Should().NotBeNull();
     appearance.DraftPartPublicId.Should().Be(command.DraftPartPublicId);
@@ -48,8 +50,10 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     // Assert
     result.IsSuccess.Should().BeTrue();
 
-    var count = await DbContext.DrafterCanonicalAppearances
-      .CountAsync(a => a.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var count = await DbContext.DrafterCanonicalAppearances.CountAsync(
+      a => a.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     count.Should().Be(1, "duplicate appearances must be ignored");
   }
@@ -66,8 +70,10 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     await SendAppearancesAsync(drafterId, count: 5, canonicalPolicyValue: 0);
 
     // Assert
-    var honorific = await DbContext.DrafterHonorifics
-      .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var honorific = await DbContext.DrafterHonorifics.FirstOrDefaultAsync(
+      h => h.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     honorific.Should().NotBeNull();
     honorific.Honorific.Should().Be(DrafterHonorific.AllStar);
@@ -86,8 +92,10 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     await SendAppearancesAsync(drafterId, count: 10, canonicalPolicyValue: 0);
 
     // Assert
-    var honorific = await DbContext.DrafterHonorifics
-      .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var honorific = await DbContext.DrafterHonorifics.FirstOrDefaultAsync(
+      h => h.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     honorific.Should().NotBeNull();
     honorific.Honorific.Should().Be(DrafterHonorific.HallOfFame);
@@ -106,8 +114,10 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     await SendAppearancesAsync(drafterId, count: 4, canonicalPolicyValue: 0);
 
     // Assert
-    var honorific = await DbContext.DrafterHonorifics
-      .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var honorific = await DbContext.DrafterHonorifics.FirstOrDefaultAsync(
+      h => h.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     honorific.Should().NotBeNull();
     honorific.Honorific.Should().Be(DrafterHonorific.None);
@@ -130,25 +140,34 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       var command = new UpdateDrafterHonorificsCommand
       {
         DrafterIdValue = drafterId,
+        DraftId = Guid.NewGuid(),
         DraftPartPublicId = _faker.Random.AlphaNumeric(10),
         CanonicalPolicyValue = 2,
-        HasMainFeedRelease = false
+        HasMainFeedRelease = false,
       };
       await Sender.Send(command, TestContext.Current.CancellationToken);
     }
 
     // Assert — appearances are recorded but count is 0 for the policy
-    var appearanceCount = await DbContext.DrafterCanonicalAppearances
-      .CountAsync(a => a.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var appearanceCount = await DbContext.DrafterCanonicalAppearances.CountAsync(
+      a => a.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     appearanceCount.Should().Be(5, "appearances are still recorded");
 
-    var honorific = await DbContext.DrafterHonorifics
-      .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var honorific = await DbContext.DrafterHonorifics.FirstOrDefaultAsync(
+      h => h.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     honorific.Should().NotBeNull();
-    honorific.Honorific.Should().Be(DrafterHonorific.None,
-      "appearances without main feed release don't count toward honorific when policy is OnMainFeed");
+    honorific
+      .Honorific.Should()
+      .Be(
+        DrafterHonorific.None,
+        "appearances without main feed release don't count toward honorific when policy is OnMainFeed"
+      );
     honorific.AppearanceCount.Should().Be(0);
   }
 
@@ -168,16 +187,19 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
       var command = new UpdateDrafterHonorificsCommand
       {
         DrafterIdValue = drafterId,
+        DraftId = Guid.NewGuid(),
         DraftPartPublicId = _faker.Random.AlphaNumeric(10),
         CanonicalPolicyValue = 2,
-        HasMainFeedRelease = true
+        HasMainFeedRelease = true,
       };
       await Sender.Send(command, TestContext.Current.CancellationToken);
     }
 
     // Assert
-    var honorific = await DbContext.DrafterHonorifics
-      .FirstOrDefaultAsync(h => h.DrafterIdValue == drafterId, TestContext.Current.CancellationToken);
+    var honorific = await DbContext.DrafterHonorifics.FirstOrDefaultAsync(
+      h => h.DrafterIdValue == drafterId,
+      TestContext.Current.CancellationToken
+    );
 
     honorific.Should().NotBeNull();
     honorific.Honorific.Should().Be(DrafterHonorific.AllStar);
@@ -198,11 +220,14 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     await SendAppearancesAsync(drafterId, count: 4, canonicalPolicyValue: 0);
 
     // 1 more appearance to trigger AllStar
-    await Sender.Send(BuildCommand(drafterId, _faker.Random.AlphaNumeric(10)), TestContext.Current.CancellationToken);
+    await Sender.Send(
+      BuildCommand(drafterId, _faker.Random.AlphaNumeric(10)),
+      TestContext.Current.CancellationToken
+    );
 
     // Assert — history row should exist for the AllStar transition
-    var history = await DbContext.DraftersHonorificHistory
-      .Where(h => h.DrafterIdValue == drafterId)
+    var history = await DbContext
+      .DraftersHonorificHistory.Where(h => h.DrafterIdValue == drafterId)
       .ToListAsync(TestContext.Current.CancellationToken);
 
     history.Should().NotBeEmpty("a history record is written when the honorific changes");
@@ -225,14 +250,16 @@ public sealed class UpdateDrafterHonorificsTests(ReportingIntegrationTestWebAppF
     Guid drafterId,
     string draftPartPublicId,
     int canonicalPolicyValue = 0,
-    bool hasMainFeedRelease = false)
+    bool hasMainFeedRelease = false
+  )
   {
     return new UpdateDrafterHonorificsCommand
     {
       DrafterIdValue = drafterId,
+      DraftId = Guid.NewGuid(),
       DraftPartPublicId = draftPartPublicId,
       CanonicalPolicyValue = canonicalPolicyValue,
-      HasMainFeedRelease = hasMainFeedRelease
+      HasMainFeedRelease = hasMainFeedRelease,
     };
   }
 }

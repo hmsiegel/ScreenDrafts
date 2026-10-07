@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("reporting")
-                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -139,6 +139,10 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("appeared_at");
 
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
                     b.Property<string>("DraftPartPublicId")
                         .IsRequired()
                         .HasMaxLength(19)
@@ -158,6 +162,9 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 
                     b.HasIndex("DrafterIdValue")
                         .HasDatabaseName("ix_drafter_canonical_appearances_drafter_id_value");
+
+                    b.HasIndex("DraftId", "DrafterIdValue")
+                        .HasDatabaseName("ix_drafter_canonical_appearances_draft_id_drafter_id");
 
                     b.HasIndex("DrafterIdValue", "DraftPartPublicId")
                         .IsUnique()
@@ -396,6 +403,187 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                     b.ToTable("draft_summaries", "reporting");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.PickCreditFact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<Guid>("DrafterIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("drafter_id_value");
+
+                    b.Property<string>("DrafterName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("drafter_name");
+
+                    b.Property<string>("DrafterPersonPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("drafter_person_public_id");
+
+                    b.Property<string>("DrafterPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("drafter_public_id");
+
+                    b.Property<Guid>("PickId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pick_id");
+
+                    b.Property<DateTime>("RecordedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recorded_at_utc");
+
+                    b.HasKey("Id")
+                        .HasName("pk_pick_credit_facts");
+
+                    b.HasIndex("DraftId")
+                        .HasDatabaseName("ix_pick_credit_facts_draft_id");
+
+                    b.HasIndex("DraftPartPublicId")
+                        .HasDatabaseName("ix_pick_credit_facts_draft_part_public_id");
+
+                    b.HasIndex("DrafterIdValue")
+                        .HasDatabaseName("ix_pick_credit_facts_drafter_id_value");
+
+                    b.HasIndex("PickId", "DrafterIdValue")
+                        .IsUnique()
+                        .HasDatabaseName("ux_pick_credit_facts_pick_id_drafter_id_value");
+
+                    b.ToTable("pick_credit_facts", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.PickFact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("CanonicalPolicy")
+                        .HasColumnType("integer")
+                        .HasColumnName("canonical_policy");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<string>("DraftPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_public_id");
+
+                    b.Property<string>("DraftTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_title");
+
+                    b.Property<string>("DraftType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_type");
+
+                    b.Property<string>("MediaPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("media_public_id");
+
+                    b.Property<string>("MediaTitle")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("media_title");
+
+                    b.Property<int>("PartIndex")
+                        .HasColumnType("integer")
+                        .HasColumnName("part_index");
+
+                    b.Property<int>("PlayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("play_order");
+
+                    b.Property<Guid>("PlayedByIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("played_by_id_value");
+
+                    b.Property<int>("PlayedByKind")
+                        .HasColumnType("integer")
+                        .HasColumnName("played_by_kind");
+
+                    b.Property<string>("PlayedByName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("played_by_name");
+
+                    b.Property<string>("PlayedByPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("played_by_public_id");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer")
+                        .HasColumnName("position");
+
+                    b.Property<DateTime>("RecordedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recorded_at_utc");
+
+                    b.Property<string>("SeriesName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("series_name");
+
+                    b.Property<int?>("SubDraftIndex")
+                        .HasColumnType("integer")
+                        .HasColumnName("sub_draft_index");
+
+                    b.Property<int>("VetoCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("veto_count");
+
+                    b.Property<bool>("WasCommissionerOverridden")
+                        .HasColumnType("boolean")
+                        .HasColumnName("was_commissioner_overridden");
+
+                    b.Property<bool>("WasVetoOverridden")
+                        .HasColumnType("boolean")
+                        .HasColumnName("was_veto_overridden");
+
+                    b.Property<bool>("WasVetoed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("was_vetoed");
+
+                    b.HasKey("Id")
+                        .HasName("pk_pick_facts");
+
+                    b.HasIndex("DraftId")
+                        .HasDatabaseName("ix_pick_facts_draft_id");
+
+                    b.HasIndex("DraftPartPublicId")
+                        .HasDatabaseName("ix_pick_facts_draft_part_public_id");
+
+                    b.HasIndex("MediaPublicId")
+                        .HasDatabaseName("ix_pick_facts_media_public_id");
+
+                    b.HasIndex("PlayedByKind", "PlayedByIdValue")
+                        .HasDatabaseName("ix_pick_facts_played_by");
+
+                    b.ToTable("pick_facts", "reporting");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.SiteStats", b =>
                 {
                     b.Property<Guid>("Id")
@@ -415,6 +603,92 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .HasName("pk_site_stats");
 
                     b.ToTable("site_stats", "reporting");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Drafts.VetoFact", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("DraftPartPublicId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("draft_part_public_id");
+
+                    b.Property<bool>("IsOverridden")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_overridden");
+
+                    b.Property<bool>("IsSelfVeto")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_self_veto");
+
+                    b.Property<Guid>("IssuedByIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("issued_by_id_value");
+
+                    b.Property<int>("IssuedByKind")
+                        .HasColumnType("integer")
+                        .HasColumnName("issued_by_kind");
+
+                    b.Property<string>("IssuedByName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("issued_by_name");
+
+                    b.Property<string>("IssuedByPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("issued_by_public_id");
+
+                    b.Property<Guid?>("OverriddenByIdValue")
+                        .HasColumnType("uuid")
+                        .HasColumnName("overridden_by_id_value");
+
+                    b.Property<int?>("OverriddenByKind")
+                        .HasColumnType("integer")
+                        .HasColumnName("overridden_by_kind");
+
+                    b.Property<string>("OverriddenByName")
+                        .HasColumnType("text")
+                        .HasColumnName("overridden_by_name");
+
+                    b.Property<string>("OverriddenByPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("overridden_by_public_id");
+
+                    b.Property<Guid>("PickId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pick_id");
+
+                    b.Property<DateTime>("RecordedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recorded_at_utc");
+
+                    b.Property<int>("Sequence")
+                        .HasColumnType("integer")
+                        .HasColumnName("sequence");
+
+                    b.HasKey("Id")
+                        .HasName("pk_veto_facts");
+
+                    b.HasIndex("DraftId")
+                        .HasDatabaseName("ix_veto_facts_draft_id");
+
+                    b.HasIndex("DraftPartPublicId")
+                        .HasDatabaseName("ix_veto_facts_draft_part_public_id");
+
+                    b.HasIndex("PickId")
+                        .HasDatabaseName("ix_veto_facts_pick_id");
+
+                    b.HasIndex("IssuedByKind", "IssuedByIdValue")
+                        .HasDatabaseName("ix_veto_facts_issued_by");
+
+                    b.ToTable("veto_facts", "reporting");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Reporting.Domain.Movies.MovieCanonicalPick", b =>

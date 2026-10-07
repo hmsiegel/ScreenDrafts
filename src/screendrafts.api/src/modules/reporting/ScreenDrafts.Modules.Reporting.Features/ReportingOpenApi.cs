@@ -21,5 +21,9 @@ internal static class ReportingOpenApi
     internal const string Spotlight_SearchCandidates = "Spotlight.SearchCandidates";
     internal const string Spotlight_Delete = "Spotlight.Delete";
     internal const string Spotlight_RotateSpotlight = "Spotlight.RotateSpotlight";
+    internal const string Stats_GetRecordBook = "Stats.GetRecordBook";
+    internal const string Stats_Query = "Stats.Query";
+    internal const string Stats_GetQueryOptions = "Stats.GetQueryOptions";
+    internal const string Stats_GetTitleHonorifics = "Stats.GetTitleHonorifics";
   }
 }

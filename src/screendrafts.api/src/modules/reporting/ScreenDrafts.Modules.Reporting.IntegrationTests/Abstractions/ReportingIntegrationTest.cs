@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Abstractions;
+namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Abstractions;
 
 [Collection(nameof(ReportingIntegrationTestCollection))]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "Reviewed")]
@@ -19,7 +19,10 @@ public abstract class ReportingIntegrationTest(ReportingIntegrationTestWebAppFac
         reporting.draft_spotlights,
         reporting.draft_summaries,
         reporting.site_stats,
-        reporting.draft_part_releases
+        reporting.draft_part_releases,
+        reporting.pick_facts,
+        reporting.veto_facts,
+        reporting.pick_credit_facts
       RESTART IDENTITY CASCADE;
       """);
 
@@ -28,5 +31,9 @@ public abstract class ReportingIntegrationTest(ReportingIntegrationTestWebAppFac
     await cache.RemoveAsync("reporting:stats:episodes:public", CancellationToken.None);
     await cache.RemoveAsync("reporting:stats:episodes:patreon", CancellationToken.None);
     await cache.RemoveAsync("reporting:spotlight:active", CancellationToken.None);
+
+    var cacheService = GetService<ICacheService>();
+    await cacheService.RemoveAsync(ReportingCacheKeys.RecordBookCanonicalCacheKey, CancellationToken.None);
+    await cacheService.RemoveAsync(ReportingCacheKeys.RecordBookAllCacheKey, CancellationToken.None);
   }
 }

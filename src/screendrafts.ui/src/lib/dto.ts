@@ -1016,6 +1016,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    stats_Query(body: QueryStatsRequest): Promise<QueryStatsResponse>;
+
+    /**
+     * @return OK
+     */
     spotlight_GetSpotlights(body: ListSpotlightDraftsRequest): Promise<PagedResultOfListSpotlightDraftsResponse>;
 
     /**
@@ -1026,7 +1031,22 @@ export interface IClient {
     /**
      * @return OK
      */
+    stats_GetTitleHonorifics(body: GetTitleHonorificsRequest): Promise<GetTitleHonorificsResponse>;
+
+    /**
+     * @return OK
+     */
+    stats_GetQueryOptions(): Promise<StatsQueryOptionsResponse>;
+
+    /**
+     * @return OK
+     */
     stats_GetSiteStats(): Promise<GetSiteStatsResponse>;
+
+    /**
+     * @return OK
+     */
+    stats_GetRecordBook(body: GetRecordBookRequest): Promise<GetRecordBookResponse>;
 
     /**
      * @return OK
@@ -11520,6 +11540,57 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    stats_Query(body: QueryStatsRequest, signal?: AbortSignal): Promise<QueryStatsResponse> {
+        let url_ = this.baseUrl + "/stats/query";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStats_Query(_response);
+        });
+    }
+
+    protected processStats_Query(response: Response): Promise<QueryStatsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as QueryStatsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<QueryStatsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     spotlight_GetSpotlights(body: ListSpotlightDraftsRequest, signal?: AbortSignal): Promise<PagedResultOfListSpotlightDraftsResponse> {
         let url_ = this.baseUrl + "/reporting/spotlights";
         url_ = url_.replace(/[?&]$/, "");
@@ -11626,6 +11697,100 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    stats_GetTitleHonorifics(body: GetTitleHonorificsRequest, signal?: AbortSignal): Promise<GetTitleHonorificsResponse> {
+        let url_ = this.baseUrl + "/stats/titles/{level}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStats_GetTitleHonorifics(_response);
+        });
+    }
+
+    protected processStats_GetTitleHonorifics(response: Response): Promise<GetTitleHonorificsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetTitleHonorificsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetTitleHonorificsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    stats_GetQueryOptions(signal?: AbortSignal): Promise<StatsQueryOptionsResponse> {
+        let url_ = this.baseUrl + "/stats/query/options";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStats_GetQueryOptions(_response);
+        });
+    }
+
+    protected processStats_GetQueryOptions(response: Response): Promise<StatsQueryOptionsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as StatsQueryOptionsResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StatsQueryOptionsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     stats_GetSiteStats(signal?: AbortSignal): Promise<GetSiteStatsResponse> {
         let url_ = this.baseUrl + "/stats";
         url_ = url_.replace(/[?&]$/, "");
@@ -11658,6 +11823,47 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<GetSiteStatsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    stats_GetRecordBook(body: GetRecordBookRequest, signal?: AbortSignal): Promise<GetRecordBookResponse> {
+        let url_ = this.baseUrl + "/stats/record-book";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStats_GetRecordBook(_response);
+        });
+    }
+
+    protected processStats_GetRecordBook(response: Response): Promise<GetRecordBookResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetRecordBookResponse;
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetRecordBookResponse>(null as any);
     }
 
     /**
@@ -13656,8 +13862,6 @@ export interface AssignSubDraftTriviaRequest {
 }
 
 export interface AssignSurrogateRequest {
-    draftPartPublicId?: string;
-    primarySetPublicId?: string;
     surrogateSetPublicId?: string;
     mergePolicy?: number;
 
@@ -15332,6 +15536,21 @@ export interface GetPredictionStandingsRequest {
     [key: string]: any;
 }
 
+export interface GetRecordBookRequest {
+    includeAll?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetRecordBookResponse {
+    generatedAtUtc: Date;
+    includesNonCanonical: boolean;
+    totals?: RecordBookTotal[];
+    sections?: RecordBookSection[];
+
+    [key: string]: any;
+}
+
 export interface GetRolePermissionsRequest {
     roleName?: string;
 
@@ -15383,6 +15602,32 @@ export interface GetSubDraftGameplayResponse {
     draftPositions?: GameplayDraftPositionResponse[];
     picks?: GameplayPickResponse[];
     triviaResults?: GameplayTriviaResultResponse[];
+
+    [key: string]: any;
+}
+
+export interface GetTitleHonorificsRequest {
+    level?: string;
+    search?: string | undefined;
+    sort?: string | undefined;
+    page?: number | undefined;
+    pageSize?: number | undefined;
+    includeAll?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetTitleHonorificsResponse {
+    level: string;
+    levelLabel: string;
+    minAppearances: number;
+    includesNonCanonical: boolean;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalMatching: number;
+    counts?: TitleHonorificCount[];
+    titles?: TitleHonorificEntry[];
 
     [key: string]: any;
 }
@@ -16606,6 +16851,88 @@ export interface ProductionCompanyResponse {
     [key: string]: any;
 }
 
+export interface QueryStatsRequest {
+    metric?: string;
+    groupBy?: string;
+    series?: string[] | undefined;
+    draftTypes?: string[] | undefined;
+    episodeFrom?: number | undefined;
+    episodeTo?: number | undefined;
+    minAppearances?: number | undefined;
+    ascending?: boolean;
+    limit?: number | undefined;
+    includeAll?: boolean;
+
+    [key: string]: any;
+}
+
+export interface QueryStatsResponse {
+    metric: string;
+    metricLabel: string;
+    groupBy: string;
+    format: string;
+    includesNonCanonical: boolean;
+    totalGroups: number;
+    truncated: boolean;
+    rows?: QueryStatsRow[];
+
+    [key: string]: any;
+}
+
+export interface QueryStatsRow {
+    rank: number;
+    name: string;
+    publicId?: string | undefined;
+    value: number;
+    context?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface RecordBookGroup {
+    key: string;
+    title: string;
+    records?: RecordItem[];
+
+    [key: string]: any;
+}
+
+export interface RecordBookSection {
+    key: string;
+    title: string;
+    groups?: RecordBookGroup[];
+
+    [key: string]: any;
+}
+
+export interface RecordBookTotal {
+    code: string;
+    label: string;
+    value: number;
+
+    [key: string]: any;
+}
+
+export interface RecordHolder {
+    kind: string;
+    name: string;
+    publicId?: string | undefined;
+    context?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface RecordItem {
+    code: string;
+    label: string;
+    format: string;
+    value: number;
+    qualifier?: string | undefined;
+    holders?: RecordHolder[];
+
+    [key: string]: any;
+}
+
 export interface RegisterSocialUserRequest {
     email: string;
     firstName: string;
@@ -17294,6 +17621,35 @@ export interface StartZoomSessionResult {
     [key: string]: any;
 }
 
+export interface StatsGroupByOption {
+    code: string;
+    label: string;
+
+    [key: string]: any;
+}
+
+export interface StatsMetricOption {
+    code: string;
+    label: string;
+    format: string;
+    description: string;
+    groupBys: string[];
+
+    [key: string]: any;
+}
+
+export interface StatsQueryOptionsResponse {
+    canIncludeAll?: boolean;
+    metrics?: StatsMetricOption[];
+    groupBys?: StatsGroupByOption[];
+    series?: string[];
+    draftTypes?: string[];
+    minEpisode?: number | undefined;
+    maxEpisode?: number | undefined;
+
+    [key: string]: any;
+}
+
 export interface StopZoomRecordingRequest {
     draftPartId?: string;
 
@@ -17325,6 +17681,44 @@ export interface SurrogateAssignmentResponse {
     surrogateSetPublicId: string;
     surrogateContestantDisplayName: string;
     mergePolicy: string;
+
+    [key: string]: any;
+}
+
+export interface TitleAppearanceEntry {
+    appearanceNumber: number;
+    draftTitle: string;
+    draftPublicId: string;
+    episodeNumber?: number | undefined;
+    releasedOn?: string | undefined;
+    position: number;
+
+    [key: string]: any;
+}
+
+export interface TitleHonorificCount {
+    code: string;
+    label: string;
+    count: number;
+
+    [key: string]: any;
+}
+
+export interface TitleHonorificEntry {
+    number: number;
+    mediaPublicId: string;
+    title: string;
+    appearanceCount: number;
+    joinedDraftTitle: string;
+    joinedDraftPublicId: string;
+    joinedEpisode?: number | undefined;
+    joinedOn?: string | undefined;
+    firstDraftTitle: string;
+    firstEpisode?: number | undefined;
+    firstOn?: string | undefined;
+    gapEpisodes?: number | undefined;
+    gapDays?: number | undefined;
+    appearances?: TitleAppearanceEntry[];
 
     [key: string]: any;
 }

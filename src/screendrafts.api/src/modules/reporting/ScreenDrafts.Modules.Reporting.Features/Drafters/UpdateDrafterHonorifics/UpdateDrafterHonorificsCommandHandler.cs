@@ -1,10 +1,14 @@
 ﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafters.UpdateDrafterHonorifics;
 
+/// <summary>
+/// Records one drafter's appearance in one draft part, then recomputes the honorific from the
+/// number of distinct drafts the drafter has appeared in (a multi-part draft counts once).
+/// </summary>
 internal sealed class UpdateDrafterHonorificsCommandHandler(
   IDbConnectionFactory dbConnectionFactory,
   IDateTimeProvider dateTimeProvider,
-  IEventBus eventBus)
-  : ICommandHandler<UpdateDrafterHonorificsCommand>
+  IEventBus eventBus
+) : ICommandHandler<UpdateDrafterHonorificsCommand>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
@@ -12,17 +16,17 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
 
   public async Task<Result> Handle(
     UpdateDrafterHonorificsCommand request,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     var currentTime = _dateTimeProvider.UtcNow;
 
-    const string appearanceSql =
-      """
+    const string appearanceSql = """
       INSERT INTO reporting.drafter_canonical_appearances
-        (id, drafter_id_value, draft_part_public_id, has_main_feed_release, appeared_at)
-      VALUES (@Id, @DrafterIdValue, @DraftPartPublicId, @HasMainFeedRelease, @AppearedAt)
+        (id, drafter_id_value, draft_id, draft_part_public_id, has_main_feed_release, appeared_at)
+      VALUES (@Id, @DrafterIdValue, @DraftId, @DraftPartPublicId, @HasMainFeedRelease, @AppearedAt)
       ON CONFLICT (drafter_id_value, draft_part_public_id) DO NOTHING;
       """;
 
@@ -33,11 +37,14 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
         {
           Id = Guid.NewGuid(),
           request.DrafterIdValue,
+          request.DraftId,
           request.DraftPartPublicId,
           request.HasMainFeedRelease,
-          AppearedAt = currentTime
+          AppearedAt = currentTime,
         },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     if (inserted == 0)
     {
@@ -45,12 +52,16 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
       return Result.Success();
     }
 
-    // count canoncial appearances for the drafter, exclude the current draft part
-    // OnMainFeed: Only parts with a main feed releaes count
-    const string countSql =
-      """
-      SELECT COUNT(*)
-      FROM reporting.drafter_canonical_appearances 
+    // Count the distinct drafts the drafter has appeared in. A row not yet linked to a draft
+    // (draft_id = empty guid) counts as its own draft, keyed by its part.
+    // OnMainFeed: Only parts with a main feed release count
+    const string countSql = """
+      SELECT COUNT(DISTINCT
+        CASE
+          WHEN draft_id = '00000000-0000-0000-0000-000000000000'::uuid THEN draft_part_public_id
+          ELSE draft_id::text
+        END)
+      FROM reporting.drafter_canonical_appearances
       WHERE drafter_id_value = @DrafterIdValue
         AND (
           @CanonicalPolicyValue = 0
@@ -64,17 +75,13 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
     var appearanceCount = await connection.ExecuteScalarAsync<int>(
       new CommandDefinition(
         countSql,
-        new
-        {
-          request.DrafterIdValue,
-          request.CanonicalPolicyValue
-        },
-        cancellationToken: cancellationToken));
-
+        new { request.DrafterIdValue, request.CanonicalPolicyValue },
+        cancellationToken: cancellationToken
+      )
+    );
 
     // Read current honorific row
-    const string currentSql =
-      """
+    const string currentSql = """
       SELECT honorific
       FROM reporting.drafter_honorifics
       WHERE drafter_id_value = @DrafterIdValue;
@@ -84,14 +91,15 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
       new CommandDefinition(
         currentSql,
         new { request.DrafterIdValue },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     var previousHonorific = DrafterHonorific.FromValue(current.Honorific);
     var newHonorific = DrafterHonorific.FromAppearanceCount(appearanceCount);
 
     // Upsert current row
-    const string upsertSql =
-      """
+    const string upsertSql = """
       INSERT INTO reporting.drafter_honorifics
         (id, drafter_id_value, honorific, appearance_count, update_at_utc)
       VALUES (@Id, @DrafterIdValue, @HonorificValue, @AppearanceCount, @UpdatedAt)
@@ -110,9 +118,11 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
           request.DrafterIdValue,
           HonorificValue = newHonorific.Value,
           AppearanceCount = appearanceCount,
-          UpdatedAt = currentTime
+          UpdatedAt = currentTime,
         },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     // Only write the history and fire the integration event if the honorific has changed
     if (newHonorific == previousHonorific)
@@ -120,8 +130,7 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
       return Result.Success();
     }
 
-    const string historySql =
-      """
+    const string historySql = """
       INSERT INTO reporting.drafters_honorifics_history
         (id, drafter_id_value, honorific, appearance_count, achieved_at)
       VALUES (@Id, @DrafterIdValue, @HonorificValue, @AppearanceCount, @AchievedAt);
@@ -136,9 +145,11 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
           request.DrafterIdValue,
           HonorificValue = newHonorific.Value,
           AppearanceCount = appearanceCount,
-          AchievedAt = _dateTimeProvider.UtcNow
+          AchievedAt = _dateTimeProvider.UtcNow,
         },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     await _eventBus.PublishAsync(
       new DrafterHonorificEarnedIntegrationEvent(
@@ -148,8 +159,10 @@ internal sealed class UpdateDrafterHonorificsCommandHandler(
         draftPartPublicId: request.DraftPartPublicId,
         previousHonorificValue: previousHonorific.Value,
         newHonorificValue: newHonorific.Value,
-        appearanceCount: appearanceCount),
-      cancellationToken);
+        appearanceCount: appearanceCount
+      ),
+      cancellationToken
+    );
 
     return Result.Success();
   }

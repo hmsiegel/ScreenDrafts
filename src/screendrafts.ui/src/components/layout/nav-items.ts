@@ -14,6 +14,7 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { label: "DRAFTERS", href: "/drafters" },
   { label: "FILMS", href: "/media" },
   { label: "PREDICTIONS", href: "/predictions" },
+  { label: "STATS", href: "/stats" },
 ];
 
 export const GUEST_DRAFTS_NAV_ITEM: NavItem = { label: "GUEST DRAFTS", href: "/guest-drafts" };
