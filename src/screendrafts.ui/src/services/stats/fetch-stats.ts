@@ -2,6 +2,7 @@
 import { env } from "@/lib/env";
 import type {
   GetRecordBookResponse,
+  GetTitleHonorificsResponse,
   QueryStatsResponse,
   RecordHolder,
   RecordItem,
@@ -17,6 +18,8 @@ import type {
   StatsQueryInput,
   StatsQueryOutcome,
   StatsQueryResultView,
+  TitleHonorificsView,
+  TitleSort,
 } from "./stats-types";
 
 const apiBase = env.apiUrl;
@@ -52,6 +55,48 @@ export async function fetchRecordBook(
     }
 
     return mapRecordBook((await res.json()) as GetRecordBookResponse);
+  } catch (err) {
+    console.error(`[stats] GET ${url} failed:`, err);
+    return null;
+  }
+}
+
+export interface TitleHonorificsQuery {
+  level: string;
+  search?: string;
+  sort?: TitleSort;
+  page?: number;
+  includeAll?: boolean;
+  accessToken?: string;
+}
+
+/** Null when the request failed (including an unknown level). Signed-in callers bypass the Next.js cache. */
+export async function fetchTitleHonorifics(
+  query: TitleHonorificsQuery
+): Promise<TitleHonorificsView | null> {
+  const params = new URLSearchParams();
+  if (query.search) params.set("search", query.search);
+  if (query.sort) params.set("sort", query.sort);
+  if (query.page && query.page > 1) params.set("page", String(query.page));
+  if (query.includeAll) params.set("includeAll", "true");
+
+  const qs = params.toString();
+  const url = `${apiBase}/stats/titles/${encodeURIComponent(query.level)}${qs ? `?${qs}` : ""}`;
+
+  try {
+    const res = await fetch(
+      url,
+      query.accessToken
+        ? { headers: authHeader(query.accessToken), cache: "no-store" }
+        : { next: { revalidate: PUBLIC_REVALIDATE_SECONDS } }
+    );
+
+    if (!res.ok) {
+      console.error(`[stats] GET ${url} failed: ${res.status} ${res.statusText}`);
+      return null;
+    }
+
+    return mapTitleHonorifics((await res.json()) as GetTitleHonorificsResponse);
   } catch (err) {
     console.error(`[stats] GET ${url} failed:`, err);
     return null;
@@ -230,6 +275,50 @@ function mapQueryResult(dto: QueryStatsResponse): StatsQueryResultView {
       publicId: r.publicId ?? null,
       value: r.value ?? 0,
       context: r.context ?? null,
+    })),
+  };
+}
+
+function mapTitleHonorifics(dto: GetTitleHonorificsResponse): TitleHonorificsView {
+  return {
+    level: dto.level ?? "",
+    levelLabel: dto.levelLabel ?? "",
+    minAppearances: dto.minAppearances ?? 0,
+    includesNonCanonical: dto.includesNonCanonical ?? false,
+    page: dto.page ?? 1,
+    pageSize: dto.pageSize ?? 0,
+    totalPages: dto.totalPages ?? 1,
+    totalMatching: dto.totalMatching ?? 0,
+    counts: (dto.counts ?? []).map((c) => ({
+      code: c.code ?? "",
+      label: c.label ?? "",
+      count: c.count ?? 0,
+    })),
+    titles: (dto.titles ?? []).map((t) => ({
+      number: t.number ?? 0,
+      mediaPublicId: t.mediaPublicId ?? "",
+      title: t.title ?? "",
+      appearanceCount: t.appearanceCount ?? 0,
+      joinedDraftTitle: t.joinedDraftTitle ?? "",
+      joinedDraftPublicId: t.joinedDraftPublicId ?? "",
+      joinedEpisode: t.joinedEpisode ?? null,
+      joinedPartIndex: t.joinedPartIndex ?? 1,
+      joinedTotalParts: t.joinedTotalParts ?? 1,
+      joinedOn: t.joinedOn ?? null,
+      firstDraftTitle: t.firstDraftTitle ?? "",
+      firstEpisode: t.firstEpisode ?? null,
+      firstOn: t.firstOn ?? null,
+      gapEpisodes: t.gapEpisodes ?? null,
+      appearances: (t.appearances ?? []).map((a) => ({
+        appearanceNumber: a.appearanceNumber ?? 0,
+        draftTitle: a.draftTitle ?? "",
+        draftPublicId: a.draftPublicId ?? "",
+        episodeNumber: a.episodeNumber ?? null,
+        partIndex: a.partIndex ?? 1,
+        totalParts: a.totalParts ?? 1,
+        releasedOn: a.releasedOn ?? null,
+        position: a.position ?? 0,
+      })),
     })),
   };
 }

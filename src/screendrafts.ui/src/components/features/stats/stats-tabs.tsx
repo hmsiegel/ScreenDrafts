@@ -7,6 +7,7 @@ import { isNavItemActive, type NavItem } from "@/components/layout/nav-items";
 
 const TABS: NavItem[] = [
   { label: "RECORD BOOK", href: "/stats", exact: true },
+  { label: "TITLES", href: "/stats/titles" },
   { label: "CUSTOM QUERY", href: "/stats/query" },
 ];
 

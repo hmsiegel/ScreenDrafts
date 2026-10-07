@@ -117,10 +117,10 @@ export default async function DrafterProfilePage({ params }: Props) {
       {/* Content */}
       <div className="page-x py-6 lg:py-10 max-w-[1400px] mx-auto">
         {/* One column below lg; 320px sidebar + content from lg. */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-10">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[280px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-10">
 
-          {/* ── Left sidebar ── side-by-side cards on tablets, a stack on phones and in the lg sidebar. */}
-          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start lg:flex">
+          {/* ── Left sidebar ── a stack on phones, a 280px column from md, 320px from lg. */}
+          <div className="flex flex-col gap-6">
             <ProfileCard profile={profile} honorific={honorific} />
             {profile.drafterStats && (
               <DrafterStatsCard stats={profile.drafterStats} />
@@ -394,7 +394,7 @@ function TableOfContents({
           ({draftIds.length})
         </span>
       </h2>
-      <div className="columns-1 sm:columns-2 gap-6">
+      <div className="columns-1 sm:columns-2 md:columns-1 lg:columns-2 gap-6">
         {draftIds.map((draftId) => {
           const item = picksByDraft.get(draftId);
           const vetoes = vetosByDraft.get(draftId) ?? [];
@@ -542,10 +542,10 @@ function PickRow({ pick }: { pick: PickItem }) {
     <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4">
       <div
         className={`w-9 h-9 shrink-0 flex items-center justify-center border-2 font-oswald font-bold text-[15px] ${isStruck
-            ? "border-sd-ink/20 text-sd-ink/30"
-            : isVetoOverridden
-              ? "border-sd-blue text-sd-blue"
-              : "border-sd-red text-sd-red"
+          ? "border-sd-ink/20 text-sd-ink/30"
+          : isVetoOverridden
+            ? "border-sd-blue text-sd-blue"
+            : "border-sd-red text-sd-red"
           }`}
       >
         <span className={isStruck ? "line-through" : ""}>{pick.position}</span>
@@ -623,6 +623,7 @@ function PickRow({ pick }: { pick: PickItem }) {
 }
 
 function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
+  const targetName = (veto.targetDrafterDisplayName ?? "Unknown").toUpperCase();
   return (
     <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-sd-red/[0.03]">
       <div className="w-9 h-9 shrink-0 flex items-center justify-center border-2 border-sd-red font-oswald font-bold text-[15px] text-sd-red">
@@ -644,16 +645,16 @@ function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
               href={`/drafters/${veto.targetDrafterPublicId}`}
               className="font-normal hover:underline"
             >
-              {veto.targetDrafterDisplayName.toUpperCase()}
+              {targetName}
             </Link>
           ) : (
             <span className="font-normal">
-              {veto.targetDrafterDisplayName.toUpperCase()}
+              {targetName}
             </span>
           )}
         </div>
         {veto.wasVetoOverridden && (
-          <div className="mt-1 font-mono text-[11px] tracking-widest text-sd-blue">
+          <div className="mt-1 font-mono text-[] tracking-widest text-sd-blue">
             ↩ VETO OVERRIDDEN
             {veto.overrideByDisplayName && veto.overrideByPublicId && (
               <span className="font-normal">

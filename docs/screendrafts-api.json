@@ -8807,6 +8807,64 @@
         ]
       }
     },
+    "/stats/titles/{level}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "operationId": "Stats.GetTitleHonorifics",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTitleHonorificsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetTitleHonorificsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTitleHonorificsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/stats/query/options": {
       "get": {
         "tags": [
@@ -16013,6 +16071,123 @@
           }
         }
       },
+      "GetTitleHonorificsRequest": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string"
+          },
+          "search": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "sort": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "includeAll": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GetTitleHonorificsResponse": {
+        "required": [
+          "level",
+          "levelLabel",
+          "minAppearances",
+          "includesNonCanonical",
+          "page",
+          "pageSize",
+          "totalPages",
+          "totalMatching"
+        ],
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string"
+          },
+          "levelLabel": {
+            "type": "string"
+          },
+          "minAppearances": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "includesNonCanonical": {
+            "type": "boolean"
+          },
+          "page": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pageSize": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalPages": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalMatching": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "counts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TitleHonorificCount"
+            }
+          },
+          "titles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TitleHonorificEntry"
+            }
+          }
+        }
+      },
       "GetTriviaResultsRequest": {
         "required": [
           "draftPartId"
@@ -22880,6 +23055,177 @@
           },
           "mergePolicy": {
             "type": "string"
+          }
+        }
+      },
+      "TitleAppearanceEntry": {
+        "required": [
+          "appearanceNumber",
+          "draftTitle",
+          "draftPublicId",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "appearanceNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "draftTitle": {
+            "type": "string"
+          },
+          "draftPublicId": {
+            "type": "string"
+          },
+          "episodeNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "releasedOn": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "TitleHonorificCount": {
+        "required": [
+          "code",
+          "label",
+          "count"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "count": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "TitleHonorificEntry": {
+        "required": [
+          "number",
+          "mediaPublicId",
+          "title",
+          "appearanceCount",
+          "joinedDraftTitle",
+          "joinedDraftPublicId",
+          "firstDraftTitle"
+        ],
+        "type": "object",
+        "properties": {
+          "number": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "mediaPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "appearanceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "joinedDraftTitle": {
+            "type": "string"
+          },
+          "joinedDraftPublicId": {
+            "type": "string"
+          },
+          "joinedEpisode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "joinedOn": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "firstDraftTitle": {
+            "type": "string"
+          },
+          "firstEpisode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "firstOn": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "gapEpisodes": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "gapDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "appearances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TitleAppearanceEntry"
+            }
           }
         }
       },

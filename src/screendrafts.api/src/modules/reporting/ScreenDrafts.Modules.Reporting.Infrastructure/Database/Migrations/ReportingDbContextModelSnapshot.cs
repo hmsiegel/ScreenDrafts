@@ -512,6 +512,10 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("part_index");
 
+                    b.Property<int>("PlayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("play_order");
+
                     b.Property<Guid>("PlayedByIdValue")
                         .HasColumnType("uuid")
                         .HasColumnName("played_by_id_value");

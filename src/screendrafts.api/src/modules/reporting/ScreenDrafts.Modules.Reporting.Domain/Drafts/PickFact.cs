@@ -21,6 +21,7 @@ public sealed class PickFact : Entity
     int canonicalPolicy,
     int? subDraftIndex,
     int position,
+    int playOrder,
     string mediaPublicId,
     string mediaTitle,
     int playedByKind,
@@ -45,6 +46,7 @@ public sealed class PickFact : Entity
     CanonicalPolicy = canonicalPolicy;
     SubDraftIndex = subDraftIndex;
     Position = position;
+    PlayOrder = playOrder;
     MediaPublicId = mediaPublicId;
     MediaTitle = mediaTitle;
     PlayedByKind = playedByKind;
@@ -70,6 +72,7 @@ public sealed class PickFact : Entity
   public int CanonicalPolicy { get; private set; }
   public int? SubDraftIndex { get; private set; }
   public int Position { get; private set; }
+  public int PlayOrder { get; private set; }
   public string MediaPublicId { get; private set; } = default!;
   public string MediaTitle { get; private set; } = default!;
 
@@ -99,6 +102,7 @@ public sealed class PickFact : Entity
     int canonicalPolicy,
     int? subDraftIndex,
     int position,
+    int playOrder,
     string mediaPublicId,
     string mediaTitle,
     int playedByKind,
@@ -123,6 +127,7 @@ public sealed class PickFact : Entity
       canonicalPolicy,
       subDraftIndex,
       position,
+      playOrder,
       mediaPublicId,
       mediaTitle,
       playedByKind,

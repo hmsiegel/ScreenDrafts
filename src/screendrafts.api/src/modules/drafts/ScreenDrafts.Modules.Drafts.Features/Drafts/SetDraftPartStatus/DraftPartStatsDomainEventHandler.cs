@@ -64,6 +64,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
       SELECT
         p.id                                  AS Id,
         p.position                            AS Position,
+        p.play_order                          AS PlayOrder,   
         sd.index                              AS SubDraftIndex,
         p.movie_id                            AS MovieId,
         p.played_by_participant_kind_value    AS PlayedByKind,
@@ -307,6 +308,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
         new StatsPickRecord(
           PickId: pick.Id,
           Position: pick.Position,
+          PlayOrder: pick.PlayOrder,
           SubDraftIndex: pick.SubDraftIndex,
           MediaPublicId: media.PublicId,
           MediaTitle: media.Title,
@@ -374,6 +376,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
   private sealed record PickRow(
     Guid Id,
     int Position,
+    int PlayOrder,
     int? SubDraftIndex,
     Guid MovieId,
     int PlayedByKind,

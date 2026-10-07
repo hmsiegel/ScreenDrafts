@@ -28,10 +28,18 @@ export function HonorificBanner({
   const banner = BANNER_MAP[value];
   if (!banner) return null;
 
-  const height = size === "profile" ? 36 : 48;
+  if (size === "profile") {
+    // The profile card's banner runs the card's full width at the image's own aspect ratio. A fixed 36px box
+    // with object-cover cropped the lettering top and bottom as soon as the card got wider than the sidebar
+    // (a phone-width card is far wider than the 320px lg sidebar), so the height has to follow the width.
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- the banners are already webp on the CDN, as in the card size below
+      <img src={banner.src} alt={banner.alt} className="block w-full h-auto" />
+    );
+  }
 
   return (
-    <div className="relative w-full overflow-hidden" style={{ height }}>
+    <div className="relative w-full overflow-hidden" style={{ height: 48 }}>
       {/* unoptimized: the banners are already webp and the CDN caches them, so
           Next's optimizer (and a remotePatterns entry) is not needed. */}
       <Image
@@ -39,7 +47,7 @@ export function HonorificBanner({
         alt={banner.alt}
         fill
         unoptimized
-        className={`object-center ${size === "card" ? "object-contain" : "object-cover"}`}
+        className="object-center object-contain"
       />
     </div>
   );

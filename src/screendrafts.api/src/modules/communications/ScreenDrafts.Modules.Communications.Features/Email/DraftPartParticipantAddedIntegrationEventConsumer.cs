@@ -40,7 +40,11 @@ internal sealed class DraftPartParticipantAddedIntegrationEventConsumer(
     var recipient = await connection.QuerySingleOrDefaultAsync<RecipientRow>(
       new CommandDefinition(
         commandText: sql,
-        parameters: new { UserId = integrationEvent.RecipientUserId },
+        parameters: new
+        {
+          UserId = integrationEvent.RecipientUserId,
+          EventId = integrationEvent.Id,
+        },
         cancellationToken: cancellationToken
       )
     );

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Reporting.PublicApi;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Participants.Get;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Participants.Get;
 
 internal sealed class GetParticipantProfileQueryHandler(
   IDbConnectionFactory connectionFactory,
@@ -329,7 +327,9 @@ internal sealed class GetParticipantProfileQueryHandler(
           tdr.public_id                            AS {nameof(
           VetoHistoryRow.TargetDrafterPublicId
         )},
-          tp.display_name                          AS {nameof(
+          COALESCE(NULLIF(tp.display_name, ''),
+                 NULLIF(TRIM(CONCAT_WS(' ', tp.first_name, tp.last_name)), ''),
+                 tt.name)                          AS {nameof(
           VetoHistoryRow.TargetDrafterDisplayName
         )},
           v.is_overridden                          AS {nameof(VetoHistoryRow.WasVetoOverridden)},
@@ -345,6 +345,7 @@ internal sealed class GetParticipantProfileQueryHandler(
         JOIN drafts.movies m ON m.id = pk.movie_id
         LEFT JOIN drafts.drafters tdr ON tdr.id = pk.played_by_participant_id_value
         LEFT JOIN drafts.people tp ON tp.id = tdr.person_id
+        LEFT JOIN drafts.drafter_teams tt on tt.id = pk.played_by_participant_id_value and pk.played_by_participant_kind_value = 1
         LEFT JOIN drafts.veto_overrides vo ON vo.veto_id = v.id
         LEFT JOIN drafts.draft_part_participants override_dpp ON override_dpp.id = vo.issued_by_participant_id
         LEFT JOIN drafts.drafters vodr ON vodr.id = override_dpp.participant_id_value
@@ -360,7 +361,7 @@ internal sealed class GetParticipantProfileQueryHandler(
           d.id, d.public_id, d.title,
           pk.id, pk.position, pk.play_order,
           m.imdb_id, m.movie_title,
-          tdr.public_id, tp.display_name,
+          tdr.public_id, tp.display_name, tp.first_name, tp.last_name, tt.name,
           v.is_overridden,
           vodr.public_id, vop.display_name
         ORDER BY MIN(dr.release_date) ASC, pk.play_order ASC

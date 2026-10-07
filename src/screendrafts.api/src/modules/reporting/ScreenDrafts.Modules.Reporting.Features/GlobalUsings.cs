@@ -1,4 +1,5 @@
-﻿global using System.Reflection;
+﻿global using System.Globalization;
+global using System.Reflection;
 global using Dapper;
 global using FluentValidation;
 global using MediatR;

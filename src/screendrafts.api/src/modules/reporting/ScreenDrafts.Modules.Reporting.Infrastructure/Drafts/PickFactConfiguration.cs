@@ -19,6 +19,7 @@ internal sealed class PickFactConfiguration : IEntityTypeConfiguration<PickFact>
     builder.Property(x => x.CanonicalPolicy);
     builder.Property(x => x.SubDraftIndex);
     builder.Property(x => x.Position);
+    builder.Property(x => x.PlayOrder);
     builder.Property(x => x.MediaPublicId);
     builder.Property(x => x.MediaTitle);
     builder.Property(x => x.PlayedByKind);

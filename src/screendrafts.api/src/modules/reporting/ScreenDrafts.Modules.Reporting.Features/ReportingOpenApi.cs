@@ -24,5 +24,6 @@ internal static class ReportingOpenApi
     internal const string Stats_GetRecordBook = "Stats.GetRecordBook";
     internal const string Stats_Query = "Stats.Query";
     internal const string Stats_GetQueryOptions = "Stats.GetQueryOptions";
+    internal const string Stats_GetTitleHonorifics = "Stats.GetTitleHonorifics";
   }
 }

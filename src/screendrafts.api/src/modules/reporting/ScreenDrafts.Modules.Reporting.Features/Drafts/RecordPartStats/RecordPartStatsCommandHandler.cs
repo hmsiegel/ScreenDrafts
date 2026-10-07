@@ -36,6 +36,7 @@ internal sealed class RecordPartStatsCommandHandler(
         CanonicalPolicy = stats.CanonicalPolicyValue,
         p.SubDraftIndex,
         p.Position,
+        p.PlayOrder,
         p.MediaPublicId,
         p.MediaTitle,
         p.PlayedByKind,
@@ -113,13 +114,13 @@ internal sealed class RecordPartStatsCommandHandler(
     const string insertPickSql = """
       INSERT INTO reporting.pick_facts
         (id, draft_id, draft_public_id, draft_part_public_id, part_index, draft_title,
-         draft_type, series_name, canonical_policy, sub_draft_index, position,
+         draft_type, series_name, canonical_policy, sub_draft_index, position, play_order,
          media_public_id, media_title, played_by_kind, played_by_id_value,
          played_by_public_id, played_by_name, veto_count, was_vetoed,
          was_veto_overridden, was_commissioner_overridden, recorded_at_utc)
       VALUES
         (@Id, @DraftId, @DraftPublicId, @DraftPartPublicId, @PartIndex, @DraftTitle,
-         @DraftType, @SeriesName, @CanonicalPolicy, @SubDraftIndex, @Position,
+         @DraftType, @SeriesName, @CanonicalPolicy, @SubDraftIndex, @Position, @PlayOrder,
          @MediaPublicId, @MediaTitle, @PlayedByKind, @PlayedByIdValue,
          @PlayedByPublicId, @PlayedByName, @VetoCount, @WasVetoed,
          @WasVetoOverridden, @WasCommissionerOverridden, @RecordedAtUtc);

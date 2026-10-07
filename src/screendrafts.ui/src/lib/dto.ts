@@ -1031,6 +1031,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    stats_GetTitleHonorifics(body: GetTitleHonorificsRequest): Promise<GetTitleHonorificsResponse>;
+
+    /**
+     * @return OK
+     */
     stats_GetQueryOptions(): Promise<StatsQueryOptionsResponse>;
 
     /**
@@ -11692,6 +11697,59 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    stats_GetTitleHonorifics(body: GetTitleHonorificsRequest, signal?: AbortSignal): Promise<GetTitleHonorificsResponse> {
+        let url_ = this.baseUrl + "/stats/titles/{level}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processStats_GetTitleHonorifics(_response);
+        });
+    }
+
+    protected processStats_GetTitleHonorifics(response: Response): Promise<GetTitleHonorificsResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetTitleHonorificsResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Bad Request", status, _responseText, _headers, result400);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ProblemDetails;
+            return throwException("Not Found", status, _responseText, _headers, result404);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetTitleHonorificsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     stats_GetQueryOptions(signal?: AbortSignal): Promise<StatsQueryOptionsResponse> {
         let url_ = this.baseUrl + "/stats/query/options";
         url_ = url_.replace(/[?&]$/, "");
@@ -15548,6 +15606,32 @@ export interface GetSubDraftGameplayResponse {
     [key: string]: any;
 }
 
+export interface GetTitleHonorificsRequest {
+    level?: string;
+    search?: string | undefined;
+    sort?: string | undefined;
+    page?: number | undefined;
+    pageSize?: number | undefined;
+    includeAll?: boolean;
+
+    [key: string]: any;
+}
+
+export interface GetTitleHonorificsResponse {
+    level: string;
+    levelLabel: string;
+    minAppearances: number;
+    includesNonCanonical: boolean;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalMatching: number;
+    counts?: TitleHonorificCount[];
+    titles?: TitleHonorificEntry[];
+
+    [key: string]: any;
+}
+
 export interface GetTriviaResultsRequest {
     draftPartId: string;
 
@@ -17597,6 +17681,44 @@ export interface SurrogateAssignmentResponse {
     surrogateSetPublicId: string;
     surrogateContestantDisplayName: string;
     mergePolicy: string;
+
+    [key: string]: any;
+}
+
+export interface TitleAppearanceEntry {
+    appearanceNumber: number;
+    draftTitle: string;
+    draftPublicId: string;
+    episodeNumber?: number | undefined;
+    releasedOn?: string | undefined;
+    position: number;
+
+    [key: string]: any;
+}
+
+export interface TitleHonorificCount {
+    code: string;
+    label: string;
+    count: number;
+
+    [key: string]: any;
+}
+
+export interface TitleHonorificEntry {
+    number: number;
+    mediaPublicId: string;
+    title: string;
+    appearanceCount: number;
+    joinedDraftTitle: string;
+    joinedDraftPublicId: string;
+    joinedEpisode?: number | undefined;
+    joinedOn?: string | undefined;
+    firstDraftTitle: string;
+    firstEpisode?: number | undefined;
+    firstOn?: string | undefined;
+    gapEpisodes?: number | undefined;
+    gapDays?: number | undefined;
+    appearances?: TitleAppearanceEntry[];
 
     [key: string]: any;
 }

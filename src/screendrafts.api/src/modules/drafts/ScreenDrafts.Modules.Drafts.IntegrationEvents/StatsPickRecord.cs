@@ -7,6 +7,7 @@
 public sealed record StatsPickRecord(
   Guid PickId,
   int Position,
+  int PlayOrder,
   int? SubDraftIndex,
   string MediaPublicId,
   string MediaTitle,

@@ -112,3 +112,58 @@ export interface StatsQueryResultView {
 export type StatsQueryOutcome =
   | { ok: true; data: StatsQueryResultView }
   | { ok: false; message: string };
+
+// ── Title honorifics (Marquee of Fame, Hat Trick, Grand Slam, High Five) ───────────────────────────
+
+export type TitleSort = "newest" | "oldest" | "alphabetical" | "appearances";
+
+export interface TitleAppearanceView {
+  appearanceNumber: number;
+  draftTitle: string;
+  draftPublicId: string;
+  episodeNumber: number | null;
+  partIndex: number;
+  totalParts: number;
+  /** yyyy-MM-dd */
+  releasedOn: string | null;
+  position: number;
+}
+
+export interface TitleHonorificEntryView {
+  /** Join order at this level: 1 is the first title to join. */
+  number: number;
+  mediaPublicId: string;
+  title: string;
+  appearanceCount: number;
+  joinedDraftTitle: string;
+  joinedDraftPublicId: string;
+  joinedEpisode: number | null;
+  joinedPartIndex: number;
+  joinedTotalParts: number;
+  joinedOn: string | null;
+  firstDraftTitle: string;
+  firstEpisode: number | null;
+  firstOn: string | null;
+  /** Main-feed episodes between the first appearance and the joining one, counting every released part. */
+  gapEpisodes: number | null;
+  appearances: TitleAppearanceView[];
+}
+
+export interface TitleHonorificCountView {
+  code: string;
+  label: string;
+  count: number;
+}
+
+export interface TitleHonorificsView {
+  level: string;
+  levelLabel: string;
+  minAppearances: number;
+  includesNonCanonical: boolean;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  totalMatching: number;
+  counts: TitleHonorificCountView[];
+  titles: TitleHonorificEntryView[];
+}
