@@ -1,6 +1,4 @@
-using ScreenDrafts.Modules.Communications.Domain.Email;
-
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.Abstractions;
 
 /// <summary>
 /// In-memory implementation that implements both <see cref="IEmailService"/> (for DI registration)
@@ -12,6 +10,8 @@ public sealed class FakeEmailCapture : IEmailService, IEmailCapture
   private readonly List<EmailMessage> _sent = [];
 
   public IReadOnlyList<EmailMessage> SentEmails => _sent.AsReadOnly();
+
+  public bool AllowPlaceholderRecipients => true;
 
   public Task SendAsync(EmailMessage emailMessage, CancellationToken cancellationToken = default)
   {
