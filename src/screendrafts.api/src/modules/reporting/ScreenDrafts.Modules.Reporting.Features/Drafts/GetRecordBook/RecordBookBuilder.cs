@@ -21,7 +21,7 @@ internal static class RecordBookBuilder
       [
         DrafterRecordsCalculator.Build(data.DrafterDrafts, data.PickSlots, copacetic),
         DraftRecordsCalculator.Build(data.Parts, data.UniqueTitlesPlayedByDraft, copacetic),
-        TitleRecordsCalculator.Build(data.Media),
+        TitleRecordsCalculator.Build(data.Media, data.TitleAppearances),
       ],
     };
   }

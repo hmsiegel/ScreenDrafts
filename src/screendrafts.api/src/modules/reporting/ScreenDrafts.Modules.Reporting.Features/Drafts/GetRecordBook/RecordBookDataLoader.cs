@@ -306,9 +306,16 @@ internal static class RecordBookDataLoader
       new CommandDefinition(TitleHonorificTotalsSql, cancellationToken: cancellationToken)
     );
 
+    var titleAppearances = await TitleAppearanceLoader.LoadAsync(
+      connection,
+      includeAll,
+      cancellationToken
+    );
+
     return new RecordBookData
     {
       DrafterDrafts = [.. rows.Values],
+      TitleAppearances = titleAppearances,
       Parts = parts,
       UniqueTitlesPlayedByDraft = uniqueTitlesByDraft,
       Media = media,

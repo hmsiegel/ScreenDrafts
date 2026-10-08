@@ -619,6 +619,7 @@ export default function CreateDraftForm({
         teamIds: [...selectedTeamIds],
         categoryIds: [...selectedCategoryIds],
         campaignId: campaignId || null,
+        releaseChannel: selectedFeed === "patreon" ? 1 : 0,
       });
 
       // Draft-level policy flags — not part of the initial create payload (see the state

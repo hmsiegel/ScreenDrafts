@@ -23,7 +23,7 @@ internal sealed class DraftPartHostAddedIntegrationEventConsumer(
         ue.full_name AS FullName
       FROM communications.user_emails ue
       WHERE ue.user_id = @UserId
-        AND ue.email_address NOT ILIKE '%@screendrafts.fake'
+        AND (@AllowPlaceholderRecipients OR ue.email_address NOT ILIKE '%@screendrafts.fake')
         AND NOT EXISTS (
           SELECT 1
           FROM communications.email_deliveries d
@@ -40,7 +40,12 @@ internal sealed class DraftPartHostAddedIntegrationEventConsumer(
     var recipient = await connection.QuerySingleOrDefaultAsync<RecipientRow>(
       new CommandDefinition(
         commandText: sql,
-        parameters: new { UserId = integrationEvent.RecipientUserId, EventId = integrationEvent.Id },
+        parameters: new
+        {
+          UserId = integrationEvent.RecipientUserId,
+          EventId = integrationEvent.Id,
+          _emailService.AllowPlaceholderRecipients,
+        },
         cancellationToken: cancellationToken
       )
     );

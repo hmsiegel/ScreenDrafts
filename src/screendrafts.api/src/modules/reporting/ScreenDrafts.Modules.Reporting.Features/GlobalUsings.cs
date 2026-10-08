@@ -33,6 +33,7 @@ global using ScreenDrafts.Modules.Reporting.Domain.Movies;
 global using ScreenDrafts.Modules.Reporting.Features.Common;
 global using ScreenDrafts.Modules.Reporting.Features.Drafters.UpdateDrafterHonorifics;
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+global using ScreenDrafts.Modules.Reporting.Features.Drafts.GetTitleHonorifics;
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.MarkDraftCompleted;
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.QueryStats;
 global using ScreenDrafts.Modules.Reporting.Features.Drafts.UpsertDraftPartRelease;

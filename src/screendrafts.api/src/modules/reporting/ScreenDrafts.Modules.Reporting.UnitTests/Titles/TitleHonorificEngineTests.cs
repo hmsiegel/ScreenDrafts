@@ -1,16 +1,30 @@
-using static ScreenDrafts.Modules.Reporting.UnitTests.Builders.TitleAppearanceBuilder;
+﻿using static ScreenDrafts.Modules.Reporting.UnitTests.Builders.TitleAppearanceBuilder;
 
 namespace ScreenDrafts.Modules.Reporting.UnitTests.Titles;
 
 public sealed class TitleHonorificEngineTests
 {
-  private static TitleHonorificResult Run(IEnumerable<TitleAppearanceRow> rows, TitleHonorificSpec? spec = null) =>
-    TitleHonorificEngine.Run([.. rows], spec ?? Spec());
+  private static TitleHonorificResult Run(
+    IEnumerable<TitleAppearanceRow> rows,
+    TitleHonorificSpec? spec = null
+  ) => TitleHonorificEngine.Run([.. rows], spec ?? Spec());
 
-  private static IEnumerable<TitleAppearanceRow> Times(string title, int count, int firstEpisode = 1) =>
+  private static IEnumerable<TitleAppearanceRow> Times(
+    string title,
+    int count,
+    int firstEpisode = 1
+  ) =>
     Enumerable
       .Range(0, count)
-      .Select(i => Appearance(title, $"D{firstEpisode + i}", firstEpisode + i, $"2026-01-{firstEpisode + i:00}", firstEpisode + i));
+      .Select(i =>
+        Appearance(
+          title,
+          $"D{firstEpisode + i}",
+          firstEpisode + i,
+          $"2026-01-{firstEpisode + i:00}",
+          firstEpisode + i
+        )
+      );
 
   // -------------------------------------------------------------------------
   // Levels and join numbering
@@ -21,7 +35,15 @@ public sealed class TitleHonorificEngineTests
   [InlineData(TitleHonorificLevels.HatTrick, 3)]
   [InlineData(TitleHonorificLevels.GrandSlam, 4)]
   [InlineData(TitleHonorificLevels.HighFive, 5)]
-  public void Run_ShouldJoinATitleOnTheAppearanceThatReachesTheLevelMinimum(string level, int minimum)
+  [InlineData("6-drafts", 6)]
+  [InlineData("7-drafts", 7)]
+  [InlineData("8-drafts", 8)]
+  [InlineData("9-drafts", 9)]
+  [InlineData("10-drafts", 10)]
+  public void Run_ShouldJoinATitleOnTheAppearanceThatReachesTheLevelMinimum(
+    string level,
+    int minimum
+  )
   {
     var rows = Times("Heat", minimum + 1);
 
@@ -65,8 +87,14 @@ public sealed class TitleHonorificEngineTests
   {
     var rows = Times("Heat", 3).Concat(Times("Alien", 2, firstEpisode: 4));
 
-    var marquee = Run(rows, Spec(TitleHonorificLevels.MarqueeOfFame, sort: TitleHonorificSorts.Oldest)).Titles;
-    var hatTrick = Run(rows, Spec(TitleHonorificLevels.HatTrick, sort: TitleHonorificSorts.Oldest)).Titles;
+    var marquee = Run(
+      rows,
+      Spec(TitleHonorificLevels.MarqueeOfFame, sort: TitleHonorificSorts.Oldest)
+    ).Titles;
+    var hatTrick = Run(
+      rows,
+      Spec(TitleHonorificLevels.HatTrick, sort: TitleHonorificSorts.Oldest)
+    ).Titles;
 
     marquee.Select(t => (t.Title, t.Number)).Should().Equal(("Heat", 1), ("Alien", 2));
     hatTrick.Select(t => (t.Title, t.Number)).Should().Equal(("Heat", 1));
@@ -90,7 +118,10 @@ public sealed class TitleHonorificEngineTests
 
     var entry = Run(rows, Spec(TitleHonorificLevels.HatTrick)).Titles.Single();
 
-    entry.Appearances.Select(a => (a.DraftTitle, a.PartIndex)).Should().Equal(("Epic", 1), ("Between", 1), ("Epic", 2));
+    entry
+      .Appearances.Select(a => (a.DraftTitle, a.PartIndex))
+      .Should()
+      .Equal(("Epic", 1), ("Between", 1), ("Epic", 2));
     entry.JoinedDraftTitle.Should().Be("Epic");
     entry.JoinedPartIndex.Should().Be(2);
     entry.JoinedOn.Should().Be("2026-03-01");
@@ -122,15 +153,17 @@ public sealed class TitleHonorificEngineTests
       Appearance("Heat", "X", 1, "2026-01-01", 1, play: 7, part: 3),
     };
 
-    var entry = Run(rows, Spec(TitleHonorificLevels.HighFive, sort: TitleHonorificSorts.Oldest)).Titles;
+    var entry = Run(
+      rows,
+      Spec(TitleHonorificLevels.HighFive, sort: TitleHonorificSorts.Oldest)
+    ).Titles;
 
     entry.Should().BeEmpty(); // only four appearances
     var appearances = Run(rows, Spec(TitleHonorificLevels.GrandSlam)).Titles.Single().Appearances;
-    appearances.Select(a => (a.EpisodeNumber, a.PartIndex, a.Position)).Should().Equal(
-      (1, 3, 7),
-      (2, 1, 5),
-      (2, 1, 1),
-      (2, 2, 9));
+    appearances
+      .Select(a => (a.EpisodeNumber, a.PartIndex, a.Position))
+      .Should()
+      .Equal((1, 3, 7), (2, 1, 5), (2, 1, 1), (2, 2, 9));
   }
 
   [Fact]
@@ -162,7 +195,10 @@ public sealed class TitleHonorificEngineTests
 
     var entry = Run(rows, Spec(TitleHonorificLevels.HatTrick)).Titles.Single();
 
-    entry.Appearances.Select(a => a.DraftTitle).Should().Equal("AlsoReleased", "Released", "Unreleased");
+    entry
+      .Appearances.Select(a => a.DraftTitle)
+      .Should()
+      .Equal("AlsoReleased", "Released", "Unreleased");
     entry.GapEpisodes.Should().BeNull();
     entry.GapDays.Should().BeNull();
     entry.JoinedOn.Should().BeNull();
@@ -269,12 +305,34 @@ public sealed class TitleHonorificEngineTests
 
     var counts = Run(rows).Counts;
 
-    counts.Select(c => (c.Code, c.Count)).Should().Equal(
-      ("marquee-of-fame", 5),
-      ("hat-trick", 4),
-      ("grand-slam", 3),
-      ("high-five", 2));
-    counts.Select(c => c.Label).Should().Equal("Marquee of Fame", "Hat Trick", "Grand Slam", "High Five");
+    counts
+      .Select(c => (c.Code, c.Count))
+      .Should()
+      .Equal(
+        ("marquee-of-fame", 5),
+        ("hat-trick", 4),
+        ("grand-slam", 3),
+        ("high-five", 2),
+        ("6-drafts", 1),
+        ("7-drafts", 0),
+        ("8-drafts", 0),
+        ("9-drafts", 0),
+        ("10-drafts", 0)
+      );
+    counts
+      .Select(c => c.Label)
+      .Should()
+      .Equal(
+        "Marquee of Fame",
+        "Hat Trick",
+        "Grand Slam",
+        "High Five",
+        "6+ Drafts",
+        "7+ Drafts",
+        "8+ Drafts",
+        "9+ Drafts",
+        "10+ Drafts"
+      );
   }
 
   [Fact]
@@ -285,7 +343,7 @@ public sealed class TitleHonorificEngineTests
     var narrowed = Run(rows, Spec(TitleHonorificLevels.HatTrick, search: "nothing", pageSize: 1));
 
     narrowed.Titles.Should().BeEmpty();
-    narrowed.Counts.Select(c => c.Count).Should().Equal(2, 1, 0, 0);
+    narrowed.Counts.Select(c => c.Count).Should().Equal(2, 1, 0, 0, 0, 0, 0, 0, 0);
   }
 
   [Fact]
@@ -305,7 +363,10 @@ public sealed class TitleHonorificEngineTests
     var alphabetical = Run(rows, Spec(sort: TitleHonorificSorts.Alphabetical)).Titles;
 
     searched.Should().ContainSingle().Which.Number.Should().Be(3);
-    alphabetical.Select(t => (t.Title, t.Number)).Should().Equal(("Alpha", 1), ("Bravo", 2), ("Charlie", 3));
+    alphabetical
+      .Select(t => (t.Title, t.Number))
+      .Should()
+      .Equal(("Alpha", 1), ("Bravo", 2), ("Charlie", 3));
   }
 
   [Fact]
@@ -328,9 +389,7 @@ public sealed class TitleHonorificEngineTests
   }
 
   private static IEnumerable<TitleAppearanceRow> ThreeTitles() =>
-    Times("Charlie", 2)
-      .Concat(Times("Alpha", 4, 10))
-      .Concat(Times("Bravo", 3, 30));
+    Times("Charlie", 2).Concat(Times("Alpha", 4, 10)).Concat(Times("Bravo", 3, 30));
 
   [Fact]
   public void Run_ShouldSortNewestFirstByDefault()
@@ -341,19 +400,28 @@ public sealed class TitleHonorificEngineTests
   [Fact]
   public void Run_ShouldSortOldestFirst()
   {
-    Run(ThreeTitles(), Spec(sort: TitleHonorificSorts.Oldest)).Titles.Select(t => t.Title).Should().Equal("Charlie", "Alpha", "Bravo");
+    Run(ThreeTitles(), Spec(sort: TitleHonorificSorts.Oldest))
+      .Titles.Select(t => t.Title)
+      .Should()
+      .Equal("Charlie", "Alpha", "Bravo");
   }
 
   [Fact]
   public void Run_ShouldSortAlphabetically()
   {
-    Run(ThreeTitles(), Spec(sort: TitleHonorificSorts.Alphabetical)).Titles.Select(t => t.Title).Should().Equal("Alpha", "Bravo", "Charlie");
+    Run(ThreeTitles(), Spec(sort: TitleHonorificSorts.Alphabetical))
+      .Titles.Select(t => t.Title)
+      .Should()
+      .Equal("Alpha", "Bravo", "Charlie");
   }
 
   [Fact]
   public void Run_ShouldSortByAppearanceCountThenJoinOrder()
   {
-    Run(ThreeTitles(), Spec(sort: TitleHonorificSorts.Appearances)).Titles.Select(t => t.Title).Should().Equal("Alpha", "Bravo", "Charlie");
+    Run(ThreeTitles(), Spec(sort: TitleHonorificSorts.Appearances))
+      .Titles.Select(t => t.Title)
+      .Should()
+      .Equal("Alpha", "Bravo", "Charlie");
   }
 
   [Fact]
@@ -361,11 +429,13 @@ public sealed class TitleHonorificEngineTests
   {
     var rows = Enumerable
       .Range(1, 5)
-      .SelectMany(i => new[]
-      {
-        Appearance($"T{i}", $"A{i}", i * 2, $"2026-01-{i * 2:00}", i * 2),
-        Appearance($"T{i}", $"B{i}", i * 2 + 1, $"2026-01-{i * 2 + 1:00}", i * 2 + 1),
-      });
+      .SelectMany(i =>
+        new[]
+        {
+          Appearance($"T{i}", $"A{i}", i * 2, $"2026-01-{i * 2:00}", i * 2),
+          Appearance($"T{i}", $"B{i}", i * 2 + 1, $"2026-01-{i * 2 + 1:00}", i * 2 + 1),
+        }
+      );
 
     var second = Run(rows, Spec(sort: TitleHonorificSorts.Oldest, page: 2, pageSize: 2));
     var last = Run(rows, Spec(sort: TitleHonorificSorts.Oldest, page: 3, pageSize: 2));
@@ -403,13 +473,19 @@ public sealed class TitleHonorificEngineTests
 
     result.Titles.Should().BeEmpty();
     result.TotalMatching.Should().Be(0);
-    result.Counts.Should().HaveCount(4).And.OnlyContain(c => c.Count == 0);
+    result.Counts.Should().HaveCount(9).And.OnlyContain(c => c.Count == 0);
   }
 
   [Fact]
   public void Run_ShouldThrow_WhenArgumentsAreNull()
   {
-    FluentActions.Invoking(() => TitleHonorificEngine.Run(null!, Spec())).Should().Throw<ArgumentNullException>();
-    FluentActions.Invoking(() => TitleHonorificEngine.Run([], null!)).Should().Throw<ArgumentNullException>();
+    FluentActions
+      .Invoking(() => TitleHonorificEngine.Run(null!, Spec()))
+      .Should()
+      .Throw<ArgumentNullException>();
+    FluentActions
+      .Invoking(() => TitleHonorificEngine.Run([], null!))
+      .Should()
+      .Throw<ArgumentNullException>();
   }
 }

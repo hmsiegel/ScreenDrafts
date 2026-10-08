@@ -103,7 +103,7 @@ interface NavEntry {
 function NavBlock({ entries }: { entries: NavEntry[] }) {
   if (entries.length === 0) return null;
   const seen = new Set<string>();
-  const unique = entries.filter(({publicId}) => {
+  const unique = entries.filter(({ publicId }) => {
     if (seen.has(publicId)) return false;
     seen.add(publicId);
     return true;
@@ -144,6 +144,13 @@ function partSeriesNavEntries(part: GetDraftPartResponse): NavEntry[] {
   return [
     ...(part.previousSeriesDraftPublicId ? [{ publicId: part.previousSeriesDraftPublicId, title: part.previousSeriesDraftTitle, direction: "prev" as const }] : []),
     ...(part.nextSeriesDraftPublicId ? [{ publicId: part.nextSeriesDraftPublicId, title: part.nextSeriesDraftTitle, direction: "next" as const }] : []),
+  ];
+}
+
+function partPatreonNavEntries(part: GetDraftPartResponse): NavEntry[] {
+  return [
+    ...(part.previousPatreonDraftPublicId ? [{ publicId: part.previousPatreonDraftPublicId, title: part.previousPatreonDraftTitle, direction: "prev" as const }] : []),
+    ...(part.nextPatreonDraftPublicId ? [{ publicId: part.nextPatreonDraftPublicId, title: part.nextPatreonDraftTitle, direction: "next" as const }] : []),
   ];
 }
 
@@ -216,6 +223,7 @@ function PartSidebarSection({
   const navEntries = partNavEntries(part);
   const campaignNavEntries = partCampaignNavEntries(part);
   const seriesNavEntries = partSeriesNavEntries(part);
+  const patreonNavEntries = partPatreonNavEntries(part);
 
   return (
     <div className="border-t border-sd-ink/15 pt-4 mt-4">
@@ -252,6 +260,7 @@ function PartSidebarSection({
 
       {navEntries.length > 0 && (
         <div className="mb-3">
+          <SectionLabel>MAIN FEED</SectionLabel>
           <NavBlock entries={navEntries} />
         </div>
       )}
@@ -287,6 +296,13 @@ function PartSidebarSection({
               </Link>
             ))}
           </div>
+        </div>
+      )}
+
+      {patreonNavEntries.length > 0 && (
+        <div className="mt-4">
+          <SectionLabel>PATREON</SectionLabel>
+          <NavBlock entries={patreonNavEntries} />
         </div>
       )}
     </div>
@@ -460,6 +476,7 @@ export default function DraftSidebar({
 
           {partNavEntries(firstPart).length > 0 && (
             <div className="border-t border-sd-ink/10 pt-4 mt-4">
+              <SectionLabel>MAIN FEED</SectionLabel>
               <NavBlock entries={partNavEntries(firstPart)} />
             </div>
           )}
@@ -495,6 +512,13 @@ export default function DraftSidebar({
                   </Link>
                 ))}
               </div>
+            </div>
+          )}
+
+          {partPatreonNavEntries(firstPart).length > 0 && (
+            <div className="border-t border-sd-ink/10 pt-4 mt-4">
+              <SectionLabel>PATREON</SectionLabel>
+              <NavBlock entries={partPatreonNavEntries(firstPart)} />
             </div>
           )}
         </>

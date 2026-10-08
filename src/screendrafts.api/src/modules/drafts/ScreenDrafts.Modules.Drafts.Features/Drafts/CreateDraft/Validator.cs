@@ -25,6 +25,15 @@ internal sealed class Validator : AbstractValidator<CreateDraftCommand>
       }
     );
 
+    When(
+      x => x.ReleaseChannel.HasValue,
+      () =>
+      {
+        RuleFor(x => x.ReleaseChannel!.Value)
+          .MustBeSmartEnumValue<CreateDraftCommand, ReleaseChannel>();
+      }
+    );
+
     RuleForEach(x => x.DrafterIds)
       .Must(id => PublicIdGuards.IsValidWithPrefix(id, PublicIdPrefixes.Drafter))
       .WithMessage("Each DrafterId must be a valid public ID.");

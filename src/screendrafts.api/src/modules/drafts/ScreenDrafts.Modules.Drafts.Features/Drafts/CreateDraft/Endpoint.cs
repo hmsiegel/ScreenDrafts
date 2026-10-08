@@ -72,6 +72,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<CreateDraftRequest, Create
       TeamIds = req.TeamIds,
       CategoryIds = req.CategoryIds,
       CampaignId = req.CampaignId,
+      ReleaseChannel = req.ReleaseChannel,
     };
     var result = await Sender.Send(command, ct);
 

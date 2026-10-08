@@ -14184,6 +14184,7 @@ export interface CreateDraftRequest {
     teamIds?: string[];
     categoryIds?: string[];
     campaignId?: string | undefined;
+    releaseChannel?: number | undefined;
 
     [key: string]: any;
 }
@@ -15109,6 +15110,10 @@ export interface GetDraftPartResponse {
     previousDraftTitle?: string | undefined;
     nextDraftPublicId?: string | undefined;
     nextDraftTitle?: string | undefined;
+    previousPatreonDraftPublicId?: string | undefined;
+    previousPatreonDraftTitle?: string | undefined;
+    nextPatreonDraftPublicId?: string | undefined;
+    nextPatreonDraftTitle?: string | undefined;
     previousCampaignDraftPublicId?: string | undefined;
     previousCampaignDraftTitle?: string | undefined;
     nextCampaignDraftPublicId?: string | undefined;
@@ -17690,6 +17695,8 @@ export interface TitleAppearanceEntry {
     draftTitle: string;
     draftPublicId: string;
     episodeNumber?: number | undefined;
+    partIndex?: number;
+    totalParts?: number;
     releasedOn?: string | undefined;
     position: number;
 
@@ -17712,6 +17719,8 @@ export interface TitleHonorificEntry {
     joinedDraftTitle: string;
     joinedDraftPublicId: string;
     joinedEpisode?: number | undefined;
+    joinedPartIndex?: number;
+    joinedTotalParts?: number;
     joinedOn?: string | undefined;
     firstDraftTitle: string;
     firstEpisode?: number | undefined;

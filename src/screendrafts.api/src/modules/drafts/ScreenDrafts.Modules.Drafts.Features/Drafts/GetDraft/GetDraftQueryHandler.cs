@@ -674,15 +674,13 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       )
     );
 
-    // 11. Per-part adjacent drafts (ordered by part release date across the WHOLE main
-    // feed — NOT scoped to the current draft's series). Main-feed episode numbering runs
+    // 11. Per-part adjacent drafts (ordered by part release date across the WHOLE release
+    // channel — NOT scoped to the current draft's series). Main-feed episode numbering runs
     // sequentially across every series (e.g. episode 380 -> 381 regardless of whether
     // 381 is a Legends Super Draft, a campaign entry, or a standard episode), so this nav
-    // must be global on release channel alone. Series-scoped or format-scoped "more like
-    // this" navigation (e.g. "more Legends Super Drafts") is a deliberately separate,
-    // additional nav surface — see partCampaignAdjacentSql below for the existing
-    // campaign-scoped precedent that pattern would follow.
-    //
+    // must be global on release channel alone. It runs once per channel: main feed (always)
+    // and Patreon (only when Patreon releases are visible), so the two never mix.
+
     // For each part we find:
     //   prev — the draft whose earliest allowed-channel part release date is the
     //          largest date strictly before this part's earliest release date.
@@ -747,19 +745,33 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       FROM next_ranked WHERE rn = 1;
       """;
 
-    var partAdjacentRows = (
-      await connection.QueryAsync<(Guid PartId, string Direction, string PublicId, string Title)>(
-        new CommandDefinition(
-          partAdjacentSql,
-          new
-          {
-            partIds,
-            allowedChannelInts,
-            request.DraftId,
-          }
+    async Task<
+      ILookup<Guid, (Guid PartId, string Direction, string PublicId, string Title)>
+    > LoadAdjacentAsync(int[] channels) =>
+      (
+        await connection.QueryAsync<(Guid PartId, string Direction, string PublicId, string Title)>(
+          new CommandDefinition(
+            partAdjacentSql,
+            new
+            {
+              partIds,
+              allowedChannelInts = channels,
+              request.DraftId,
+            },
+            cancellationToken: cancellationToken
+          )
         )
-      )
-    ).ToLookup(r => r.PartId);
+      ).ToLookup(r => r.PartId);
+
+    // Main-feed nav: main-feed releases only. Empty for Patreon-only drafts (speed drafts),
+    // which have no main-feed release date to anchor on.
+    var partAdjacentRows = await LoadAdjacentAsync([MainFeedChannel]);
+
+    // Patreon nav: Patreon releases only, and only when this caller can see Patreon content
+    // (allowedChannelInts already encodes IncludePatreon and the speed-draft rule).
+    var partPatreonAdjacentRows = allowedChannelInts.Contains(PatreonChannel)
+      ? await LoadAdjacentAsync([PatreonChannel])
+      : null;
 
     // 12. Per-part campaign adjacent drafts (only meaningful when draft has a campaign)
     Dictionary<
@@ -1016,6 +1028,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         var prev = adjRows.FirstOrDefault(r => r.Direction == "prev");
         var next = adjRows.FirstOrDefault(r => r.Direction == "next");
 
+        var patreonAdjRows = partPatreonAdjacentRows?[internalId].ToList() ?? [];
+        var prevPatreon = patreonAdjRows.FirstOrDefault(r => r.Direction == "prev");
+        var nextPatreon = patreonAdjRows.FirstOrDefault(r => r.Direction == "next");
+
         (string PublicId, string Title) prevCampaign = default;
         (string PublicId, string Title) nextCampaign = default;
         if (partCampaignAdjacentLookup.TryGetValue(internalId, out var campaignRows))
@@ -1044,6 +1060,10 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           PreviousDraftTitle = prev == default ? null : prev.Title,
           NextDraftPublicId = next == default ? null : next.PublicId,
           NextDraftTitle = next == default ? null : next.Title,
+          PreviousPatreonDraftPublicId = prevPatreon == default ? null : prevPatreon.PublicId,
+          PreviousPatreonDraftTitle = prevPatreon == default ? null : prevPatreon.Title,
+          NextPatreonDraftPublicId = nextPatreon == default ? null : nextPatreon.PublicId,
+          NextPatreonDraftTitle = nextPatreon == default ? null : nextPatreon.Title,
           PreviousCampaignDraftPublicId = prevCampaign == default ? null : prevCampaign.PublicId,
           PreviousCampaignDraftTitle = prevCampaign == default ? null : prevCampaign.Title,
           NextCampaignDraftPublicId = nextCampaign == default ? null : nextCampaign.PublicId,

@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetTitleHonorifics;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetTitleHonorifics;
 
 /// <summary>
 /// The movie honorific levels, by the number of canonical episodes a title has been drafted on.
@@ -17,6 +17,11 @@ internal static class TitleHonorificLevels
     new(HatTrick, "Hat Trick", 3),
     new(GrandSlam, "Grand Slam", 4),
     new(HighFive, "High Five", 5),
+    new("6-drafts", "6+ Drafts", 6),
+    new("7-drafts", "7+ Drafts", 7),
+    new("8-drafts", "8+ Drafts", 8),
+    new("9-drafts", "9+ Drafts", 9),
+    new("10-drafts", "10+ Drafts", 10),
   ];
 
   public static TitleHonorificLevel? Find(string code) =>

@@ -1,8 +1,8 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetTitleHonorifics;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetTitleHonorifics;
 
 internal sealed record GetTitleHonorificsRequest
 {
-  /// <summary>marquee-of-fame, hat-trick, grand-slam or high-five.</summary>
+  /// <summary>marquee-of-fame, hat-trick, grand-slam, high-five, or 6-drafts through 10-drafts.</summary>
   [FromRoute(Name = "level")]
   public string Level { get; init; } = string.Empty;
 

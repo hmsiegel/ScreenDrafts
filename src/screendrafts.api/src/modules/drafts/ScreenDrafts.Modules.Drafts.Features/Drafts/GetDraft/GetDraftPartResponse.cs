@@ -11,13 +11,20 @@ internal sealed record GetDraftPartResponse
   public DateTime? ScheduledForUtc { get; init; }
   public string? PredictionSeasonPublicId { get; init; }
 
-  // Primary nav (ordered by this part's release date, across the whole main feed —
-  // scoped by release channel only, not by series. See GetDraftQueryHandler's
+  // Main-feed nav (ordered by this part's main-feed release date, across the whole main
+  // feed — scoped by release channel only, not by series. See GetDraftQueryHandler's
   // partAdjacentSql remarks.)
   public string? PreviousDraftPublicId { get; init; }
   public string? PreviousDraftTitle { get; init; }
   public string? NextDraftPublicId { get; init; }
   public string? NextDraftTitle { get; init; }
+
+  // Patreon nav — same query as the main-feed nav, scoped to Patreon releases. Only
+  // populated when the caller can see Patreon content and this part has a Patreon release.
+  public string? PreviousPatreonDraftPublicId { get; init; }
+  public string? PreviousPatreonDraftTitle { get; init; }
+  public string? NextPatreonDraftPublicId { get; init; }
+  public string? NextPatreonDraftTitle { get; init; }
 
   // Secondary nav — campaign-scoped (main-feed groupings)
   public string? PreviousCampaignDraftPublicId { get; init; }

@@ -8,7 +8,7 @@ function partLabel(partIndex: number, totalParts: number): string | null {
   return totalParts > 1 ? `Part ${partIndex}` : null;
 }
 
-function joinedLine(levelLabel: string, entry: TitleHonorificEntryView): string {
+function joinedLine(joinText: string, entry: TitleHonorificEntryView): string {
   const where = [
     entry.joinedEpisode !== null ? `Ep. ${entry.joinedEpisode}` : null,
     partLabel(entry.joinedPartIndex, entry.joinedTotalParts),
@@ -17,7 +17,7 @@ function joinedLine(levelLabel: string, entry: TitleHonorificEntryView): string 
     .filter((p): p is string => p !== null)
     .join(" · ");
 
-  const base = `Joined the ${levelLabel} on ${entry.joinedDraftTitle}`;
+  const base = `${joinText} on ${entry.joinedDraftTitle}`;
   return where ? `${base} · ${where}` : base;
 }
 
@@ -36,10 +36,10 @@ function gapLine(entry: TitleHonorificEntryView): string | null {
 
 /** One row per title, in a collapsible card: the join line up front, every appearance when opened. */
 export function TitleList({
-  levelLabel,
+  joinText,
   titles,
 }: {
-  levelLabel: string;
+  joinText: string;
   titles: TitleHonorificEntryView[];
 }) {
   if (titles.length === 0) {
@@ -71,7 +71,7 @@ export function TitleList({
                     {entry.title}
                   </Link>
                   <span className="block font-mono text-[11px] text-[#5a6075] mt-1 [overflow-wrap:anywhere]">
-                    {joinedLine(levelLabel, entry)}
+                    {joinedLine(joinText, entry)}
                   </span>
                   {gap && (
                     <span className="block font-mono text-[11px] text-[#5a6075] [overflow-wrap:anywhere]">

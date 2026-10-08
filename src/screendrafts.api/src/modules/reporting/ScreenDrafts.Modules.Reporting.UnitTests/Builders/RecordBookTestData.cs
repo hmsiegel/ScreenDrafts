@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.UnitTests.Builders;
+﻿namespace ScreenDrafts.Modules.Reporting.UnitTests.Builders;
 
 /// <summary>Deterministic builders for the Record Book calculator inputs.</summary>
 internal static class RecordBookTestData
@@ -24,7 +24,8 @@ internal static class RecordBookTestData
   public static DrafterDraftRow DrafterDraft(
     int drafterNumber,
     int draftNumber,
-    Action<DrafterDraftRow>? configure = null)
+    Action<DrafterDraftRow>? configure = null
+  )
   {
     var row = new DrafterDraftRow
     {
@@ -47,7 +48,8 @@ internal static class RecordBookTestData
   public static List<DrafterDraftRow> Appearances(
     int drafterNumber,
     int count,
-    Action<int, DrafterDraftRow>? configure = null) =>
+    Action<int, DrafterDraftRow>? configure = null
+  ) =>
     [
       .. Enumerable
         .Range(1, count)
@@ -58,7 +60,8 @@ internal static class RecordBookTestData
     int drafterNumber,
     int draftNumber,
     int position,
-    int timesVetoed) =>
+    int timesVetoed
+  ) =>
     new()
     {
       DrafterId = Id(1000 + drafterNumber),
@@ -88,7 +91,9 @@ internal static class RecordBookTestData
     IReadOnlyList<MediaRow>? media = null,
     IReadOnlyList<PickSlotRow>? slots = null,
     IReadOnlyDictionary<Guid, int>? uniqueTitles = null,
-    Action<DataOverrides>? overrides = null)
+    IReadOnlyList<TitleAppearanceRow>? titleAppearances = null,
+    Action<DataOverrides>? overrides = null
+  )
   {
     var o = new DataOverrides();
     overrides?.Invoke(o);
@@ -98,6 +103,7 @@ internal static class RecordBookTestData
       Parts = parts ?? [],
       DrafterDrafts = drafterDrafts ?? [],
       Media = media ?? [],
+      TitleAppearances = titleAppearances ?? [],
       PickSlots = slots ?? [],
       UniqueTitlesPlayedByDraft = uniqueTitles ?? new Dictionary<Guid, int>(),
       VetoesStood = o.VetoesStood,

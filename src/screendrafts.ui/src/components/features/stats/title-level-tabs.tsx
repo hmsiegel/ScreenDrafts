@@ -4,6 +4,7 @@ import { TITLE_LEVELS } from "@/services/stats/title-levels";
 import type { TitleHonorificCountView } from "@/services/stats/stats-types";
 import { formatStatValue } from "./format-stat-value";
 import { titleListHref } from "./title-links";
+import { act } from "react";
 
 /** The four honorific levels as sub-tabs, each with the number of titles at that level. Plain links. */
 export function TitleLevelTabs({
@@ -20,6 +21,8 @@ export function TitleLevelTabs({
       {TITLE_LEVELS.map((level) => {
         const active = level.slug === activeSlug;
         const count = counts.find((c) => c.code === level.slug)?.count;
+
+        if (!level.named && !active && count === 0) return null;
 
         return (
           <Link

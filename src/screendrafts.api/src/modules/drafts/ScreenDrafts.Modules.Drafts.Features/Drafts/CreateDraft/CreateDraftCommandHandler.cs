@@ -159,6 +159,16 @@ internal sealed class CreateDraftCommandHandler(
 
     var draft = createResult.Value;
 
+    if (request.ReleaseChannel is { } releaseChannelValue)
+    {
+      var channelResult = draft.UpsertChannelRelease(ReleaseChannel.FromValue(releaseChannelValue));
+
+      if (channelResult.IsFailure)
+      {
+        return Result.Failure<string>(channelResult.Errors);
+      }
+    }
+
     if (categories.Count > 0)
     {
       draft.ReplaceCategories(categories);

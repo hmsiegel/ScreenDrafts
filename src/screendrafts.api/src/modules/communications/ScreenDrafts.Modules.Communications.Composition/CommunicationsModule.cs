@@ -34,9 +34,6 @@ public static class CommunicationsModule
     services.Configure<SmtpSettings>(configuration.GetSection(SmtpSettings.SectionName));
     services.AddScoped<IEmailService, SmtpEmailService>();
 
-    EmailTemplates.AssestsBasePath =
-      configuration["Communications:PublicAssetsBasePath"] ?? EmailTemplates.AssestsBasePath;
-
     services.AddScoped<
       ICommunicationsIntegrationEventDispatcher,
       CommunicationsIntegrationEventDispatcher

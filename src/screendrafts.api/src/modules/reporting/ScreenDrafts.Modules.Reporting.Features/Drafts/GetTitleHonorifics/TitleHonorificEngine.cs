@@ -64,7 +64,7 @@ internal static class TitleHonorificEngine
       ? date.DayNumber
       : int.MaxValue;
 
-  private static List<TitleAppearanceRow> OrderAppearances(
+  internal static List<TitleAppearanceRow> OrderAppearances(
     IEnumerable<TitleAppearanceRow> appearances
   ) => [.. appearances.OrderBy(SortKey)];
 
@@ -128,7 +128,7 @@ internal static class TitleHonorificEngine
     };
   }
 
-  private static int? DaysBetween(string? from, string? to)
+  internal static int? DaysBetween(string? from, string? to)
   {
     if (
       !DateOnly.TryParseExact(
