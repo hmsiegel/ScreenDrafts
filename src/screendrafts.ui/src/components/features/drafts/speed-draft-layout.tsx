@@ -244,13 +244,13 @@ export function SpeedDraftLayout({
     (t) => (t as Record<string, unknown>).subDraftIndex === activeIndex
   );
 
-  // Nav
+  // Nav — speed drafts are Patreon-only, so prev/next come from the Patreon fields.
   const navEntries: NavEntry[] = [
-    ...(part.previousDraftPublicId
-      ? [{ publicId: part.previousDraftPublicId, title: part.previousDraftTitle, direction: "prev" as const }]
+    ...(part.previousPatreonDraftPublicId
+      ? [{ publicId: part.previousPatreonDraftPublicId, title: part.previousPatreonDraftTitle, direction: "prev" as const }]
       : []),
-    ...(part.nextDraftPublicId
-      ? [{ publicId: part.nextDraftPublicId, title: part.nextDraftTitle, direction: "next" as const }]
+    ...(part.nextPatreonDraftPublicId
+      ? [{ publicId: part.nextPatreonDraftPublicId, title: part.nextPatreonDraftTitle, direction: "next" as const }]
       : []),
   ];
 
@@ -358,6 +358,7 @@ export function SpeedDraftLayout({
 
         {navEntries.length > 0 && (
           <div className="border-t border-sd-ink/10 pt-4 mt-4">
+            <SectionLabel>PATREON</SectionLabel>
             <NavBlock entries={navEntries} />
           </div>
         )}

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
+﻿using ScreenDrafts.Modules.Reporting.Features.Drafts.GetTitleHonorifics;
+
+namespace ScreenDrafts.Modules.Reporting.Features.Drafts.GetRecordBook;
 
 /// <summary>Everything the calculators need, loaded once per request.</summary>
 internal sealed record RecordBookData
@@ -7,6 +9,7 @@ internal sealed record RecordBookData
   public required IReadOnlyList<DraftPartRow> Parts { get; init; }
   public required IReadOnlyDictionary<Guid, int> UniqueTitlesPlayedByDraft { get; init; }
   public required IReadOnlyList<MediaRow> Media { get; init; }
+  public required IReadOnlyList<TitleAppearanceRow> TitleAppearances { get; init; }
   public required IReadOnlyList<PickSlotRow> PickSlots { get; init; }
   public required int VetoesStood { get; init; }
   public required int VetoesOverridden { get; init; }

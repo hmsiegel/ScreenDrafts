@@ -14502,6 +14502,30 @@
               "string"
             ]
           },
+          "previousPatreonDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousPatreonDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextPatreonDraftPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextPatreonDraftTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "previousCampaignDraftPublicId": {
             "type": [
               "null",

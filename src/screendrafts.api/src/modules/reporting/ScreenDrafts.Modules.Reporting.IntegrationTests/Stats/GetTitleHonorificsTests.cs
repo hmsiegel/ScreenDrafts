@@ -1,4 +1,4 @@
-using static ScreenDrafts.Modules.Reporting.IntegrationTests.Abstractions.StatsSeeder;
+﻿using static ScreenDrafts.Modules.Reporting.IntegrationTests.Abstractions.StatsSeeder;
 
 namespace ScreenDrafts.Modules.Reporting.IntegrationTests.Stats;
 
@@ -48,10 +48,14 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
 
   private async Task<GetTitleHonorificsResponse> TitlesAsync(
     string level = TitleHonorificLevels.MarqueeOfFame,
-    Func<GetTitleHonorificsQuery, GetTitleHonorificsQuery>? tweak = null)
+    Func<GetTitleHonorificsQuery, GetTitleHonorificsQuery>? tweak = null
+  )
   {
     var query = new GetTitleHonorificsQuery { Level = level, IncludeAll = false };
-    var result = await Sender.Send(tweak?.Invoke(query) ?? query, TestContext.Current.CancellationToken);
+    var result = await Sender.Send(
+      tweak?.Invoke(query) ?? query,
+      TestContext.Current.CancellationToken
+    );
 
     result.IsSuccess.Should().BeTrue();
     return result.Value;
@@ -69,8 +73,10 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
     var response = await TitlesAsync(tweak: q => q with { Sort = "oldest" });
 
     // Heat joins on Between (Feb 1). Casino, Dune and Alien join on Later (Apr 1), in play order.
-    response.Titles.Select(t => (t.Number, t.Title)).Should().Equal(
-      (1, "Heat"), (2, "Casino"), (3, "Dune"), (4, "Alien"));
+    response
+      .Titles.Select(t => (t.Number, t.Title))
+      .Should()
+      .Equal((1, "Heat"), (2, "Casino"), (3, "Dune"), (4, "Alien"));
   }
 
   [Fact]
@@ -86,7 +92,9 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
     heat.JoinedEpisode.Should().Be(11);
     heat.FirstDraftTitle.Should().Be("Epic");
     heat.FirstOn.Should().Be("2026-01-01");
-    heat.Appearances.Select(a => (a.DraftTitle, a.PartIndex)).Should().Equal(("Epic", 1), ("Between", 1), ("Epic", 2));
+    heat.Appearances.Select(a => (a.DraftTitle, a.PartIndex))
+      .Should()
+      .Equal(("Epic", 1), ("Between", 1), ("Epic", 2));
   }
 
   [Fact]
@@ -103,7 +111,8 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
     heat.JoinedDraftTitle.Should().Be("Epic");
     heat.JoinedPartIndex.Should().Be(2);
     heat.JoinedTotalParts.Should().Be(2);
-    heat.JoinedOn.Should().Be("2026-03-01", "the date is the part's own, not the draft's first part");
+    heat.JoinedOn.Should()
+      .Be("2026-03-01", "the date is the part's own, not the draft's first part");
   }
 
   [Fact]
@@ -128,7 +137,9 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
 
     var marquee = (await TitlesAsync()).Titles.ToDictionary(t => t.Title);
 
-    marquee["Heat"].GapEpisodes.Should().Be(1, "Between is the very next release after Epic part 1");
+    marquee["Heat"]
+      .GapEpisodes.Should()
+      .Be(1, "Between is the very next release after Epic part 1");
     marquee["Heat"].GapDays.Should().Be(31);
     marquee["Casino"].GapEpisodes.Should().Be(3);
     marquee["Casino"].GapDays.Should().Be(90);
@@ -160,7 +171,11 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
     var saga = seed.Draft("Saga", totalParts: 4);
     for (var part = 1; part <= 4; part++)
     {
-      var p = saga.Part(index: part, episode: 20, mainFeed: new DateOnly(2026, 5, 1).AddDays(7 * (part - 1)));
+      var p = saga.Part(
+        index: part,
+        episode: 20,
+        mainFeed: new DateOnly(2026, 5, 1).AddDays(7 * (part - 1))
+      );
       p.Pick(part == 4 ? "Zodiac" : $"Filler {part}", 1, 1);
     }
 
@@ -203,8 +218,20 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
 
     var counts = (await TitlesAsync()).Counts;
 
-    counts.Select(c => (c.Code, c.Count)).Should().Equal(
-      ("marquee-of-fame", 4), ("hat-trick", 1), ("grand-slam", 0), ("high-five", 0));
+    counts
+      .Select(c => (c.Code, c.Count))
+      .Should()
+      .Equal(
+        ("marquee-of-fame", 4),
+        ("hat-trick", 1),
+        ("grand-slam", 0),
+        ("high-five", 0),
+        ("6-drafts", 0),
+        ("7-drafts", 0),
+        ("8-drafts", 0),
+        ("9-drafts", 0),
+        ("10-drafts", 0)
+      );
   }
 
   [Fact]
@@ -226,10 +253,18 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
   {
     await SeedAsync();
 
-    (await TitlesAsync()).Titles.Select(t => t.Title).Should().Equal("Alien", "Dune", "Casino", "Heat");
-    (await TitlesAsync(tweak: q => q with { Sort = "alphabetical" })).Titles.Select(t => t.Title)
-      .Should().Equal("Alien", "Casino", "Dune", "Heat");
-    (await TitlesAsync(tweak: q => q with { Sort = "appearances" })).Titles[0].Title.Should().Be("Heat");
+    (await TitlesAsync())
+      .Titles.Select(t => t.Title)
+      .Should()
+      .Equal("Alien", "Dune", "Casino", "Heat");
+    (await TitlesAsync(tweak: q => q with { Sort = "alphabetical" }))
+      .Titles.Select(t => t.Title)
+      .Should()
+      .Equal("Alien", "Casino", "Dune", "Heat");
+    (await TitlesAsync(tweak: q => q with { Sort = "appearances" }))
+      .Titles[0]
+      .Title.Should()
+      .Be("Heat");
   }
 
   [Fact]
@@ -253,7 +288,8 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
   {
     var result = await Sender.Send(
       new GetTitleHonorificsQuery { Level = "six-pack", IncludeAll = false },
-      TestContext.Current.CancellationToken);
+      TestContext.Current.CancellationToken
+    );
 
     result.IsFailure.Should().BeTrue();
     result.Error!.Type.Should().Be(ErrorType.NotFound);
@@ -263,8 +299,14 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
   public async Task Handle_ShouldReturnAProblem_WhenTheSortIsUnknownAsync()
   {
     var result = await Sender.Send(
-      new GetTitleHonorificsQuery { Level = "hat-trick", Sort = "random", IncludeAll = false },
-      TestContext.Current.CancellationToken);
+      new GetTitleHonorificsQuery
+      {
+        Level = "hat-trick",
+        Sort = "random",
+        IncludeAll = false,
+      },
+      TestContext.Current.CancellationToken
+    );
 
     result.Error!.Type.Should().Be(ErrorType.Problem);
   }
@@ -368,7 +410,8 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
     // Veto 1 was overridden, then veto 2 (sequence 2, not overridden) stood: the pick did not land.
     await SeedElfAsync(
       p => p.Veto(DrafterKind, 2, overridden: true, overriddenBy: 3).Veto(DrafterKind, 4),
-      _ => { });
+      _ => { }
+    );
 
     (await TitlesAsync()).Titles.Should().BeEmpty();
   }

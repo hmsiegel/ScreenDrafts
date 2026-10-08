@@ -91,7 +91,14 @@ export default async function TitleHonorificsPage({ params, searchParams }: Prop
         {query ? ` MATCHING "${query.toUpperCase()}"` : ""} · PAGE {data.page} OF {data.totalPages}
       </p>
 
-      <TitleList levelLabel={data.levelLabel} titles={data.titles} />
+      <TitleList
+        joinText={
+          definition.named
+            ? `Joined the ${data.levelLabel}`
+            : `Reached ${definition.minAppearances} drafts`
+        }
+        titles={data.titles}
+      />
 
       <TitlePagination
         level={definition.slug}

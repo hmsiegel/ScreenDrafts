@@ -15110,6 +15110,10 @@ export interface GetDraftPartResponse {
     previousDraftTitle?: string | undefined;
     nextDraftPublicId?: string | undefined;
     nextDraftTitle?: string | undefined;
+    previousPatreonDraftPublicId?: string | undefined;
+    previousPatreonDraftTitle?: string | undefined;
+    nextPatreonDraftPublicId?: string | undefined;
+    nextPatreonDraftTitle?: string | undefined;
     previousCampaignDraftPublicId?: string | undefined;
     previousCampaignDraftTitle?: string | undefined;
     nextCampaignDraftPublicId?: string | undefined;

@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Reporting.UnitTests.Titles;
+﻿namespace ScreenDrafts.Modules.Reporting.UnitTests.Titles;
 
 public sealed class TitleHonorificValidatorTests
 {
@@ -7,7 +7,8 @@ public sealed class TitleHonorificValidatorTests
     string? search = null,
     string? sort = null,
     int? page = null,
-    int? pageSize = null) =>
+    int? pageSize = null
+  ) =>
     new()
     {
       Level = level,
@@ -35,6 +36,11 @@ public sealed class TitleHonorificValidatorTests
   [InlineData("hat-trick", 3)]
   [InlineData("grand-slam", 4)]
   [InlineData("high-five", 5)]
+  [InlineData("6-drafts", 6)]
+  [InlineData("7-drafts", 7)]
+  [InlineData("8-drafts", 8)]
+  [InlineData("9-drafts", 9)]
+  [InlineData("10-drafts", 10)]
   public void Validate_ShouldResolveEachLevelToItsMinimumAppearances(string level, int minimum)
   {
     TitleHonorificValidator.Validate(Query(level)).Spec!.Level.MinAppearances.Should().Be(minimum);
@@ -43,7 +49,10 @@ public sealed class TitleHonorificValidatorTests
   [Fact]
   public void Validate_ShouldResolveLevelCaseInsensitively()
   {
-    TitleHonorificValidator.Validate(Query("HAT-TRICK")).Spec!.Level.Code.Should().Be(TitleHonorificLevels.HatTrick);
+    TitleHonorificValidator
+      .Validate(Query("HAT-TRICK"))
+      .Spec!.Level.Code.Should()
+      .Be(TitleHonorificLevels.HatTrick);
   }
 
   [Fact]
@@ -80,7 +89,10 @@ public sealed class TitleHonorificValidatorTests
   [InlineData("   ")]
   public void Validate_ShouldFallBackToNewest_WhenSortIsBlank(string sort)
   {
-    TitleHonorificValidator.Validate(Query(sort: sort)).Spec!.Sort.Should().Be(TitleHonorificSorts.Newest);
+    TitleHonorificValidator
+      .Validate(Query(sort: sort))
+      .Spec!.Sort.Should()
+      .Be(TitleHonorificSorts.Newest);
   }
 
   [Theory]
@@ -88,7 +100,10 @@ public sealed class TitleHonorificValidatorTests
   [InlineData(-3)]
   public void Validate_ShouldReturnProblem_WhenPageIsBelowOne(int page)
   {
-    TitleHonorificValidator.Validate(Query(page: page)).Error!.Code.Should().Be("TitleHonorifics.InvalidPage");
+    TitleHonorificValidator
+      .Validate(Query(page: page))
+      .Error!.Code.Should()
+      .Be("TitleHonorifics.InvalidPage");
   }
 
   [Theory]
@@ -96,7 +111,10 @@ public sealed class TitleHonorificValidatorTests
   [InlineData(101)]
   public void Validate_ShouldReturnProblem_WhenPageSizeIsOutOfRange(int pageSize)
   {
-    TitleHonorificValidator.Validate(Query(pageSize: pageSize)).Error!.Code.Should().Be("TitleHonorifics.InvalidPageSize");
+    TitleHonorificValidator
+      .Validate(Query(pageSize: pageSize))
+      .Error!.Code.Should()
+      .Be("TitleHonorifics.InvalidPageSize");
   }
 
   [Theory]
@@ -104,7 +122,10 @@ public sealed class TitleHonorificValidatorTests
   [InlineData(100)]
   public void Validate_ShouldAcceptPageSizeBoundaries(int pageSize)
   {
-    TitleHonorificValidator.Validate(Query(pageSize: pageSize)).Spec!.PageSize.Should().Be(pageSize);
+    TitleHonorificValidator
+      .Validate(Query(pageSize: pageSize))
+      .Spec!.PageSize.Should()
+      .Be(pageSize);
   }
 
   [Fact]
@@ -125,6 +146,9 @@ public sealed class TitleHonorificValidatorTests
   [Fact]
   public void Validate_ShouldThrow_WhenQueryIsNull()
   {
-    FluentActions.Invoking(() => TitleHonorificValidator.Validate(null!)).Should().Throw<ArgumentNullException>();
+    FluentActions
+      .Invoking(() => TitleHonorificValidator.Validate(null!))
+      .Should()
+      .Throw<ArgumentNullException>();
   }
 }
