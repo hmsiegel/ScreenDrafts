@@ -54,7 +54,7 @@
         <table class="sd-container" width="600" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e8e4d8;">
           <tr>
             <td style="background:#0d1430;border-bottom:4px solid #cb2032;padding:20px 32px;text-align:center;">
-              <img src="https://screen-drafts.com/artifacts/logo.jpg" alt="Screen Drafts" height="52" style="height:52px;width:auto;display:inline-block;border:0;" />
+              <img src="https://cdn.screen-drafts.com/artifacts/logo.jpg" alt="Screen Drafts" height="52" style="height:52px;width:auto;display:inline-block;border:0;" />
             </td>
           </tr>
           <tr>
