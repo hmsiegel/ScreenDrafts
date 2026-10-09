@@ -114,7 +114,7 @@ export function LiveGuestDraftView({ accessToken, guestDraftId }: Props) {
                 EVERY POSITION IS FILLED
               </p>
               <p className="text-xs text-white/40 font-mono mt-0.5">
-                Mark the draft complete once everyone's done reviewing the board.
+                Mark the draft complete once everyone&apos;s done reviewing the board.
               </p>
               {completeError && (
                 <p className="text-sd-red text-xs font-mono mt-1">{completeError}</p>

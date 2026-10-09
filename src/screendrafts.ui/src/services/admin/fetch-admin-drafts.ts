@@ -15,7 +15,7 @@ import {
 import { PositionConfig } from "@/app/admin/drafts/new/positions-editor";
 import { PREDICTION_MODE_VALUES, PredictionConfig } from "@/app/admin/drafts/new/prediction-rules-section";
 
-export interface AdminDraftListItem extends SearchDraftsResponse { }
+export type AdminDraftListItem = SearchDraftsResponse;
 
 export interface AdminSeriesOption {
   publicId: string;

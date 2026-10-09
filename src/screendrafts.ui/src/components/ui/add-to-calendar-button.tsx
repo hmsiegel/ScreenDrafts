@@ -42,6 +42,7 @@ export default function AddToCalendarButton({
   const [anchor, setAnchor] = useState<{ top: number; right: number } | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [now] = useState(() => Date.now());
 
   useEffect(() => {
     if (!anchor) return;
@@ -71,7 +72,7 @@ export default function AddToCalendarButton({
   const startUtc = parseScheduledUtc(scheduledForUtc);
 
   // Nothing to add if there's no schedule, or it's already in the past.
-  if (!startUtc || startUtc.getTime() < Date.now()) return null;
+  if (!startUtc || startUtc.getTime() < now) return null;
 
   function toggle() {
     if (anchor) {

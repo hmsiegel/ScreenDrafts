@@ -65,13 +65,6 @@ export function ParticipantsSection({
   const drafterDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const teamDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Initial load — fetch first page with no query so the list isn't empty on open
-  useEffect(() => {
-    fetchDrafters("");
-    fetchTeams("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const fetchDrafters = useCallback(
     async (q: string) => {
       setDrafterLoading(true);
@@ -97,6 +90,13 @@ export function ParticipantsSection({
     },
     [accessToken]
   );
+
+  // Initial load — fetch first page with no query so the list isn't empty on open
+  useEffect(() => {
+    fetchDrafters("");
+    fetchTeams("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleDrafterQueryChange(value: string) {
     setDrafterQuery(value);
