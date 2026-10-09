@@ -2,7 +2,7 @@ services:
 
   # ── Reverse Proxy ──────────────────────────────────────────────────────────
   caddy:
-    image: caddy:2.11.4
+    image: caddy:2.11.7
     restart: unless-stopped
     environment:
       - ADMIN_IP=${ADMIN_IP}
@@ -130,7 +130,7 @@ services:
 
   # ── Keycloak ───────────────────────────────────────────────────────────────
   screendrafts.identity:
-    image: quay.io/keycloak/keycloak:26.7.4
+    image: quay.io/keycloak/keycloak:26.8.0
     restart: unless-stopped
     command: start --import-realm
     environment:
