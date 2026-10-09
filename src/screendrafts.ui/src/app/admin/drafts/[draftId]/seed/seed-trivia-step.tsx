@@ -73,7 +73,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
       }
       setHydrated(true);
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [accessToken, draft.draftPartPublicId]);
 
   function updateRow(idx: number, field: "position" | "questionsWon", value: number | "") {

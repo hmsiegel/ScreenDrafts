@@ -342,8 +342,8 @@ export default function DraftSidebar({
   const listenUrl = process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "#";
 
   // ── Single-part: collect drafters/hosts/trivia flat ───────────────────────
-  let singlePartDrafters: PersonEntry[] = [];
-  let singlePartHosts: PersonEntry[] = [];
+  const singlePartDrafters: PersonEntry[] = [];
+  const singlePartHosts: PersonEntry[] = [];
   let singlePartTrivia: TriviaResultResponse[] = [];
 
   if (!isMultiPart && firstPart) {

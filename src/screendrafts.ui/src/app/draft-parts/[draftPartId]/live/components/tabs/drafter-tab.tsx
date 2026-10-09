@@ -27,20 +27,6 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
     dismissCountdown,
   } = useLiveDraft();
 
-  // Speed Drafts render entirely differently — three gated sub-draft tabs,
-  // each with its own board/picks/trivia, rather than the single shared
-  // board every other draft type uses. Branch out before any of the
-  // single-board logic below, which doesn't apply here.
-  if (gameplay.draftType === 'SpeedDraft') {
-    return (
-      <SpeedDraftTabs
-        accessToken={accessToken}
-        draftPartId={draftPartId}
-        isHost={false}
-        callerParticipantId={callerParticipantId}
-      />
-    );
-  }
 
 
   const [showCountdown, setShowCountdown] = useState(false);
@@ -137,6 +123,21 @@ export function DrafterTab({ accessToken, draftPartId }: Props) {
       },
     );
     if (!res.ok) console.error('Veto failed', res.status);
+  }
+
+  // Speed Drafts render entirely differently — three gated sub-draft tabs,
+  // each with its own board/picks/trivia, rather than the single shared
+  // board every other draft type uses. Branch out before any of the
+  // single-board logic below, which doesn't apply here.
+  if (gameplay.draftType === 'SpeedDraft') {
+    return (
+      <SpeedDraftTabs
+        accessToken={accessToken}
+        draftPartId={draftPartId}
+        isHost={false}
+        callerParticipantId={callerParticipantId}
+      />
+    );
   }
 
   async function handleOverride() {
