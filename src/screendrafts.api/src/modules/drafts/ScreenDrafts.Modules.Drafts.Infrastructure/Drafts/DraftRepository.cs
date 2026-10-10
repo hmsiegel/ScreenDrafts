@@ -88,6 +88,7 @@ internal sealed class DraftRepository(DraftsDbContext dbContext) : IDraftReposit
       .Drafts.Include(d => d.Series)
       .Include(d => d.Parts)
       .Include(d => d.DraftCategories)
+      .Include(d => d.ChannelReleases)
       .FirstOrDefaultAsync(d => d.PublicId == publicId, cancellationToken);
   }
 

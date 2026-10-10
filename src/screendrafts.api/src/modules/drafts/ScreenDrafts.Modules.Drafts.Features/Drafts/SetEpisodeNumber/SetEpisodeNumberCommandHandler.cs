@@ -9,9 +9,15 @@ internal sealed class SetEpisodeNumberCommandHandler : ICommandHandler<SetEpisod
     _draftRepository = draftRepository;
   }
 
-  public async Task<Result> Handle(SetEpisodeNumberCommand request, CancellationToken cancellationToken)
+  public async Task<Result> Handle(
+    SetEpisodeNumberCommand request,
+    CancellationToken cancellationToken
+  )
   {
-    var draft = await _draftRepository.GetByPublicIdAsync(request.DraftId, cancellationToken);
+    var draft = await _draftRepository.GetDraftByPublicIdForUpdateAsync(
+      request.DraftId,
+      cancellationToken
+    );
 
     if (draft is null)
     {

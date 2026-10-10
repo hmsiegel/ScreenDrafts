@@ -649,7 +649,11 @@ function SpeedDraftPicksSection({
     setDebouncedRefine("");
   }, [subjectName]);
 
-  const searchQuery = `${subjectName} ${debouncedRefine}`.trim();
+  // Person subjects filter the loaded filmography client-side, so refine text
+  // stays out of the query (and out of the filmography load effect).
+  const searchQuery = isPersonSubject
+    ? subjectName
+    : `${subjectName} ${debouncedRefine}`.trim();
   const searchQueryRef = useRef(searchQuery);
   searchQueryRef.current = searchQuery;
 
@@ -662,13 +666,17 @@ function SpeedDraftPicksSection({
   // Word subjects: /media/search is movies-only, so TV shows come from the
   // TMDb TV search (/integrations/movies/tv/search) behind a Movies / TV Shows
   // switch. Same query as the movie list, including the refine text.
-  const [kind, setKind] = useState<"movie" | "tv">("movie");
+  const [kind, setKind] = useState<"all" | "movie" | "tv">(isPersonSubject ? "all" : "movie");
   const [tvResults, setTvResults] = useState<TvShowSearchResult[]>([]);
   const [tvLoading, setTvLoading] = useState(false);
 
+  const visibleCredits = credits
+    .filter((c) => kind === "all" || (kind === "tv" ? c.mediaType === 1 : c.mediaType === 0))
+    .filter((c) => c.title.toLowerCase().includes(refine.trim().toLowerCase()));
+
   useEffect(() => {
-    setKind("movie");
-  }, [subjectName]);
+    setKind(isPersonSubject ? "all" : "movie");
+  }, [subjectName, isPersonSubject]);
 
   useEffect(() => {
     if (isPersonSubject || kind !== "tv") return;
@@ -1058,8 +1066,19 @@ function SpeedDraftPicksSection({
                   {isPersonSubject ? "Filmography" : `Search results for "${subjectName}"`}
                 </label>
 
-                {!isPersonSubject && (
+                {(
                   <div className="flex gap-1 mb-2 text-[11px] font-mono uppercase tracking-wide">
+                    {isPersonSubject && (
+                      <button
+                        type="button"
+                        onClick={() => setKind("all")}
+                        className={`px-2 py-1 border ${
+                          kind === "all" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
+                        }`}
+                      >
+                        All
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => setKind("movie")}
@@ -1081,15 +1100,17 @@ function SpeedDraftPicksSection({
                   </div>
                 )}
 
-                {!isPersonSubject && (
-                  <input
-                    type="text"
-                    className={`${INPUT} mb-2`}
-                    placeholder={`Refine within "${subjectName}"… (e.g. "of soul")`}
-                    value={refine}
-                    onChange={(e) => setRefine(e.target.value)}
-                  />
-                )}
+                <input
+                  type="text"
+                  className={`${INPUT} mb-2`}
+                  placeholder={
+                    isPersonSubject
+                      ? `Filter "${subjectName}" filmography…`
+                      : `Refine within "${subjectName}"… (e.g. "of soul")`
+                  }
+                  value={refine}
+                  onChange={(e) => setRefine(e.target.value)}
+                />
 
                 {isPersonSubject && personPhotoUrl && (
                   <img
@@ -1156,8 +1177,10 @@ function SpeedDraftPicksSection({
                   <p className="text-[11px] font-mono text-sd-ink/40">Loading…</p>
                 )}
 
-                {!browseLoading && isPersonSubject && credits.length === 0 && !browseError && (
-                  <p className="text-[11px] font-mono text-sd-ink/40 italic">No filmography found.</p>
+                {!browseLoading && isPersonSubject && visibleCredits.length === 0 && !browseError && (
+                  <p className="text-[11px] font-mono text-sd-ink/40 italic">
+                    {credits.length === 0 ? "No filmography found." : "No credits match your filter."}
+                  </p>
                 )}
 
                 {!browseLoading && !isPersonSubject && kind === "movie" && titleResults.length === 0 && !browseError && (
@@ -1166,9 +1189,9 @@ function SpeedDraftPicksSection({
                   </p>
                 )}
 
-                {!browseLoading && isPersonSubject && credits.length > 0 && (
+                {!browseLoading && isPersonSubject && visibleCredits.length > 0 && (
                   <div className="border border-sd-ink/10 rounded max-h-64 overflow-y-auto">
-                    {credits.map((c) => {
+                    {visibleCredits.map((c) => {
                       const submittingKey = `credit-${c.tmdbId}-${c.mediaType}`;
                       return (
                         <div

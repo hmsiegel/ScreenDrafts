@@ -15715,6 +15715,12 @@
         "properties": {
           "personPublicId": {
             "type": "string"
+          },
+          "channel": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -15765,6 +15771,12 @@
                 "$ref": "#/components/schemas/SocialHandles"
               }
             ]
+          },
+          "isPatreonView": {
+            "type": "boolean"
+          },
+          "hasPatreonDrafts": {
+            "type": "boolean"
           },
           "drafterStats": {
             "oneOf": [

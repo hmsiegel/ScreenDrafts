@@ -28,6 +28,7 @@ internal sealed class Endpoint
     {
       PersonPublicId = req.PersonPublicId,
       IncludePatreon = includePatreon,
+      Channel = string.Equals(req.Channel, "patreon", StringComparison.OrdinalIgnoreCase) ? 1 : 0,
     };
 
     var result = await Sender.Send(query, ct);

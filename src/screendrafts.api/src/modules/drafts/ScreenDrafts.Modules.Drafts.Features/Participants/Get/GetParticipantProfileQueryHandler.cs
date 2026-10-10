@@ -20,9 +20,13 @@ internal sealed class GetParticipantProfileQueryHandler(
   {
     await using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
-    var allowedChannels = request.IncludePatreon
-      ? [MainFeedChannel, PatreonChannel]
-      : new[] { MainFeedChannel };
+    // One channel per request: main-feed and Patreon drafts never cross over.
+    // Callers without Patreon access always get the main feed.
+    var channel =
+      request.IncludePatreon && request.Channel == PatreonChannel
+        ? PatreonChannel
+        : MainFeedChannel;
+    var allowedChannels = new[] { channel };
 
     // 1. Resolve person, drafter profile, and host profile in one query
     const string personSql = $"""
@@ -66,6 +70,55 @@ internal sealed class GetParticipantProfileQueryHandler(
       person.PersonPublicId,
       StringComparer.OrdinalIgnoreCase
     );
+
+    // Toggle gate: only callers with Patreon access, and only people who appeared in a Patreon draft.
+    var hasPatreonDrafts = false;
+
+    if (request.IncludePatreon)
+    {
+      if (person.DrafterInternalId.HasValue)
+      {
+        const string drafterPatreonSql = """
+          SELECT EXISTS (
+            SELECT 1
+            FROM drafts.draft_part_participants dpp
+            JOIN drafts.draft_releases dr ON dr.part_id = dpp.draft_part_id
+            WHERE dpp.participant_id_value = @DrafterId
+              AND dpp.participant_kind_value = 0
+              AND dr.release_channel = @PatreonChannel
+          )
+          """;
+
+        hasPatreonDrafts = await connection.ExecuteScalarAsync<bool>(
+          new CommandDefinition(
+            drafterPatreonSql,
+            new { DrafterId = person.DrafterInternalId.Value, PatreonChannel },
+            cancellationToken: cancellationToken
+          )
+        );
+      }
+
+      if (!hasPatreonDrafts && person.HostInternalId.HasValue)
+      {
+        const string hostPatreonSql = """
+          SELECT EXISTS (
+            SELECT 1
+            FROM drafts.draft_hosts dh
+            JOIN drafts.draft_releases dr ON dr.part_id = dh.draft_part_id
+            WHERE dh.host_id = @HostId
+              AND dr.release_channel = @PatreonChannel
+          )
+          """;
+
+        hasPatreonDrafts = await connection.ExecuteScalarAsync<bool>(
+          new CommandDefinition(
+            hostPatreonSql,
+            new { HostId = person.HostInternalId.Value, PatreonChannel },
+            cancellationToken: cancellationToken
+          )
+        );
+      }
+    }
 
     var honorific = person.DrafterInternalId.HasValue
       ? await _reportingApi.GetDrafterHonorificAsync(
@@ -562,6 +615,8 @@ internal sealed class GetParticipantProfileQueryHandler(
           ProfilePicturePath = person.ProfilePicturePath,
         }
         : null,
+      IsPatreonView = channel == PatreonChannel,
+      HasPatreonDrafts = hasPatreonDrafts,
       DrafterStats = drafterStats,
       HostStats = hostStats,
       DraftHistory = draftHistory,

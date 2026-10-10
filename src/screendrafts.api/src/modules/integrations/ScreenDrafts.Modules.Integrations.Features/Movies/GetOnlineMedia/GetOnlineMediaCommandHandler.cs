@@ -316,7 +316,7 @@ internal sealed class GetOnlineMediaCommandHandler(
         Title = detail.Title,
         Year = year,
         Plot = detail.Overview,
-        Image = posterUrl!.ToString(),
+        Image = posterUrl?.ToString(),
         ReleaseDate = detail.ReleaseDate,
         YouTubeTrailerUrl = detail.TrailerUrl,
         MediaType = mediaType,

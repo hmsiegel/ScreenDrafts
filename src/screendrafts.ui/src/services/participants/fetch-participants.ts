@@ -1,3 +1,4 @@
+// src/services/participants/fetch-participants.ts
 import { auth } from "@/auth";
 import {
   GetParticipantProfileResponse,
@@ -64,9 +65,11 @@ export async function listParticipants(params: {
 }
 
 export async function getParticipantProfile(
-  personPublicId: string
+  personPublicId: string,
+  channel?: "patreon"
 ): Promise<GetParticipantProfileResponse> {
-  const url = `${apiBase}/participants/${personPublicId}`;
+  const url = new URL(`${apiBase}/participants/${personPublicId}`);
+  if (channel) url.searchParams.set("channel", channel);
 
   const response = await fetch(url, {
     method: "GET",

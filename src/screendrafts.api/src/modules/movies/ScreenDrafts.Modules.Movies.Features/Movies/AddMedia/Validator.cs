@@ -57,15 +57,17 @@ internal sealed class Validator : AbstractValidator<AddMediaCommand>
       .InclusiveBetween("1900", DateTime.UtcNow.Year.ToString(CultureInfo.InvariantCulture))
       .WithMessage("Year must be between 1900 and the current year");
 
+    // TMDb episodes often have no overview and no still_path, so plot and
+    // image are optional for them (Media.Plot and Media.Image are nullable).
     RuleFor(x => x.Plot)
       .NotEmpty()
       .WithMessage("Plot is required")
-      .When(x => x.MediaType != MediaType.MusicVideo);
+      .When(x => x.MediaType != MediaType.MusicVideo && x.MediaType != MediaType.TvEpisode);
 
     RuleFor(x => x.Image)
       .NotEmpty()
       .WithMessage("Image is required")
-      .When(x => x.MediaType != MediaType.MusicVideo);
+      .When(x => x.MediaType != MediaType.MusicVideo && x.MediaType != MediaType.TvEpisode);
 
     RuleFor(x => x.ReleaseDate)
       .Must(BeAValidDate)

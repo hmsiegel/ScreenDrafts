@@ -15462,6 +15462,7 @@ export interface GetOnlineMediaResponse {
 
 export interface GetParticipantProfileRequest {
     personPublicId?: string;
+    channel?: string | undefined;
 
     [key: string]: any;
 }
@@ -15474,6 +15475,8 @@ export interface GetParticipantProfileResponse {
     isCommissioner?: boolean;
     honorific?: HonorificResponse | undefined;
     socialHandles?: SocialHandles | undefined;
+    isPatreonView?: boolean;
+    hasPatreonDrafts?: boolean;
     drafterStats?: DrafterStatsResponse | undefined;
     hostStats?: HostStatsResponse | undefined;
     draftHistory?: DraftHistoryItem[];

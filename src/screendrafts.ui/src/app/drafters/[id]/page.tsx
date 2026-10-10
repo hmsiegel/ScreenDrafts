@@ -28,7 +28,10 @@ function toLocalDate(raw: Date | string): Date {
   return typeof raw === "string" ? parseISO(raw) : raw;
 }
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ channel?: string }>;
+};
 
 export const dynamic = "force-dynamic";
 
@@ -49,12 +52,14 @@ const HONORIFIC_LABELS: Record<number, string> = {
   4: "LEGEND",
 };
 
-export default async function DrafterProfilePage({ params }: Props) {
+export default async function DrafterProfilePage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { channel } = await searchParams;
+  const requestedChannel = channel === "patreon" ? "patreon" : undefined;
 
   let profile: GetParticipantProfileResponse;
   try {
-    profile = await getParticipantProfile(id);
+    profile = await getParticipantProfile(id, requestedChannel);
   } catch {
     notFound();
   }
@@ -109,6 +114,11 @@ export default async function DrafterProfilePage({ params }: Props) {
             </span>
           )}
         </div>
+
+        {/* Main feed and Patreon drafts never cross over, so the page shows one at a time. */}
+        {profile.hasPatreonDrafts && (
+          <ChannelToggle personPublicId={id} isPatreonView={profile.isPatreonView ?? false} />
+        )}
       </div>
 
       {/* Red accent bar */}
@@ -162,6 +172,40 @@ export default async function DrafterProfilePage({ params }: Props) {
       </div>
 
     </div>
+  );
+}
+
+// ── Channel toggle ────────────────────────────────────────────────────────────
+// Links, not state: the server re-fetches stats and history for the chosen channel.
+
+function ChannelToggle({
+  personPublicId,
+  isPatreonView,
+}: {
+  personPublicId: string;
+  isPatreonView: boolean;
+}) {
+  const base = "px-4 py-2 font-mono text-[11px] tracking-widest border transition-colors";
+  const active = "bg-white text-sd-ink border-white";
+  const inactive = "bg-transparent text-white/60 border-white/30 hover:text-white hover:border-white";
+
+  return (
+    <nav aria-label="Draft feed" className="mt-6 flex">
+      <Link
+        href={`/drafters/${personPublicId}`}
+        aria-current={isPatreonView ? undefined : "page"}
+        className={`${base} ${isPatreonView ? inactive : active}`}
+      >
+        MAIN FEED
+      </Link>
+      <Link
+        href={`/drafters/${personPublicId}?channel=patreon`}
+        aria-current={isPatreonView ? "page" : undefined}
+        className={`${base} -ml-px ${isPatreonView ? active : inactive}`}
+      >
+        PATREON
+      </Link>
+    </nav>
   );
 }
 
