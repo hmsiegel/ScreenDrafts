@@ -693,6 +693,71 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.ToTable("veto_overrides", "guest_drafts");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Invitations.Invitation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("AcceptedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("accepted_by_user_id");
+
+                    b.Property<DateTime?>("AcceptedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("accepted_on_utc");
+
+                    b.Property<DateTime>("CreatedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on_utc");
+
+                    b.Property<Guid>("DraftId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("draft_id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)")
+                        .HasColumnName("email");
+
+                    b.Property<Guid>("InvitedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invited_by_user_id");
+
+                    b.Property<DateTime>("LastSentOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_sent_on_utc");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasMaxLength(19)
+                        .HasColumnType("character varying(19)")
+                        .HasColumnName("public_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_draft_invitations");
+
+                    b.HasIndex("Email")
+                        .HasDatabaseName("ix_draft_invitations_email");
+
+                    b.HasIndex("PublicId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_invitations_public_id");
+
+                    b.HasIndex("DraftId", "Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_draft_invitations_draft_id_email");
+
+                    b.ToTable("draft_invitations", "guest_drafts");
+                });
+
             modelBuilder.Entity("DrafterDrafterTeam", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.DrafterTeams.DrafterTeam", null)
@@ -875,6 +940,16 @@ namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database.Migrations
                     b.Navigation("IssuedByParticipant");
 
                     b.Navigation("Veto");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Invitations.Invitation", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", null)
+                        .WithMany()
+                        .HasForeignKey("DraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_invitations_drafts_draft_id");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Draft", b =>

@@ -28,6 +28,12 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
   protected FakeUsersApi FakeUsersApi { get; } =
     factory.Services.GetRequiredService<FakeUsersApi>();
 
+  protected CapturingEventBus EventBus { get; } =
+    factory.Services.GetRequiredService<CapturingEventBus>();
+
+  protected MutableDateTimeProvider Clock { get; } =
+    factory.Services.GetRequiredService<MutableDateTimeProvider>();
+
   protected override async Task ClearDatabaseAsync()
   {
     await DbContext.Database.ExecuteSqlRawAsync(
@@ -45,6 +51,7 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
         guest_drafts.draft_positions,
         guest_drafts.game_boards,
         guest_drafts.draft_participants,
+        guest_drafts.draft_invitations,
         guest_drafts.drafts,
         guest_drafts.drafters,
         guest_drafts.movies
@@ -53,6 +60,8 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     );
 
     FakeUsersApi.Reset();
+    EventBus.Clear();
+    Clock.Reset();
   }
 
   /// <summary>

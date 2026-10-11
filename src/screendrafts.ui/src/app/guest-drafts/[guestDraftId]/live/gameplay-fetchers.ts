@@ -243,6 +243,27 @@ export async function addGuestDraftParticipant(
   }
 }
 
+export async function removeGuestDraftParticipant(
+  accessToken: string,
+  guestDraftId: string,
+  guestDrafterPublicId: string,
+): Promise<void> {
+  // Content-Type + empty JSON body: a DELETE with neither can 415 in FastEndpoints'
+  // model binding (same reason as the veto/reveal calls in this file).
+  const res = await fetch(
+    `${API_BASE}/guest-drafts/${guestDraftId}/participants/${guestDrafterPublicId}`,
+    {
+      method: 'DELETE',
+      headers: authHeaders(accessToken),
+      body: JSON.stringify({}),
+    },
+  );
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`removeGuestDraftParticipant failed: ${res.status} - ${body}`);
+  }
+}
+
 export async function assignGuestDraftParticipantToPosition(
   accessToken: string,
   guestDraftId: string,

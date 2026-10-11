@@ -12,6 +12,7 @@ global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Behaviors;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Inbox;
+global using ScreenDrafts.Modules.GuestDrafts.Features.Invitations;
 global using ScreenDrafts.Modules.GuestDrafts.Features.Outbox;
 global using ScreenDrafts.Modules.GuestDrafts.Infrastructure;
 global using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Data;

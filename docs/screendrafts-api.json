@@ -6847,6 +6847,140 @@
         ]
       }
     },
+    "/guest-drafts/{publicId}/invitations/{invitationPublicId}/resend": {
+      "post": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.ResendInvitation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendGuestDraftInvitationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/guest-drafts/{publicId}/invitations": {
+      "get": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.ListInvitations",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/ListGuestDraftInvitationsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListGuestDraftInvitationsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListGuestDraftInvitationsResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      },
+      "post": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.InviteGuestDrafter",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteGuestDrafterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InviteGuestDrafterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/guest-drafts/{publicId}": {
       "put": {
         "tags": [
@@ -7050,6 +7184,49 @@
           },
           "403": {
             "description": "Forbidden"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
+    "/guest-drafts/{publicId}/participants/{guestDrafterPublicId}": {
+      "delete": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.RemoveParticipant",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveParticipantRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveParticipantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "401": {
             "description": "Unauthorized"
@@ -16772,6 +16949,37 @@
           }
         }
       },
+      "GuestDraftInvitationResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sentOnUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "canResend": {
+            "type": "boolean"
+          },
+          "resendAvailableOnUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
       "GuestDraftPositionInput": {
         "required": [
           "name",
@@ -17035,6 +17243,35 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "InviteGuestDrafterRequest": {
+        "required": [
+          "email",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "InviteGuestDrafterResponse": {
+        "required": [
+          "publicId"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
           }
         }
       },
@@ -17474,6 +17711,25 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "ListGuestDraftInvitationsRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          }
+        }
+      },
+      "ListGuestDraftInvitationsResponse": {
+        "type": "object",
+        "properties": {
+          "invitations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GuestDraftInvitationResponse"
+            }
           }
         }
       },
@@ -21219,6 +21475,17 @@
           }
         }
       },
+      "RemoveParticipantRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "guestDrafterPublicId": {
+            "type": "string"
+          }
+        }
+      },
       "RemoveRoleFromUserRequest": {
         "type": "object",
         "properties": {
@@ -21237,6 +21504,17 @@
         "type": "object",
         "properties": {
           "newEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "ResendGuestDraftInvitationRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "invitationPublicId": {
             "type": "string"
           }
         }

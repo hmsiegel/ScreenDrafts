@@ -272,6 +272,11 @@ public static class DraftErrors
     "Cannot add a participant after the draft has started."
   );
 
+  public static readonly SDError CannotRemoveParticipantAfterStart = SDError.Problem(
+    "Drafts.CannotRemoveParticipantAfterStart",
+    "Cannot remove a participant after the draft has started."
+  );
+
   public static readonly SDError NumberOfPicksMustBeGreaterThanZero = SDError.Problem(
     "Drafts.NumberOfPicksMustBeGreaterThanZero",
     "The number of picks must be greater than zero."

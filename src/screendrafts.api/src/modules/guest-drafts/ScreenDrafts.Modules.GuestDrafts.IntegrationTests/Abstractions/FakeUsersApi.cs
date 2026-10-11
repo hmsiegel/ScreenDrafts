@@ -24,12 +24,15 @@ public sealed class FakeUsersApi : IUsersApi
     Guid userId,
     string userPublicId,
     string firstName = "Test",
-    string lastName = "User"
+    string lastName = "User",
+    string? email = null
   )
   {
     var response = new UserPublicApiResponse
     {
       UserId = userId,
+      PublicId = userPublicId,
+      Email = email!,
       FirstName = firstName,
       LastName = lastName,
       MiddleName = null,

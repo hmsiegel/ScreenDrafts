@@ -187,6 +187,32 @@ public sealed class Draft : Entity<DraftId>
     return Result.Success(newParticipant);
   }
 
+  public Result RemoveParticipant(Participant participant)
+  {
+    if (GuestDraftStatus != DraftStatus.Created)
+    {
+      return Result.Failure(DraftErrors.CannotRemoveParticipantAfterStart);
+    }
+
+    var existing = FindByParticipantRef(participant);
+
+    if (existing is null)
+    {
+      return Result.Failure(DraftErrors.ParticipantNotFound(participant.Value));
+    }
+
+    // Free the position first so the board never points at a deleted participant.
+    // No award revocation needed: the participant row is deleted with its awards.
+    GameBoard
+      ?.Positions.FirstOrDefault(p => p.AssignedToParticipantId == existing.Id.Value)
+      ?.UnassignParticipant();
+
+    _participants.Remove(existing);
+    UpdatedOnUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
   // ── Participant lookup ───────────────────────────────────────────────────
 
   public bool HasParticipant(Guid participantId) =>

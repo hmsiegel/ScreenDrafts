@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
+﻿using ScreenDrafts.Modules.GuestDrafts.Domain.Invitations;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
 
 internal static class IdConverters
 {
@@ -37,4 +39,7 @@ internal static class IdConverters
 
   public static ValueConverter<DrafterTeamId, Guid> DrafterTeamIdConverter =>
     new(v => v.Value, v => DrafterTeamId.Create(v));
+
+  public static ValueConverter<InvitationId, Guid> InvitationIdConverter =>
+    new(v => v.Value, v => InvitationId.Create(v));
 }

@@ -136,6 +136,29 @@ internal static class EmailTemplates
     );
   }
 
+  private const string InviteFooter =
+    "You received this because someone invited you to a Screen Drafts guest draft.";
+
+  public static string GuestDraftInvite(
+    string recipientName,
+    string draftTitle,
+    string invitedByName,
+    string registerLink
+  ) =>
+    BaseLayout(
+      recipientName,
+      "You've been invited to a draft on <strong>Screen Drafts</strong>.",
+      $"""
+      <p style="margin:0 0 16px;">You've been invited to participate in <strong>{Encode(
+        draftTitle
+      )}</strong> by {Encode(
+        invitedByName
+      )}. Please follow the link below to sign up for Screen Drafts and join the fun!</p>
+      {Button("Join Screen Drafts", registerLink)}
+      """,
+      InviteFooter
+    );
+
   private static string PatreonBadge(bool isPatreon) =>
     isPatreon
       ? $"""

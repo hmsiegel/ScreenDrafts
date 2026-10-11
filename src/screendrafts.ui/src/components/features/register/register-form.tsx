@@ -2,15 +2,22 @@
 
 import { publicApiRequest } from "@/services/api";
 import { signIn } from "next-auth/react"
+import { useSearchParams } from "next/navigation";
 import { ChangeEvent, ChangeEventHandler, useState } from "react";
 
 export default function RegisterForm() {
-   const [formData, setFormData] = useState({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+   // Invite links carry ?name=First%20Last&email=... — prefill, user can still edit.
+   const searchParams = useSearchParams();
+   const [formData, setFormData] = useState(() => {
+      const invitedName = (searchParams.get("name") ?? "").trim();
+      const split = invitedName.indexOf(" ");
+      return {
+         firstName: split === -1 ? invitedName : invitedName.slice(0, split),
+         lastName: split === -1 ? "" : invitedName.slice(split + 1).trim(),
+         email: searchParams.get("email") ?? "",
+         password: "",
+         confirmPassword: "",
+      };
    });
    const [isLoading, setIsLoading] = useState(false);
    const [error, setError] = useState<string | null>(null);

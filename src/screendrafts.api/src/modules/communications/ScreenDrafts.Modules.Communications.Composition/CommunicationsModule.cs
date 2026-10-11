@@ -85,6 +85,10 @@ public static class CommunicationsModule
     registrationConfigurator
       .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
       .Endpoint(x => x.InstanceId = moduleInstanceId);
+
+    registrationConfigurator
+      .AddConsumer<IntegrationEventConsumer<GuestDraftInvitationSentIntegrationEvent>>()
+      .Endpoint(x => x.InstanceId = moduleInstanceId);
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)
