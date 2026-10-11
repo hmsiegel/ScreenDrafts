@@ -49,3 +49,15 @@ global using ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 global using ScreenDrafts.Modules.Movies.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.PublicApi;
 global using Xunit;
+
+global using Microsoft.Extensions.Options;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Invitations;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Invitations.DomainEvents;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;
+global using ScreenDrafts.Modules.GuestDrafts.Features.Invitations;
+global using ScreenDrafts.Modules.GuestDrafts.Features.Invitations.Accept;
+global using ScreenDrafts.Modules.GuestDrafts.Features.Invitations.Invite;
+global using ScreenDrafts.Modules.GuestDrafts.Features.Invitations.List;
+global using ScreenDrafts.Modules.GuestDrafts.Features.Invitations.Resend;

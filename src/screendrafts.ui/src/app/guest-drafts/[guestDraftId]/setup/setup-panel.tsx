@@ -8,6 +8,7 @@ import { useGuestDraftLive } from '../live/guest-draft-context';
 import {
   addGuestDraftParticipant,
   assignGuestDraftParticipantToPosition,
+  removeGuestDraftParticipant,
   searchGuestDrafters,
   setGuestDraftStatus,
 } from '../live/gameplay-fetchers';
@@ -15,6 +16,7 @@ import type { GuestDrafterSummaryResponse } from '@/lib/dto';
 import { GUEST_DRAFT_STATUS_ACTION } from '../../guest-draft-status-actions';
 import { GuestDraftScheduleEditor } from '../../guest-draft-schedule-editor';
 import { LargeScreenOnly, StartOnLargeScreenNote } from '@/components/ui/large-screen-only';
+import { InviteByEmailSection } from './invite-by-email-section';
 
 
 const INPUT =
@@ -104,6 +106,8 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
 
       <AddParticipantsSection accessToken={accessToken} guestDraftId={guestDraftId} />
 
+      <InviteByEmailSection accessToken={accessToken} guestDraftId={guestDraftId} />
+
       <section>
         <h2 className={SECTION_HEADING}>Assign Positions</h2>
         {assignError && <p className="text-sd-red text-xs font-mono mb-3">{assignError}</p>}
@@ -172,14 +176,14 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
         {startError && <p className="text-sd-red text-xs font-mono mb-3">{startError}</p>}
         {/* Tablets and computers only — starting opens the live draft, which phones can't. */}
         <LargeScreenOnly fallback={<StartOnLargeScreenNote className="block" />}>
-        <button
-          type="button"
-          onClick={handleStart}
-          disabled={starting || !canStart}
-          className="w-full sm:w-auto min-h-11 sm:min-h-0 px-6 py-2.5 bg-sd-ink text-white font-oswald text-sm tracking-widest uppercase hover:bg-sd-ink/80 disabled:opacity-40 transition-colors"
-        >
-          {starting ? 'STARTING…' : 'START DRAFT'}
-        </button>
+          <button
+            type="button"
+            onClick={handleStart}
+            disabled={starting || !canStart}
+            className="w-full sm:w-auto min-h-11 sm:min-h-0 px-6 py-2.5 bg-sd-ink text-white font-oswald text-sm tracking-widest uppercase hover:bg-sd-ink/80 disabled:opacity-40 transition-colors"
+          >
+            {starting ? 'STARTING…' : 'START DRAFT'}
+          </button>
         </LargeScreenOnly>
       </section>
     </div>
@@ -197,12 +201,13 @@ function AddParticipantsSection({
   accessToken: string;
   guestDraftId: string;
 }) {
-  const { participants, refetch } = useGuestDraftLive();
+  const { participants, isOwner, refetch } = useGuestDraftLive();
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GuestDrafterSummaryResponse[]>([]);
   const [searching, setSearching] = useState(false);
   const [adding, setAdding] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<string | null>(null);
   const [addError, setAddError] = useState<string | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Same out-of-order-response guard as create-guest-draft-form.tsx's search.
@@ -249,6 +254,20 @@ function AddParticipantsSection({
     }
   }
 
+  async function handleRemove(guestDrafterPublicId?: string) {
+    if (!guestDrafterPublicId) return;
+    setRemoving(guestDrafterPublicId);
+    setAddError(null);
+    try {
+      await removeGuestDraftParticipant(accessToken, guestDraftId, guestDrafterPublicId);
+      await refetch();
+    } catch (e) {
+      setAddError(e instanceof Error ? e.message : 'Failed to remove participant.');
+    } finally {
+      setRemoving(null);
+    }
+  }
+
   return (
     <section>
       <h2 className={SECTION_HEADING}>Add Participants</h2>
@@ -258,9 +277,21 @@ function AddParticipantsSection({
           {participants.map((p) => (
             <span
               key={p.participantPublicId}
-              className="inline-flex items-center px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded"
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded"
             >
               {p.displayName}
+              {isOwner && (
+                <button
+                  type="button"
+                  aria-label={`Remove ${p.displayName}`}
+                  title="Remove participant"
+                  onClick={() => handleRemove(p.participantPublicId)}
+                  disabled={removing === p.participantPublicId}
+                  className="ml-0.5 px-1 leading-none hover:text-sd-red disabled:opacity-40"
+                >
+                  {removing === p.participantPublicId ? '…' : '×'}
+                </button>
+              )}
             </span>
           ))}
         </div>

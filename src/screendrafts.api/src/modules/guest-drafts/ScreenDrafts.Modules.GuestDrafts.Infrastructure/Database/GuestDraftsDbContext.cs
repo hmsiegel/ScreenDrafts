@@ -15,6 +15,7 @@ public sealed class GuestDraftsDbContext(DbContextOptions<GuestDraftsDbContext> 
   internal DbSet<Drafter> Drafters { get; set; }
   internal DbSet<DrafterTeam> DrafterTeams { get; set; }
   internal DbSet<Movie> Movies { get; set; }
+  internal DbSet<Invitation> Invitations { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

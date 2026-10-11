@@ -14,6 +14,7 @@ internal static class GuestDraftsOpenApi
     // Guest Drafts
     public const string GuestDrafts_CreateGuestDraft = "GuestDrafts.CreateGuestDraft";
     public const string GuestDrafts_AddParticipant = "GuestDrafts.AddParticipant";
+    public const string GuestDrafts_RemoveParticipant = "GuestDrafts.RemoveParticipant";
     public const string GuestDrafts_AssignParticipantToPosition =
       "GuestDrafts.AssignParticipantToPosition";
     public const string GuestDrafts_SetStatus = "GuestDrafts.SetStatus";
@@ -32,5 +33,8 @@ internal static class GuestDraftsOpenApi
     public const string GuestDrafts_GetDetails = "GuestDrafts.GetDetails";
     public const string GuestDrafts_SetSchedule = "GuestDrafts.SetSchedule";
     public const string GuestDrafts_GetMyDrafts = "GuestDrafts.GetMyDrafts";
+    public const string GuestDrafts_InviteGuestDrafter = "GuestDrafts.InviteGuestDrafter";
+    public const string GuestDrafts_ResendInvitation = "GuestDrafts.ResendInvitation";
+    public const string GuestDrafts_ListInvitations = "GuestDrafts.ListInvitations";
   }
 }

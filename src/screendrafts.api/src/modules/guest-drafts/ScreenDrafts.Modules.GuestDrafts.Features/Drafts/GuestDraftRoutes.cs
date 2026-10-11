@@ -7,6 +7,7 @@ internal static class GuestDraftsRoutes
   internal const string Search = Base + "/search";
   internal const string Summary = ById + "/summary";
   internal const string Participants = ById + "/participants";
+  internal const string ParticipantByGuestDrafter = Participants + "/{guestDrafterPublicId}";
   internal const string GuestDraftStatus = ById + "/status";
   internal const string Schedule = ById + "/schedule";
   internal const string FixedBoardLayout = ById + "/board/fixed-layout";
@@ -20,4 +21,6 @@ internal static class GuestDraftsRoutes
   internal const string PickCommissionerOverride = PickByPlayOrder + "/commissioner-override";
   internal const string PickUndoVeto = PickByPlayOrder + "/undo-veto";
   internal const string PickReveal = PickByPlayOrder + "/reveal";
+  internal const string Invitations = ById + "/invitations";
+  internal const string InvitationResend = Invitations + "/{invitationPublicId}/resend";
 }

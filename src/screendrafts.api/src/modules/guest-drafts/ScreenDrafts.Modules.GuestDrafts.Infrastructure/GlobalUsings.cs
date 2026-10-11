@@ -38,6 +38,7 @@ global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Entities;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Enums;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.Repositories;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Drafts.ValueObjects;
+global using ScreenDrafts.Modules.GuestDrafts.Domain.Invitations;
 global using ScreenDrafts.Modules.GuestDrafts.Domain.Participants;
 global using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Converters;
 global using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Database;

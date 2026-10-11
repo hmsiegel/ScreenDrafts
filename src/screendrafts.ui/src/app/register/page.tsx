@@ -4,6 +4,7 @@ import { oswald } from "@/styles/fonts";
 import RegisterForm from "@/components/features/register/register-form";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
+import { Suspense } from "react";
 
 export default function RegisterPage() {
    return (
@@ -26,10 +27,12 @@ export default function RegisterPage() {
             {/* Card */}
             <div className="sd-register-card w-full">
                <h1 className="sd-register-title">Create Your Account</h1>
-               <RegisterForm />
+               <Suspense fallback={null}>
+                  <RegisterForm />
+               </Suspense>
                <div className="sd-register-footer">
                   Already have an account?{" "}
-                  <button onClick={() => signIn('keycloak', {callbackUrl: '/' })}>
+                  <button onClick={() => signIn('keycloak', { callbackUrl: '/' })}>
                      Sign In
                   </button>
                </div>

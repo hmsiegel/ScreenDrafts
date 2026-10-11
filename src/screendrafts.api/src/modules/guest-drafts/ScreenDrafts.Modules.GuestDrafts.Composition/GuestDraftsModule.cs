@@ -11,7 +11,7 @@ public static class GuestDraftsModule
   {
     ArgumentNullException.ThrowIfNull(configuration);
 
-    services.AddDraftsFeatures();
+    services.AddDraftsFeatures(configuration);
 
     AddTypeHandler();
 
@@ -63,8 +63,12 @@ public static class GuestDraftsModule
       .Endpoint(c => c.InstanceId = moduleInstanceId);
   }
 
-  private static void AddDraftsFeatures(this IServiceCollection services)
+  private static void AddDraftsFeatures(
+    this IServiceCollection services,
+    IConfiguration configuration
+  )
   {
+    services.Configure<InvitationOptions>(configuration.GetSection(InvitationOptions.SectionName));
     services.AddScoped(typeof(IPipelineBehavior<,>), typeof(GuestDraftsUnitOfWorkBehavior<,>));
     services.AddScoped<
       IGuestDraftsIntegrationEventDispatcher,

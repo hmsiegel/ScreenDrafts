@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\administration\ScreenDrafts.Modules.Administration.IntegrationEvents\ScreenDrafts.Modules.Administration.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\audit\ScreenDrafts.Modules.Audit.IntegrationEvents\ScreenDrafts.Modules.Audit.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\drafts\ScreenDrafts.Modules.Drafts.IntegrationEvents\ScreenDrafts.Modules.Drafts.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\guest-drafts\ScreenDrafts.Modules.GuestDrafts.IntegrationEvents\ScreenDrafts.Modules.GuestDrafts.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\integrations\ScreenDrafts.Modules.Integrations.IntegrationEvents\ScreenDrafts.Modules.Integrations.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\movies\ScreenDrafts.Modules.Movies.IntegrationEvents\ScreenDrafts.Modules.Movies.IntegrationEvents.csproj" />
     <ProjectReference Include="..\..\real-time-updates\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents\ScreenDrafts.Modules.RealTimeUpdates.IntegrationEvents.csproj" />

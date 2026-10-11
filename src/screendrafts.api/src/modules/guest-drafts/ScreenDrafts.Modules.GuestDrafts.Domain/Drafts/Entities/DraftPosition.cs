@@ -90,4 +90,6 @@ public sealed class DraftPosition : Entity<DraftPositionId>
     AssignedToParticipantId = participantId;
     return Result.Success();
   }
+
+  internal void UnassignParticipant() => AssignedToParticipantId = null;
 }

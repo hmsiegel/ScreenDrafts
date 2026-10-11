@@ -16,4 +16,5 @@ global using ScreenDrafts.Modules.Communications.Infrastructure.Email;
 global using ScreenDrafts.Modules.Communications.Infrastructure.Inbox;
 global using ScreenDrafts.Modules.Communications.Infrastructure.Outbox;
 global using ScreenDrafts.Modules.Drafts.IntegrationEvents;
+global using ScreenDrafts.Modules.GuestDrafts.IntegrationEvents;
 global using ScreenDrafts.Modules.Users.IntegrationEvents;

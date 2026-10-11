@@ -9,6 +9,9 @@
       "IntervalInSeconds": 2,
       "IntervalInMilliseconds": 500,
       "BatchSize": 20
+    },
+    "Invitations": {
+      "registerbaseurl": "http://localhost:3005/register"
     }
   }
 }

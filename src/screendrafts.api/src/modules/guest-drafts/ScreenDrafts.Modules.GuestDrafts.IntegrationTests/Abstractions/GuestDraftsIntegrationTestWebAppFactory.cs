@@ -10,6 +10,8 @@ namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 )]
 public class GuestDraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFactory
 {
+  public const string TestRegisterBaseUrl = "https://screendrafts.test/register";
+
   private KeycloakContainer? _keycloakContainer;
   private bool _keycloakInitialized;
 
@@ -130,6 +132,22 @@ public class GuestDraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFact
     services.AddSingleton<FakeUsersApi>();
     services.AddSingleton<IUsersApi>(sp => sp.GetRequiredService<FakeUsersApi>());
 
+    // HTTP-level tests authenticate with permissions supplied on the request
+    // (Authorization: Test perm1,perm2) and the audit writer is stubbed, so neither Keycloak
+    // tokens nor the Users/Audit schemas are needed.
+    services.AddTestAuthentication().AddNoOpAuditWriter();
+
+    // Follows the real clock until a test pins it; lets resend-cooldown tests advance time.
+    services.RemoveAll<IDateTimeProvider>();
+    services.AddSingleton<MutableDateTimeProvider>();
+    services.AddSingleton<IDateTimeProvider>(sp => sp.GetRequiredService<MutableDateTimeProvider>());
+
+    // Captures integration events published by domain event handlers (e.g. the invitation
+    // email event) instead of discarding them like the base factory's NoOpEventBus.
+    services.RemoveAll<IEventBus>();
+    services.AddSingleton<CapturingEventBus>();
+    services.AddSingleton<IEventBus>(sp => sp.GetRequiredService<CapturingEventBus>());
+
     if (_keycloakContainer is null)
     {
       return;
@@ -146,6 +164,13 @@ public class GuestDraftsIntegrationTestWebAppFactory : IntegrationTestWebAppFact
       o.ConfidentialClientSecret = "oRL4la55pi1uMlJMKSlg3hrhLfvKrZsg";
       o.PublicClientId = "screendrafts-public-client";
     });
+  }
+
+  protected override Dictionary<string, string?> GetTestConfiguration()
+  {
+    var configuration = base.GetTestConfiguration();
+    configuration["GuestDrafts:Invitations:RegisterBaseUrl"] = TestRegisterBaseUrl;
+    return configuration;
   }
 
   protected override IEnumerable<Type> GetDbContextTypes()

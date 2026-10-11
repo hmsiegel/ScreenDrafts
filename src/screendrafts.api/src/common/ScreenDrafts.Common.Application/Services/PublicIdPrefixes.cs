@@ -40,4 +40,5 @@ public static class PublicIdPrefixes
   public const string GuestDraftPosition = "gpo";
   public const string GuestDrafter = "gdr";
   public const string GuestDrafterTeam = "gdt";
+  public const string GuestDraftInvitation = "gdi";
 }

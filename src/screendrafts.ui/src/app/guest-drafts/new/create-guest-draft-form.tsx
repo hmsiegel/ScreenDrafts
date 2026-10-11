@@ -21,6 +21,8 @@ import {
   type PositionConfig,
 } from '@/app/admin/drafts/new/positions-editor';
 import { GUEST_DRAFT_TYPE_LABELS } from '../guest-draft-type-labels';
+import { PendingInvite, PendingInvitesSection } from './pending-invites-section';
+import { inviteGuestDrafter } from '../[guestDraftId]/live/invitation-fetchers';
 
 const INPUT =
   'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full';
@@ -58,6 +60,7 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
   );
 
   const [selectedDrafterIds, setSelectedDrafterIds] = useState<Set<string>>(new Set());
+  const [pendingInvites, setPendingInvites] = useState<PendingInvite[]>([]);
 
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -126,6 +129,16 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
             e instanceof Error
               ? `Failed to add a participant: ${e.message}`
               : 'Failed to add a participant.',
+          );
+        }
+      }
+
+      for (const invite of pendingInvites) {
+        try {
+          await inviteGuestDrafter(accessToken, created.publicId, invite.email, invite.name);
+        } catch (e) {
+          warnings.push(
+            `Invite to ${invite.email} failed: ${e instanceof Error ? e.message : 'unknown error'}`,
           );
         }
       }
@@ -225,6 +238,8 @@ export function CreateGuestDraftForm({ accessToken }: Props) {
           })
         }
       />
+
+      <PendingInvitesSection invites={pendingInvites} onChange={setPendingInvites} />
 
       {createError && <p className="text-sd-red text-sm font-mono">{createError}</p>}
 
