@@ -151,16 +151,18 @@ export function InviteByEmailSection({ accessToken, guestDraftId }: Props) {
                 </p>
               </div>
               <span
-                className={`text-[11px] font-mono uppercase tracking-wide ${
-                  inv.status === 'Accepted' ? 'text-green-700' : 'text-sd-ink/60'
-                }`}
+                className={`text-[11px] font-mono uppercase tracking-wide ${inv.status === 'Accepted' ? 'text-green-700' : 'text-sd-ink/60'
+                  }`}
               >
                 {inv.status}
               </span>
               {inv.status === 'Pending' && (
                 <button
                   type="button"
-                  onClick={() => handleResend(inv.publicId, inv.email)}
+                  onClick={() => {
+                    if (!inv.publicId || !inv.email) return;
+                    handleResend(inv.publicId, inv.email);
+                  }}
                   disabled={!inv.canResend || resending === inv.publicId}
                   title={
                     inv.canResend || !inv.resendAvailableOnUtc

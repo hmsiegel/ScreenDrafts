@@ -7194,6 +7194,49 @@
         ]
       }
     },
+    "/guest-drafts/{publicId}/participants/{guestDrafterPublicId}": {
+      "delete": {
+        "tags": [
+          "GuestDrafts"
+        ],
+        "operationId": "GuestDrafts.RemoveParticipant",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveParticipantRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveParticipantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/guest-drafts/{publicId}/positions/{positionPublicId}/assign": {
       "post": {
         "tags": [
@@ -21429,6 +21472,17 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "RemoveParticipantRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "guestDrafterPublicId": {
+            "type": "string"
           }
         }
       },
