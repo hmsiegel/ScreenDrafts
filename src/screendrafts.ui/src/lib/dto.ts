@@ -15882,6 +15882,7 @@ export interface GetTitleHonorificsResponse {
     totalMatching: number;
     counts?: TitleHonorificCount[];
     titles?: TitleHonorificEntry[];
+    nearMisses?: TitleNearMissEntry[];
 
     [key: string]: any;
 }
@@ -18029,6 +18030,16 @@ export interface TitleHonorificEntry {
     gapEpisodes?: number | undefined;
     gapDays?: number | undefined;
     appearances?: TitleAppearanceEntry[];
+
+    [key: string]: any;
+}
+
+export interface TitleNearMissEntry {
+    mediaPublicId: string;
+    title: string;
+    appearanceCount: number;
+    positionsHeld?: number[];
+    missingPosition: number;
 
     [key: string]: any;
 }

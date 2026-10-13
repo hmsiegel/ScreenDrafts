@@ -12,7 +12,8 @@ internal static class TitleAppearanceBuilder
     int play = 1,
     int part = 1,
     int totalParts = 1,
-    int subDraft = 0) =>
+    int subDraft = 0,
+    int? position = null) =>
     new()
     {
       MediaPublicId = $"m_{title}",
@@ -24,7 +25,7 @@ internal static class TitleAppearanceBuilder
       PartIndex = part,
       TotalParts = totalParts,
       SubDraftIndex = subDraft,
-      Position = play,
+      Position = position ?? play,
       PlayOrder = play,
       EpisodeNumber = episode,
       ReleasedOn = releasedOn,

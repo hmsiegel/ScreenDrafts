@@ -317,7 +317,9 @@ public sealed class TitleHonorificEngineTests
         ("7-drafts", 0),
         ("8-drafts", 0),
         ("9-drafts", 0),
-        ("10-drafts", 0)
+        ("10-drafts", 0),
+        ("unified-no-1", 5),
+        ("the-cycle", 0)
       );
     counts
       .Select(c => c.Label)
@@ -331,7 +333,9 @@ public sealed class TitleHonorificEngineTests
         "7+ Drafts",
         "8+ Drafts",
         "9+ Drafts",
-        "10+ Drafts"
+        "10+ Drafts",
+        "Unified No. 1",
+        "The Cycle"
       );
   }
 
@@ -343,7 +347,7 @@ public sealed class TitleHonorificEngineTests
     var narrowed = Run(rows, Spec(TitleHonorificLevels.HatTrick, search: "nothing", pageSize: 1));
 
     narrowed.Titles.Should().BeEmpty();
-    narrowed.Counts.Select(c => c.Count).Should().Equal(2, 1, 0, 0, 0, 0, 0, 0, 0);
+    narrowed.Counts.Select(c => c.Count).Should().Equal(2, 1, 0, 0, 0, 0, 0, 0, 0, 2, 0);
   }
 
   [Fact]
@@ -473,7 +477,7 @@ public sealed class TitleHonorificEngineTests
 
     result.Titles.Should().BeEmpty();
     result.TotalMatching.Should().Be(0);
-    result.Counts.Should().HaveCount(9).And.OnlyContain(c => c.Count == 0);
+    result.Counts.Should().HaveCount(11).And.OnlyContain(c => c.Count == 0);
   }
 
   [Fact]

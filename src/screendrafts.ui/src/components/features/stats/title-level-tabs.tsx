@@ -4,7 +4,6 @@ import { TITLE_LEVELS } from "@/services/stats/title-levels";
 import type { TitleHonorificCountView } from "@/services/stats/stats-types";
 import { formatStatValue } from "./format-stat-value";
 import { titleListHref } from "./title-links";
-import { act } from "react";
 
 /** The four honorific levels as sub-tabs, each with the number of titles at that level. Plain links. */
 export function TitleLevelTabs({
@@ -17,7 +16,7 @@ export function TitleLevelTabs({
   includeAll: boolean;
 }) {
   return (
-    <nav aria-label="Honorific level" className="flex gap-2 overflow-x-auto pb-1">
+    <nav aria-label="Honorific level" className="flex flex-wrap gap-2">
       {TITLE_LEVELS.map((level) => {
         const active = level.slug === activeSlug;
         const count = counts.find((c) => c.code === level.slug)?.count;

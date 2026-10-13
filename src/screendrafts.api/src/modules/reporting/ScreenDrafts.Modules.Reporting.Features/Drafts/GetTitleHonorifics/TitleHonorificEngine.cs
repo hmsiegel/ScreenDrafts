@@ -3,7 +3,8 @@
 /// <summary>
 /// Builds a level's list from the appearance rows. A title's appearances are ordered by the release date of the part
 /// each was drafted in, then episode, part, sub-draft and the order the pick was played, so titles that join on the
-/// same part are numbered in play order. The title joins a level on the appearance that reaches the level's minimum.
+/// same part are numbered in play order. The title joins a level on the appearance that earns it: the one that reaches
+/// the minimum count, the second No. 1 finish, or the one that completes the places 1 to 4.
 /// </summary>
 internal static class TitleHonorificEngine
 {
@@ -24,7 +25,7 @@ internal static class TitleHonorificEngine
       {
         Code = level.Code,
         Label = level.Label,
-        Count = timelines.Count(t => t.Appearances.Count >= level.MinAppearances),
+        Count = timelines.Count(t => TitleHonorificJoin.JoinIndex(t.Appearances, level) is not null),
       })
       .ToList();
 
@@ -34,7 +35,7 @@ internal static class TitleHonorificEngine
 
     var page = sorted.Skip((spec.Page - 1) * spec.PageSize).Take(spec.PageSize).ToList();
 
-    return new TitleHonorificResult(page, sorted.Count, counts);
+    return new TitleHonorificResult(page, sorted.Count, counts, NearMisses(timelines, spec));
   }
 
   /// <summary>
@@ -74,8 +75,9 @@ internal static class TitleHonorificEngine
   )
   {
     var joined = timelines
-      .Where(t => t.Appearances.Count >= level.MinAppearances)
-      .Select(t => (Timeline: t, Join: t.Appearances[level.MinAppearances - 1]))
+      .Select(t => (Timeline: t, Index: TitleHonorificJoin.JoinIndex(t.Appearances, level)))
+      .Where(x => x.Index is not null)
+      .Select(x => (x.Timeline, Join: x.Timeline.Appearances[x.Index.GetValueOrDefault()]))
       .OrderBy(x => SortKey(x.Join))
       .ThenBy(x => x.Timeline.Title, StringComparer.OrdinalIgnoreCase)
       .ToList();
@@ -152,6 +154,54 @@ internal static class TitleHonorificEngine
 
     return end.DayNumber - start.DayNumber;
   }
+
+  /// <summary>
+  /// The titles one place short of The Cycle: finished at three of the places 1 to 4, not yet at the fourth. Only the
+  /// Cycle level lists them, and they are not paged. The search applies; the join order does not, since they have none.
+  /// </summary>
+  private static List<TitleNearMissEntry> NearMisses(
+    List<TitleTimeline> timelines,
+    TitleHonorificSpec spec
+  )
+  {
+    if (spec.Level.Kind != TitleHonorificKind.TheCycle)
+    {
+      return [];
+    }
+
+    return
+    [
+      .. timelines
+        .Select(NearMiss)
+        .OfType<TitleNearMissEntry>()
+        .Where(e => Matches(e.Title, spec.Search))
+        .OrderBy(e => e.MissingPosition)
+        .ThenBy(e => e.Title, StringComparer.OrdinalIgnoreCase),
+    ];
+  }
+
+  private static TitleNearMissEntry? NearMiss(TitleTimeline timeline)
+  {
+    var held = TitleHonorificJoin.CyclePlacesHeld(timeline.Appearances);
+
+    if (held.Count != TitleHonorificJoin.CycleSize - 1)
+    {
+      return null;
+    }
+
+    return new TitleNearMissEntry
+    {
+      MediaPublicId = timeline.MediaPublicId,
+      Title = timeline.Title,
+      AppearanceCount = timeline.Appearances.Count,
+      PositionsHeld = held,
+      MissingPosition = TitleHonorificJoin.MissingCyclePlace(held),
+    };
+  }
+
+  private static bool Matches(string title, string? search) =>
+    string.IsNullOrWhiteSpace(search)
+    || title.Contains(search.Trim(), StringComparison.OrdinalIgnoreCase);
 
   private static List<TitleHonorificEntry> Filter(List<TitleHonorificEntry> entries, string? search)
   {
