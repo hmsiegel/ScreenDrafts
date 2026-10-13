@@ -320,5 +320,12 @@ function mapTitleHonorifics(dto: GetTitleHonorificsResponse): TitleHonorificsVie
         position: a.position ?? 0,
       })),
     })),
+    nearMisses: (dto.nearMisses ?? []).map((n) => ({
+      mediaPublicId: n.mediaPublicId ?? "",
+      title: n.title ?? "",
+      appearanceCount: n.appearanceCount ?? 0,
+      positionsHeld: n.positionsHeld ?? [],
+      missingPosition: n.missingPosition ?? 0,
+    })),
   };
 }

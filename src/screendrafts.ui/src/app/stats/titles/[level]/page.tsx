@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { ScopeToggle } from "@/components/features/stats/scope-toggle";
 import { TitleFilterBar } from "@/components/features/stats/title-filter-bar";
 import { TitleLevelTabs } from "@/components/features/stats/title-level-tabs";
+import { TitleNearMisses } from "@/components/features/stats/title-near-misses";
 import { TitleList } from "@/components/features/stats/title-list";
 import { TitlePagination } from "@/components/features/stats/title-pagination";
 import { formatStatValue } from "@/components/features/stats/format-stat-value";
@@ -93,11 +94,13 @@ export default async function TitleHonorificsPage({ params, searchParams }: Prop
 
       <TitleList
         joinText={
-          definition.named
+          definition.joinText ??
+          (definition.named
             ? `Joined the ${data.levelLabel}`
-            : `Reached ${definition.minAppearances} drafts`
+            : `Reached ${definition.minAppearances} drafts`)
         }
         titles={data.titles}
+        highlightPositions={definition.highlightPositions}
       />
 
       <TitlePagination
@@ -108,6 +111,8 @@ export default async function TitleHonorificsPage({ params, searchParams }: Prop
         sort={sortValue}
         includeAll={includeAll}
       />
+
+      <TitleNearMisses titles={data.nearMisses} />
     </div>
   );
 }

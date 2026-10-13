@@ -2,7 +2,7 @@
 
 internal sealed record GetTitleHonorificsRequest
 {
-  /// <summary>marquee-of-fame, hat-trick, grand-slam, high-five, or 6-drafts through 10-drafts.</summary>
+  /// <summary>marquee-of-fame, hat-trick, grand-slam, high-five, unified-no-1, the-cycle, or 6-drafts through 10-drafts.</summary>
   [FromRoute(Name = "level")]
   public string Level { get; init; } = string.Empty;
 

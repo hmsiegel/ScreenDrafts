@@ -18,4 +18,7 @@ internal sealed record GetTitleHonorificsResponse
   public IReadOnlyList<TitleHonorificCount> Counts { get; init; } = [];
 
   public IReadOnlyList<TitleHonorificEntry> Titles { get; init; } = [];
+
+  /// <summary>Titles one place short of The Cycle. Filled only at the The Cycle level, and not paged.</summary>
+  public IReadOnlyList<TitleNearMissEntry> NearMisses { get; init; } = [];
 }

@@ -109,7 +109,12 @@ public sealed class StatsEndpointTests(ReportingIntegrationTestWebAppFactory fac
   [InlineData("grand-slam")]
   [InlineData("high-five")]
   [InlineData("6-drafts")]
+  [InlineData("7-drafts")]
+  [InlineData("8-drafts")]
+  [InlineData("9-drafts")]
   [InlineData("10-drafts")]
+  [InlineData("the-cycle")]
+  [InlineData("unified-no-1")]
   public async Task GetTitles_ShouldReturnOk_WhenCalledAnonymouslyAsync(string level)
   {
     var response = await HttpClient.GetAsync(
@@ -122,7 +127,7 @@ public sealed class StatsEndpointTests(ReportingIntegrationTestWebAppFactory fac
       TestContext.Current.CancellationToken
     );
     body!.Level.Should().Be(level);
-    body.Counts.Should().HaveCount(9);
+    body.Counts.Should().HaveCount(11);
   }
 
   [Fact]

@@ -41,6 +41,8 @@ public sealed class TitleHonorificValidatorTests
   [InlineData("8-drafts", 8)]
   [InlineData("9-drafts", 9)]
   [InlineData("10-drafts", 10)]
+  [InlineData("unified-no-1", 2)]
+  [InlineData("the-cycle", 4)]
   public void Validate_ShouldResolveEachLevelToItsMinimumAppearances(string level, int minimum)
   {
     TitleHonorificValidator.Validate(Query(level)).Spec!.Level.MinAppearances.Should().Be(minimum);

@@ -155,6 +155,17 @@ export interface TitleHonorificCountView {
   count: number;
 }
 
+/** A title one place short of The Cycle. */
+export interface TitleNearMissView {
+  mediaPublicId: string;
+  title: string;
+  appearanceCount: number;
+  /** The three places from 1 to 4 the title has finished at. */
+  positionsHeld: number[];
+  /** The place from 1 to 4 it still needs. */
+  missingPosition: number;
+}
+
 export interface TitleHonorificsView {
   level: string;
   levelLabel: string;
@@ -166,4 +177,6 @@ export interface TitleHonorificsView {
   totalMatching: number;
   counts: TitleHonorificCountView[];
   titles: TitleHonorificEntryView[];
+  /** Filled only at The Cycle level. Not paged. */
+  nearMisses: TitleNearMissView[];
 }

@@ -16407,6 +16407,12 @@
             "items": {
               "$ref": "#/components/schemas/TitleHonorificEntry"
             }
+          },
+          "nearMisses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TitleNearMissEntry"
+            }
           }
         }
       },
@@ -23581,6 +23587,50 @@
             "items": {
               "$ref": "#/components/schemas/TitleAppearanceEntry"
             }
+          }
+        }
+      },
+      "TitleNearMissEntry": {
+        "required": [
+          "mediaPublicId",
+          "title",
+          "appearanceCount",
+          "missingPosition"
+        ],
+        "type": "object",
+        "properties": {
+          "mediaPublicId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "appearanceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "positionsHeld": {
+            "type": "array",
+            "items": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          },
+          "missingPosition": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

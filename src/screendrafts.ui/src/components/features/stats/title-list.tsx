@@ -38,9 +38,12 @@ function gapLine(entry: TitleHonorificEntryView): string | null {
 export function TitleList({
   joinText,
   titles,
+  highlightPositions,
 }: {
   joinText: string;
   titles: TitleHonorificEntryView[];
+  /** Board positions to emphasize, such as 1 for Unified No. 1. */
+  highlightPositions?: readonly number[];
 }) {
   if (titles.length === 0) {
     return (
@@ -92,14 +95,10 @@ export function TitleList({
                 {entry.appearances.map((appearance) => {
                   const episode = appearance.episodeNumber !== null ? `Ep. ${appearance.episodeNumber}` : null;
                   const date = formatReleaseDate(appearance.releasedOn);
-                  const detail = [
-                    episode,
-                    partLabel(appearance.partIndex, appearance.totalParts),
-                    date,
-                    `No. ${appearance.position}`,
-                  ]
+                  const detail = [episode, partLabel(appearance.partIndex, appearance.totalParts), date]
                     .filter((p): p is string => p !== null)
                     .join(" · ");
+                  const earnsLevel = highlightPositions?.includes(appearance.position) ?? false;
 
                   return (
                     <li
@@ -116,7 +115,12 @@ export function TitleList({
                         >
                           {appearance.draftTitle}
                         </Link>
-                        <span className="font-mono text-[11px] text-[#5a6075] ml-2">{detail}</span>
+                        <span className="font-mono text-[11px] text-[#5a6075] ml-2">
+                          {detail ? `${detail} · ` : ""}
+                          <span className={earnsLevel ? "font-bold text-sd-red" : undefined}>
+                            No. {appearance.position}
+                          </span>
+                        </span>
                       </span>
                     </li>
                   );

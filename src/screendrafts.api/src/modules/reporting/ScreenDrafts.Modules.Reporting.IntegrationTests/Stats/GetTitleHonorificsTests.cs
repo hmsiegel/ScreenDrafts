@@ -230,7 +230,9 @@ public sealed class GetTitleHonorificsTests(ReportingIntegrationTestWebAppFactor
         ("7-drafts", 0),
         ("8-drafts", 0),
         ("9-drafts", 0),
-        ("10-drafts", 0)
+        ("10-drafts", 0),
+        ("unified-no-1", 0),
+        ("the-cycle", 0)
       );
   }
 

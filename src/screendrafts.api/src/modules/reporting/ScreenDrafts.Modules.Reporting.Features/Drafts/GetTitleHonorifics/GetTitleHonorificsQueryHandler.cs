@@ -48,6 +48,7 @@ internal sealed class GetTitleHonorificsQueryHandler(IDbConnectionFactory connec
         TotalMatching = result.TotalMatching,
         Counts = result.Counts,
         Titles = result.Titles,
+        NearMisses = result.NearMisses,
       }
     );
   }

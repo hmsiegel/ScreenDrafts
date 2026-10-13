@@ -8,6 +8,10 @@ export interface TitleLevelDefinition {
   blurb: string;
   /** True for the four honorifics. False for the plain appearance-count levels (6+ and up). */
   named: boolean;
+  /** Overrides the join line's lead-in ("Joined the Hat Trick"). Used where "joined" reads wrong. */
+  joinText?: string;
+  /** Board positions to emphasize in the appearance list: the finishes that earn the level. */
+  highlightPositions?: readonly number[];
 }
 
 /** The title levels, in the order the sub-tabs appear. Slugs match the API's level codes. */
@@ -39,6 +43,24 @@ export const TITLE_LEVELS: readonly TitleLevelDefinition[] = [
     minAppearances: 5,
     blurb: "Titles drafted on five or more episodes.",
     named: true,
+  },
+  {
+    slug: "unified-no-1",
+    label: "Unified No. 1",
+    minAppearances: 2,
+    blurb: "Titles that finished at No. 1 on two or more drafts.",
+    named: true,
+    joinText: "Earned Unified No. 1",
+    highlightPositions: [1],
+  },
+  {
+    slug: "the-cycle",
+    label: "The Cycle",
+    minAppearances: 4,
+    blurb: "Titles that have finished at No. 1, No. 2, No. 3 and No. 4.",
+    named: true,
+    joinText: "Completed The Cycle",
+    highlightPositions: [1, 2, 3, 4],
   },
   {
     slug: "6-drafts",

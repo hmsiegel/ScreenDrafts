@@ -11,7 +11,7 @@ export function ScopeToggle({ includeAll, basePath = "/stats" }: { includeAll: b
   const off = "bg-white text-sd-ink hover:bg-sd-paper";
 
   return (
-    <nav aria-label="Record Book scope" className="inline-flex border-2 border-sd-ink">
+    <nav aria-label="Record Book scope" className="inline-flex w-fit max-w-full self-start border-2 border-sd-ink">
       <Link href={basePath} aria-current={includeAll ? undefined : "true"} className={`${base} ${includeAll ? off : on}`}>
         CANONICAL
       </Link>
