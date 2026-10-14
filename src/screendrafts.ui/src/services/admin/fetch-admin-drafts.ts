@@ -732,7 +732,7 @@ export async function setDraftCampaign(
   const response = await fetch(
     `${apiBase}/drafts/${encodeURIComponent(draftPublicId)}/campaign`,
     {
-      method: "POST",
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
@@ -743,7 +743,7 @@ export async function setDraftCampaign(
   if (!response.ok) {
     const text = await response.text().catch(() => response.statusText);
     throw new Error(
-      `POST /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
+      `PUT /drafts/${draftPublicId}/campaign failed (${response.status}): ${text}`
     );
   }
 }
