@@ -22,9 +22,13 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 const REVALIDATE = process.env.NODE_ENV === 'development' ? 0 : 3600;
 
+// Every home fetch carries this tag so completing a draft can expire them at once
+// (see app/home-actions.ts) instead of waiting out REVALIDATE.
+export const HOME_CACHE_TAG = 'home';
+
 async function getJson<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_BASE}${path}`, { next: { revalidate: REVALIDATE } });
+    const res = await fetch(`${API_BASE}${path}`, { next: { revalidate: REVALIDATE, tags: [HOME_CACHE_TAG] } });
     if (!res.ok) {
       // 404 is an expected empty state for some endpoints (e.g. no active spotlight).
       if (res.status !== 404) console.error(`[home] GET ${path} failed: ${res.status} ${res.statusText}`);
