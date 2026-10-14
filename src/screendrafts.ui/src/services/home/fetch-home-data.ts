@@ -157,6 +157,18 @@ export function mapLatestDraft(draft: LatestDraftResponse): MappedRecentDraft {
 // Unreleased parts (no release rows yet) are treated as PUBLIC — there's no badge for that state.
 const PATREON_ACCESS_LEVEL = 1;
 
+// The API returns the status as a PascalCase name ("InProgress"); the card upper-cases it,
+// which would read "INPROGRESS". The upcoming query only returns Created and InProgress parts.
+const UPCOMING_STATUS_LABELS: Record<string, string> = {
+  Created: 'Scheduled',
+  InProgress: 'In Progress',
+};
+
+function formatUpcomingStatus(name: string | undefined): string {
+  if (!name) return 'Draft';
+  return UPCOMING_STATUS_LABELS[name] ?? name.replace(/([a-z])([A-Z])/g, '$1 $2');
+}
+
 export function mapUpcomingDraft(draft: UpcomingDraftResponse): MappedUpcomingDraft {
   const totalParts = draft.totalParts ?? 1;
   const title = totalParts > 1
@@ -167,7 +179,7 @@ export function mapUpcomingDraft(draft: UpcomingDraftResponse): MappedUpcomingDr
     draftPartPublicId: draft.draftPartPublicId ?? '',
     date: formatDate(draft.releaseDate),
     title,
-    type: draft.status?.name ?? 'Draft',
+    type: formatUpcomingStatus(draft.status?.name),
     access: draft.accessLevel?.value === PATREON_ACCESS_LEVEL ? 'PATRON' : 'PUBLIC',
   };
 }
