@@ -115,7 +115,7 @@ export default function AddToCalendarButton({
             ref={menuRef}
             role="menu"
             style={{ position: 'fixed', top: anchor.top, right: anchor.right }}
-            className="z-50 min-w-[12rem] bg-white border border-sd-ink/20 shadow-md"
+            className="z-50 min-w-48 bg-white border border-sd-ink/20 shadow-md"
           >
             <a
               role="menuitem"

@@ -48,7 +48,7 @@ export default async function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 page-x py-8 lg:py-10">
         <RecentDrafts drafts={recentDrafts} />
         <CommissionerStandings standings={standings} />
-        <div className="md:col-span-2 xl:col-span-1 min-w-0 [&>*]:h-full">
+        <div className="md:col-span-2 xl:col-span-1 min-w-0 *:h-full">
           <UpcomingDrafts drafts={upcoming} />
         </div>
       </section>

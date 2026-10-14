@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${roboto.className} antialiased bg-gradient-to-t from-background via-slate-400 to-sd-blue text-foreground`}
+        className={`${roboto.className} antialiased bg-linear-to-t from-background via-slate-400 to-sd-blue text-foreground`}
       >
         <Providers>
           <SiteHeader />

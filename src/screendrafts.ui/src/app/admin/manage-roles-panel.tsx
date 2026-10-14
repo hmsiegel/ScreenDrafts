@@ -105,7 +105,7 @@ export default function ManageRolesPanel({
         {/* Header */}
         <div className="flex items-center justify-between gap-4 px-4 sm:px-6 py-5 border-b border-sd-ink/10 bg-sd-ink">
           <div className="min-w-0">
-            <p className="font-oswald font-bold text-[18px] text-white leading-tight [overflow-wrap:anywhere]">{user.displayName}</p>
+            <p className="font-oswald font-bold text-[18px] text-white leading-tight wrap-anywhere">{user.displayName}</p>
             <p className="font-mono text-[11px] text-light-blue mt-0.5 break-all">{user.email}</p>
           </div>
           <button
@@ -154,7 +154,7 @@ export default function ManageRolesPanel({
               <select
                 value={selectedRole}
                 onChange={e => setSelectedRole(e.target.value)}
-                className="flex-1 min-w-0 border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded"
+                className="flex-1 min-w-0 border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm"
               >
                 <option value="">Select a role…</option>
                 {available.map(r => (
@@ -164,7 +164,7 @@ export default function ManageRolesPanel({
               <button
                 onClick={addRole}
                 disabled={!selectedRole || busy}
-                className="bg-sd-blue text-white font-oswald tracking-wide uppercase px-4 py-2 hover:bg-sd-blue/90 disabled:opacity-40 transition-colors rounded"
+                className="bg-sd-blue text-white font-oswald tracking-wide uppercase px-4 py-2 hover:bg-sd-blue/90 disabled:opacity-40 transition-colors rounded-sm"
               >
                 ADD
               </button>

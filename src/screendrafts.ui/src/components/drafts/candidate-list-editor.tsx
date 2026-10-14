@@ -126,7 +126,7 @@ export default function CandidateListEditor({
                 value={pending.notes}
                 onChange={(e) => setPending((p) => p && { ...p, notes: e.target.value })}
                 placeholder="Notes (optional)"
-                className="w-full border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue"
+                className="w-full border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-blue"
               />
               <div className="flex gap-2">
                 <button
@@ -173,7 +173,7 @@ export default function CandidateListEditor({
           {entries.map((entry) => (
             <li key={entry.tmdbId} className="flex items-center gap-3 pl-3 pr-1 sm:px-3 py-2">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink [overflow-wrap:anywhere]">
+                <p className="text-sm font-medium text-sd-ink wrap-anywhere">
                   <EntryLabel
                     title={entry.movieTitle ?? `TMDb #${entry.tmdbId}`}
                     year={undefined}

@@ -105,7 +105,7 @@ export default function UserTable({ initialData, allRoles, accessToken, apiBase 
           value={search}
           onChange={e => handleSearch(e.target.value)}
           placeholder="Search users…"
-          className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full sm:w-[220px]"
+          className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full sm:w-[220px]"
         />
       </div>
 
@@ -132,9 +132,9 @@ export default function UserTable({ initialData, allRoles, accessToken, apiBase 
               data.items.map((user, i) => (
                 <tr
                   key={user.publicId}
-                  className={`flex flex-col gap-1.5 px-4 py-3 sm:table-row sm:p-0 border-t first:border-t-0 sm:first:border-t border-sd-ink/10 hover:bg-sd-paper transition-colors ${i % 2 === 1 ? 'bg-sd-ink/[0.02]' : 'bg-white'}`}
+                  className={`flex flex-col gap-1.5 px-4 py-3 sm:table-row sm:p-0 border-t first:border-t-0 sm:first:border-t border-sd-ink/10 hover:bg-sd-paper transition-colors ${i % 2 === 1 ? 'bg-sd-ink/2' : 'bg-white'}`}
                 >
-                  <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">{user.displayName}</td>
+                  <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink wrap-anywhere">{user.displayName}</td>
                   <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70 break-all">{user.email}</td>
                   <td className="sm:table-cell sm:px-4 sm:py-3">
                     <div className="flex flex-wrap gap-1">

@@ -182,7 +182,7 @@ function MediaRow({ item }: { item: MediaListItemResponse }) {
     >
       {/* No `block` here: Tailwind emits it after line-clamp's -webkit-box and would cancel the clamp. */}
       <div className="px-4 pt-4 pb-1.5 sm:py-4 self-center overflow-hidden">
-        <span className="font-oswald font-semibold text-[17px] text-sd-ink group-hover:text-sd-red transition-colors line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate">
+        <span className="font-oswald font-semibold text-[17px] text-sd-ink group-hover:text-sd-red transition-colors line-clamp-2 wrap-anywhere sm:line-clamp-none sm:truncate">
           {item.title}
         </span>
       </div>
@@ -195,7 +195,7 @@ function MediaRow({ item }: { item: MediaListItemResponse }) {
         </div>
 
         <div className="sm:px-4 sm:py-4 sm:self-center">
-          <span className={`inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-sm ${
+          <span className={`inline-block font-mono text-[9px] tracking-widest px-2 py-0.5 rounded-xs ${
             isMovie ? "bg-sd-blue/10 text-sd-blue" : "bg-sd-ink/10 text-sd-ink/60"
           }`}>
             {typeLabel}

@@ -7,12 +7,12 @@ import type { TvShowSearchResult } from "@/lib/tv-show-resolve";
 import type { MediaPickerTheme } from "@/components/drafts/media-picker-theme";
 
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 
 /** Original light-form styling, used when no theme is passed. */
 const DEFAULT_STYLES = {
   input: INPUT,
-  panel: "border border-sd-ink/10 rounded mt-2 max-h-48 overflow-y-auto",
+  panel: "border border-sd-ink/10 rounded-sm mt-2 max-h-48 overflow-y-auto",
   row: "text-sd-ink hover:bg-sd-ink/5",
   border: "border-sd-ink/5",
   year: "text-sd-ink/50 ml-1.5 text-[11px] font-mono",

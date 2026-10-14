@@ -25,7 +25,7 @@ import { PendingInvite, PendingInvitesSection } from './pending-invites-section'
 import { inviteGuestDrafter } from '../[guestDraftId]/live/invitation-fetchers';
 
 const INPUT =
-  'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full';
+  'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full';
 const LABEL = 'block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1';
 const SECTION_HEADING =
   'font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10';
@@ -341,7 +341,7 @@ function ParticipantsSection({
           {[...selectedDrafterIds].map((id) => (
             <span
               key={id}
-              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded"
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded-sm"
             >
               {displayNames.get(id) ?? id}
               <button
@@ -357,7 +357,7 @@ function ParticipantsSection({
         </div>
       )}
 
-      <div className="border border-sd-ink/10 rounded p-4 bg-white">
+      <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
         <input
           type="text"
           placeholder="Search drafters…"
@@ -374,7 +374,7 @@ function ParticipantsSection({
             results.map((d) => (
               <label
                 key={d.publicId}
-                className="flex items-center gap-2 px-3 py-2.5 sm:py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded cursor-pointer"
+                className="flex items-center gap-2 px-3 py-2.5 sm:py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm cursor-pointer"
               >
                 <input
                   type="checkbox"

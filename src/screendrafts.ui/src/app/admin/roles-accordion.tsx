@@ -75,7 +75,7 @@ function RoleRow({ role, accessToken, apiBase }: RoleRowProps) {
           ) : (
             <div className="flex flex-wrap gap-1.5">
               {permissions.map(perm => (
-                <span key={perm} className="font-mono text-[11px] px-2 py-0.5 bg-sd-ink/5 border border-sd-ink/15 text-sd-ink rounded break-all">
+                <span key={perm} className="font-mono text-[11px] px-2 py-0.5 bg-sd-ink/5 border border-sd-ink/15 text-sd-ink rounded-sm break-all">
                   {perm}
                 </span>
               ))}

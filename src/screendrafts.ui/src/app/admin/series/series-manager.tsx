@@ -104,15 +104,15 @@ interface SlideOverProps {
 
 function Toast({ message }: { message: string }) {
   return (
-    <div className="fixed bottom-6 right-6 z-[100] bg-sd-ink text-white font-mono text-[12px] tracking-wide px-5 py-3 rounded-full shadow-lg">
+    <div className="fixed bottom-6 right-6 z-100 bg-sd-ink text-white font-mono text-[12px] tracking-wide px-5 py-3 rounded-full shadow-lg">
       {message}
     </div>
   );
 }
 
 const labelCls = "block font-mono text-[11px] tracking-widest text-sd-ink/60 mb-1.5 uppercase";
-const inputCls = "w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue";
-const selectCls = "w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue";
+const inputCls = "w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-hidden focus:border-sd-blue";
+const selectCls = "w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-hidden focus:border-sd-blue";
 const hintCls = "mt-1 font-mono text-[10px] text-sd-ink/40 leading-relaxed";
 
 function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps) {
@@ -495,7 +495,7 @@ export default function SeriesManager({ initialData, accessToken }: Props) {
                   key={item.publicId}
                   className={`flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 sm:table-row sm:p-0 border-b border-sd-ink/5 transition-colors ${item.isDeleted ? "opacity-50" : "hover:bg-sd-paper/60"}`}
                 >
-                  <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">{item.name}</td>
+                  <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink wrap-anywhere">{item.name}</td>
                   <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[11px] text-sd-ink/60 uppercase tracking-wide">{kindLabel}</td>
                   <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 text-xs sm:text-sm text-sd-ink/60 sm:max-w-[260px] truncate">
                     {item.description || <span className="text-sd-ink/30">—</span>}

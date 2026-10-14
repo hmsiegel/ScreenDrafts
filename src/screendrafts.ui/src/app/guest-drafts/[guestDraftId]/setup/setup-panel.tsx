@@ -20,7 +20,7 @@ import { InviteByEmailSection } from './invite-by-email-section';
 
 
 const INPUT =
-  'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full';
+  'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full';
 const SECTION_HEADING =
   'font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10';
 
@@ -125,7 +125,7 @@ export function SetupPanel({ accessToken, guestDraftId }: Props) {
               </span>
               <div className="hidden sm:block flex-1" />
               {pos.assignedParticipantName ? (
-                <span className="text-sm text-sd-ink font-mono [overflow-wrap:anywhere]">
+                <span className="text-sm text-sd-ink font-mono wrap-anywhere">
                   {pos.assignedParticipantName}
                 </span>
               ) : (
@@ -277,7 +277,7 @@ function AddParticipantsSection({
           {participants.map((p) => (
             <span
               key={p.participantPublicId}
-              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded"
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded-sm"
             >
               {p.displayName}
               {isOwner && (
@@ -299,7 +299,7 @@ function AddParticipantsSection({
 
       {addError && <p className="text-sd-red text-xs font-mono mb-3">{addError}</p>}
 
-      <div className="border border-sd-ink/10 rounded p-4 bg-white">
+      <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
         <input
           type="text"
           placeholder="Search drafters…"
@@ -318,9 +318,9 @@ function AddParticipantsSection({
               return (
                 <div
                   key={d.publicId}
-                  className="flex items-center justify-between gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded"
+                  className="flex items-center justify-between gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm"
                 >
-                  <span className="min-w-0 [overflow-wrap:anywhere]">{d.displayName}</span>
+                  <span className="min-w-0 wrap-anywhere">{d.displayName}</span>
                   <button
                     type="button"
                     onClick={() => handleAdd(d.publicId)}

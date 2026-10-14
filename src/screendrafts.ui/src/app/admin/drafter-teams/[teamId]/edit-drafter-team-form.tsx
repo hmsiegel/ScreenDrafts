@@ -12,9 +12,9 @@ import { DrafterPicker } from "../drafter-picker";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_SECONDARY =
-  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded";
+  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded-sm";
 
 interface Props {
   team: DrafterTeamDetail;
@@ -98,7 +98,7 @@ export function EditDrafterTeamForm({ team, accessToken }: Props) {
           </button>
         </div>
         {renameError && (
-          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
             {renameError}
           </div>
         )}
@@ -112,7 +112,7 @@ export function EditDrafterTeamForm({ team, accessToken }: Props) {
             {members.map((m) => (
               <span
                 key={m.publicId}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded"
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded-sm"
               >
                 {m.displayName}
                 <button
@@ -130,7 +130,7 @@ export function EditDrafterTeamForm({ team, accessToken }: Props) {
         )}
 
         {memberError && (
-          <div className="mb-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          <div className="mb-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
             {memberError}
           </div>
         )}

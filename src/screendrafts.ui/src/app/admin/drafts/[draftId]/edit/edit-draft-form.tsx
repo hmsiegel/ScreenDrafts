@@ -68,13 +68,13 @@ import {
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const SELECT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const BTN_SECONDARY =
-  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded";
+  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded-sm";
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
 
@@ -187,7 +187,7 @@ function BoostersChampionSection({
           {assignments.map((a) => (
             <div
               key={a.publicId}
-              className="border border-sd-ink/10 rounded p-3 bg-white"
+              className="border border-sd-ink/10 rounded-sm p-3 bg-white"
             >
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-sm font-medium text-sd-ink flex-1">
@@ -230,7 +230,7 @@ function BoostersChampionSection({
       )}
 
       {error && (
-        <div className="mb-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="mb-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}
@@ -327,7 +327,7 @@ function PartPositionRangeSection({
         {saved && <span className="text-[11px] font-mono text-green-700">saved</span>}
       </div>
       {error && (
-        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}
@@ -401,7 +401,7 @@ function PartScheduleSection({
         </div>
       )}
       {error && (
-        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="mt-2 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}
@@ -1019,7 +1019,7 @@ export default function EditDraftForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
       {isCompletedOrCancelled && (
-        <div className="border border-sd-ink/20 bg-sd-ink/5 text-sd-ink/70 text-sm px-4 py-3 rounded font-mono">
+        <div className="border border-sd-ink/20 bg-sd-ink/5 text-sd-ink/70 text-sm px-4 py-3 rounded-sm font-mono">
           This draft is {draft.draftStatus.name?.toLowerCase()}. Only campaign and categories can be edited.
         </div>
       )}
@@ -1233,7 +1233,7 @@ export default function EditDraftForm({
                 (fixedPositions ? getMaxPositionsConfig(draftTypeName).max : 7);
 
               return (
-                <div key={part.partPublicId} className="border border-sd-ink/10 rounded">
+                <div key={part.partPublicId} className="border border-sd-ink/10 rounded-sm">
                   <button
                     type="button"
                     className="w-full flex items-center justify-between px-4 py-3 text-left bg-sd-ink/5 hover:bg-sd-ink/10 transition-colors"
@@ -1260,7 +1260,7 @@ export default function EditDraftForm({
                         {part.hosts.length > 0 && (
                           <div className="mb-3 space-y-2">
                             {part.hosts.map((h) => (
-                              <div key={h.publicId} className="flex items-center justify-between gap-3 px-3 py-2 bg-white border border-sd-ink/10 rounded">
+                              <div key={h.publicId} className="flex items-center justify-between gap-3 px-3 py-2 bg-white border border-sd-ink/10 rounded-sm">
                                 <span className="text-sm text-sd-ink font-medium">
                                   {h.displayName}
                                   {h.persisted && <span className="ml-2 text-[10px] font-mono text-sd-ink/30">saved</span>}
@@ -1280,7 +1280,7 @@ export default function EditDraftForm({
                             ))}
                           </div>
                         )}
-                        <div className="border border-sd-ink/10 rounded p-3 bg-white">
+                        <div className="border border-sd-ink/10 rounded-sm p-3 bg-white">
                           <input
                             type="text"
                             placeholder="Search hosts…"
@@ -1297,7 +1297,7 @@ export default function EditDraftForm({
                               <p className="text-sm text-sd-ink/40 font-mono px-2">No hosts found.</p>
                             ) : (
                               filteredHosts.map((h) => (
-                                <button key={h.publicId} type="button" onClick={() => addHostToPart(idx, h)} className="w-full text-left px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded transition-colors">
+                                <button key={h.publicId} type="button" onClick={() => addHostToPart(idx, h)} className="w-full text-left px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm transition-colors">
                                   {h.displayName}
                                 </button>
                               ))
@@ -1387,7 +1387,7 @@ export default function EditDraftForm({
               const isPendingExpanded = expandedPart === partStates.length + idx;
               const ppFixed = isFixedPositionType(selectedDraftType?.name ?? "");
               return (
-                <div key={pp.tempId} className="border border-sd-blue/30 rounded">
+                <div key={pp.tempId} className="border border-sd-blue/30 rounded-sm">
                   <button
                     type="button"
                     className="w-full flex items-center justify-between px-4 py-3 text-left bg-sd-blue/5 hover:bg-sd-blue/10 transition-colors"
@@ -1448,10 +1448,10 @@ export default function EditDraftForm({
       {/* ── Section 3: Categories ── */}
       <section>
         <h2 className={SECTION_HEADING}>Category (Optional)</h2>
-        <div className="border border-sd-ink/10 rounded p-4 bg-white">
+        <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
           <div className="max-h-40 overflow-y-auto columns-2 gap-4">
             {categoryList.map((c) => (
-              <label key={c.publicId} className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded px-2 py-1 cursor-pointer break-inside-avoid">
+              <label key={c.publicId} className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm px-2 py-1 cursor-pointer break-inside-avoid">
                 <input type="checkbox" checked={selectedCategoryIds.has(c.publicId!)} onChange={() => toggleCategory(c.publicId!)} className="accent-sd-red" />
                 {c.name}
               </label>
@@ -1479,10 +1479,10 @@ export default function EditDraftForm({
       </section>
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">{error}</div>
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">{error}</div>
       )}
       {successMsg && (
-        <div className="border border-green-300 bg-green-50 text-green-800 text-sm px-4 py-3 rounded">{successMsg}</div>
+        <div className="border border-green-300 bg-green-50 text-green-800 text-sm px-4 py-3 rounded-sm">{successMsg}</div>
       )}
 
       <div className="flex items-center gap-4 pt-2">

@@ -93,7 +93,7 @@ function SeasonDrawer({
           SEASON {season.number}
         </h2>
         {isSeasonOpen && (
-          <span className="font-mono text-[9px] tracking-widest bg-sd-red text-white px-2 py-1 rounded-sm">
+          <span className="font-mono text-[9px] tracking-widest bg-sd-red text-white px-2 py-1 rounded-xs">
             OPEN
           </span>
         )}
@@ -136,7 +136,7 @@ function DraftRow({ draft }: { draft: PredictionSeasonDraftResponse }) {
       {/* Phones: scores wrap under the title. sm+: one line, scores right-aligned and unbroken.
           The nowrap scores used to take ~250px on a phone and squeeze the title to nothing. */}
       <div className="flex-1 min-w-0 sm:flex sm:items-center sm:gap-4">
-        <div className="font-oswald font-semibold text-[16px] text-sd-ink line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate sm:flex-1 sm:min-w-0">
+        <div className="font-oswald font-semibold text-[16px] text-sd-ink line-clamp-2 wrap-anywhere sm:line-clamp-none sm:truncate sm:flex-1 sm:min-w-0">
           {draft.label}
         </div>
         {scores.length > 0 && (

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { searchDrafterTeams } from "@/services/admin/fetch-admin-drafts";
 
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 
@@ -65,7 +65,7 @@ export function DrafterTeamsList({ accessToken }: Props) {
         </Link>
       </div>
 
-      <div className="bg-white border border-sd-ink/10 rounded divide-y divide-sd-ink/5">
+      <div className="bg-white border border-sd-ink/10 rounded-sm divide-y divide-sd-ink/5">
         {loading ? (
           <p className="text-sm text-sd-ink/40 font-mono px-4 py-3">Loading…</p>
         ) : teams.length === 0 ? (
@@ -77,7 +77,7 @@ export function DrafterTeamsList({ accessToken }: Props) {
               href={`/admin/drafter-teams/${encodeURIComponent(t.publicId)}`}
               className="flex items-center justify-between gap-4 px-4 py-3 text-sm hover:bg-sd-paper/60 transition-colors"
             >
-              <span className="font-medium text-sd-ink min-w-0 [overflow-wrap:anywhere]">{t.name}</span>
+              <span className="font-medium text-sd-ink min-w-0 wrap-anywhere">{t.name}</span>
               <span className="font-mono text-[11px] text-sd-ink/40">
                 {t.numberOfDrafters} member{t.numberOfDrafters !== 1 ? "s" : ""}
               </span>

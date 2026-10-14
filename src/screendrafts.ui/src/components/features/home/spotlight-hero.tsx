@@ -21,7 +21,7 @@ export default function SpotlightHero({ spotlight }: { spotlight: MappedSpotligh
 
           {/* The old inline style read 'clamp(48px, 6vw, 92px' — missing its closing
               parenthesis, so browsers dropped it and the title fell back to the inherited size. */}
-          <div className="font-oswald font-bold mt-5 leading-[1] tracking-[-0.01em] line-clamp-2 [overflow-wrap:anywhere] text-[clamp(36px,9vw,56px)] lg:text-[clamp(48px,6vw,92px)]">
+          <div className="font-oswald font-bold mt-5 leading-none tracking-[-0.01em] line-clamp-2 wrap-anywhere text-[clamp(36px,9vw,56px)] lg:text-[clamp(48px,6vw,92px)]">
             {spotlight.title.toUpperCase()}
           </div>
 
@@ -71,7 +71,7 @@ export default function SpotlightHero({ spotlight }: { spotlight: MappedSpotligh
               >
                 #{pick.position}
               </span>
-              <span className="flex-1 min-w-0 font-oswald font-semibold text-[19px] lg:text-[22px] tracking-[0.02em] [overflow-wrap:anywhere]">
+              <span className="flex-1 min-w-0 font-oswald font-semibold text-[19px] lg:text-[22px] tracking-[0.02em] wrap-anywhere">
                 {pick.title}
               </span>
             </div>

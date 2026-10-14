@@ -257,7 +257,7 @@ export default function PredictionSubmission({
 
   if (isLocked) {
     return (
-      <div className="border border-sd-ink/10 rounded p-4 bg-white space-y-2">
+      <div className="border border-sd-ink/10 rounded-sm p-4 bg-white space-y-2">
         {justLocked && (
           <p className="text-sm text-sd-blue">The draft just started — your picks are locked in.</p>
         )}
@@ -280,7 +280,7 @@ export default function PredictionSubmission({
   const ordered = isOrderedMode(rules.predictionMode);
 
   return (
-    <div className="border border-sd-ink/10 rounded p-4 bg-white space-y-4">
+    <div className="border border-sd-ink/10 rounded-sm p-4 bg-white space-y-4">
       <div>
         <p className="text-sm text-sd-ink font-medium">{MODE_LABELS[rules.predictionMode]}</p>
         <p className="text-[11px] font-mono text-sd-ink/50">
@@ -299,14 +299,14 @@ export default function PredictionSubmission({
               {entries.map((e, i) => (
                 <div
                   key={e.tmdbId}
-                  className="flex items-center gap-1 sm:gap-2 border border-sd-ink/10 rounded pl-3 pr-1 sm:px-3 py-1 sm:py-1.5 bg-sd-paper"
+                  className="flex items-center gap-1 sm:gap-2 border border-sd-ink/10 rounded-sm pl-3 pr-1 sm:px-3 py-1 sm:py-1.5 bg-sd-paper"
                 >
                   {ordered && (
                     <span className="text-[11px] font-mono text-sd-ink/40 w-5">
                       {e.orderIndex}
                     </span>
                   )}
-                  <span className="text-sm text-sd-ink flex-1 min-w-0 [overflow-wrap:anywhere]">{e.mediaTitle}</span>
+                  <span className="text-sm text-sd-ink flex-1 min-w-0 wrap-anywhere">{e.mediaTitle}</span>
                   {ordered && (
                     <>
                       <button

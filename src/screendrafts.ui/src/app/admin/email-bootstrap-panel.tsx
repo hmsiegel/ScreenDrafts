@@ -218,7 +218,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search name or email…"
-            className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full sm:w-[220px]"
+            className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full sm:w-[220px]"
           />
         </div>
 
@@ -262,7 +262,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                   <tr
                     key={c.userPublicId}
                     className={`grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 px-4 py-3 sm:table-row sm:p-0 border-t border-sd-ink/10 hover:bg-sd-paper transition-colors ${
-                      i % 2 === 1 ? "bg-sd-ink/[0.02]" : "bg-white"
+                      i % 2 === 1 ? "bg-sd-ink/2" : "bg-white"
                     }`}
                   >
                     <td className="row-span-4 pt-0.5 sm:table-cell sm:px-4 sm:py-3">
@@ -273,7 +273,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                         aria-label={`Select ${c.firstName} ${c.lastName}`}
                       />
                     </td>
-                    <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink wrap-anywhere">
                       {c.firstName} {c.lastName}
                     </td>
                     <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70 break-all">{c.currentEmail}</td>
@@ -333,7 +333,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
               value={batchLabel}
               onChange={(e) => setBatchLabel(e.target.value)}
               placeholder="e.g. patreon-2026-09"
-              className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded"
+              className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm"
             />
           </div>
           <div className="sm:w-[140px]">
@@ -345,7 +345,7 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
               min={1}
               value={expiryHours}
               onChange={(e) => setExpiryHours(Number(e.target.value))}
-              className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded"
+              className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm"
             />
           </div>
         </div>
@@ -406,9 +406,9 @@ export default function EmailBootstrapPanel({ accessToken, apiBase }: EmailBoots
                 {results.map((r, i) => (
                   <tr
                     key={r.userPublicId ?? i}
-                    className={`flex flex-col gap-1 px-4 py-3 sm:table-row sm:p-0 border-t first:border-t-0 sm:first:border-t border-sd-ink/10 ${i % 2 === 1 ? "bg-sd-ink/[0.02]" : "bg-white"}`}
+                    className={`flex flex-col gap-1 px-4 py-3 sm:table-row sm:p-0 border-t first:border-t-0 sm:first:border-t border-sd-ink/10 ${i % 2 === 1 ? "bg-sd-ink/2" : "bg-white"}`}
                   >
-                    <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">
+                    <td className="sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink wrap-anywhere">
                       {r.firstName} {r.lastName}
                     </td>
                     <td className="sm:table-cell sm:px-4 sm:py-3 font-mono text-[12px] text-sd-ink/70 break-all">{r.currentEmail}</td>

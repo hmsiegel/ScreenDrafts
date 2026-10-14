@@ -5,10 +5,10 @@ import { DRAFT_IMAGE_FALLBACKS, draftImageCandidates } from "@/lib/cdn";
 import FallbackImage from "@/components/features/drafts/fallback-image";
 
 const BTN_SECONDARY =
-  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded";
+  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded-sm";
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
-const IMAGE_CLASS = "w-full max-w-sm object-cover border border-sd-ink/10 rounded";
+const IMAGE_CLASS = "w-full max-w-sm object-cover border border-sd-ink/10 rounded-sm";
 
 /**
  * Turns a failed upload response into a sentence for the user.
@@ -138,7 +138,7 @@ export default function DraftImageUpload({
               alt="Preview"
               className={IMAGE_CLASS}
             />
-            <span className="absolute top-2 left-2 bg-sd-blue text-white text-[10px] font-mono px-2 py-0.5 rounded">
+            <span className="absolute top-2 left-2 bg-sd-blue text-white text-[10px] font-mono px-2 py-0.5 rounded-sm">
               PREVIEW
             </span>
           </div>
@@ -148,7 +148,7 @@ export default function DraftImageUpload({
             alt="Current episode image"
             className={IMAGE_CLASS}
             fallback={
-              <div className="w-full max-w-sm h-40 border-2 border-dashed border-sd-ink/20 rounded flex items-center justify-center">
+              <div className="w-full max-w-sm h-40 border-2 border-dashed border-sd-ink/20 rounded-sm flex items-center justify-center">
                 <span className="text-sm font-mono text-sd-ink/40">No image uploaded</span>
               </div>
             }
@@ -163,7 +163,7 @@ export default function DraftImageUpload({
           type="file"
           accept="image/jpeg,image/png,image/webp"
           onChange={handleFileChange}
-          className="text-sm text-sd-ink/70 file:mr-3 file:py-1.5 file:px-3 file:border file:border-sd-ink/20 file:rounded file:text-sm file:font-mono file:bg-white file:text-sd-ink hover:file:bg-sd-ink/5 file:cursor-pointer"
+          className="text-sm text-sd-ink/70 file:mr-3 file:py-1.5 file:px-3 file:border file:border-sd-ink/20 file:rounded-sm file:text-sm file:font-mono file:bg-white file:text-sd-ink hover:file:bg-sd-ink/5 file:cursor-pointer"
         />
         {preview && (
           <>

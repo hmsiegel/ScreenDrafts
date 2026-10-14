@@ -70,7 +70,7 @@ export default function MobileNav({ isSignedIn, isAdmin, isDrafter, isGuest }: M
             aria-expanded={open}
             aria-controls={panelId}
             aria-label={open ? "Close menu" : "Open menu"}
-            className="relative z-50 w-11 h-11 -mr-2 flex items-center justify-center text-sd-ink rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-sd-blue"
+            className="relative z-50 w-11 h-11 -mr-2 flex items-center justify-center text-sd-ink rounded-sm focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-sd-blue"
          >
             <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square">
                {open ? (
@@ -127,7 +127,7 @@ export default function MobileNav({ isSignedIn, isAdmin, isDrafter, isGuest }: M
                         <button
                            type="button"
                            onClick={() => signOut({ callbackUrl: "/" })}
-                           className="w-full min-h-12 border-2 border-sd-ink text-sd-ink font-oswald font-medium text-sm tracking-[0.14em] rounded hover:bg-sd-paper transition-colors"
+                           className="w-full min-h-12 border-2 border-sd-ink text-sd-ink font-oswald font-medium text-sm tracking-[0.14em] rounded-sm hover:bg-sd-paper transition-colors"
                         >
                            SIGN OUT
                         </button>
@@ -136,14 +136,14 @@ export default function MobileNav({ isSignedIn, isAdmin, isDrafter, isGuest }: M
                            <button
                               type="button"
                               onClick={() => signIn("keycloak", { callbackUrl: "/" })}
-                              className="min-h-12 bg-sd-blue text-white font-oswald font-medium text-sm tracking-[0.14em] rounded hover:bg-blue-700 transition-colors"
+                              className="min-h-12 bg-sd-blue text-white font-oswald font-medium text-sm tracking-[0.14em] rounded-sm hover:bg-blue-700 transition-colors"
                            >
                               SIGN IN
                            </button>
                            <Link
                               href="/register"
                               onClick={close}
-                              className="min-h-12 flex items-center justify-center bg-sd-red text-white font-oswald font-medium text-sm tracking-[0.14em] rounded hover:bg-red-700 transition-colors"
+                              className="min-h-12 flex items-center justify-center bg-sd-red text-white font-oswald font-medium text-sm tracking-[0.14em] rounded-sm hover:bg-red-700 transition-colors"
                            >
                               REGISTER
                            </Link>
@@ -171,7 +171,7 @@ function PrimaryLink({ item, pathname, onNavigate }: LinkProps) {
          href={item.href}
          onClick={onNavigate}
          aria-current={active ? "page" : undefined}
-         className={`flex items-center min-h-12 px-5 border-l-4 font-oswald font-medium text-base tracking-[0.1em] text-sd-ink transition-colors hover:bg-sd-paper ${active ? "border-sd-red bg-sd-paper" : "border-transparent"
+         className={`flex items-center min-h-12 px-5 border-l-4 font-oswald font-medium text-base tracking-widest text-sd-ink transition-colors hover:bg-sd-paper ${active ? "border-sd-red bg-sd-paper" : "border-transparent"
             }`}
       >
          {item.label}

@@ -34,7 +34,7 @@ export default async function CustomQueryPage() {
           <SignInButton />
           <Link
             href="/register"
-            className="bg-sd-red text-white px-[18px] py-2.5 rounded font-oswald font-medium text-sm tracking-[0.14em] hover:bg-red-700 transition-colors"
+            className="bg-sd-red text-white px-[18px] py-2.5 rounded-sm font-oswald font-medium text-sm tracking-[0.14em] hover:bg-red-700 transition-colors"
           >
             REGISTER
           </Link>

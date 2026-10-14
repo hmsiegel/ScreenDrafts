@@ -21,7 +21,7 @@ import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const BTN_SECONDARY =
@@ -133,7 +133,7 @@ export function SeedPredictionsStep({
 
   if (predictors.length === 0) {
     return (
-      <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md space-y-4 text-center">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 max-w-md space-y-4 text-center">
         <p className="text-sm text-sd-ink/60">
           Rules are set but no predictors are configured — nothing to submit.
         </p>
@@ -146,7 +146,7 @@ export function SeedPredictionsStep({
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="bg-white border border-sd-ink/10 rounded p-4">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4">
         <label className={LABEL}>Season</label>
         <select
           className={INPUT}
@@ -374,7 +374,7 @@ function ContestantEntryRow({
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded">
+    <div className="bg-white border border-sd-ink/10 rounded-sm">
       <button
         type="button"
         onClick={onActivate}
@@ -416,7 +416,7 @@ function ContestantEntryRow({
                     value={e.rank}
                     disabled={isLocked}
                     onChange={(ev) => updateRank(e.tmdbId, parseInt(ev.target.value, 10) || e.rank)}
-                    className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded text-center disabled:opacity-50"
+                    className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded-sm text-center disabled:opacity-50"
                   />
                   <span className="flex-1">
                     {e.title} {e.year ? `(${e.year})` : ""}
@@ -447,7 +447,7 @@ function ContestantEntryRow({
                   max={requiredCount}
                   value={pendingRank}
                   onChange={(e) => setPendingRank(parseInt(e.target.value, 10) || 1)}
-                  className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-2 text-sm rounded text-center"
+                  className="w-14 border border-sd-ink/20 bg-sd-paper px-2 py-2 text-sm rounded-sm text-center"
                 />
               </div>
               <div className="flex-1">
@@ -466,7 +466,7 @@ function ContestantEntryRow({
           )}
 
           {error && (
-            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-3 py-2 rounded">
+            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-3 py-2 rounded-sm">
               {error}
             </div>
           )}

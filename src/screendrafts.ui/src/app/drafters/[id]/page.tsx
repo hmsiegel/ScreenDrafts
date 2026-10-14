@@ -99,7 +99,7 @@ export default async function DrafterProfilePage({ params, searchParams }: Props
         </p>
         <div className="flex flex-col-reverse items-start gap-2 sm:flex-row sm:justify-between sm:gap-8">
           <div className="min-w-0">
-            <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white [overflow-wrap:anywhere]">
+            <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white wrap-anywhere">
               {profile.displayName.toUpperCase()}
             </h1>
             {honorificLabel && (
@@ -536,7 +536,7 @@ function DraftBlock({
       <div className="bg-sd-ink px-4 py-4 sm:px-6 sm:py-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <Link
           href={`/drafts/${draft.draftPublicId}`}
-          className="font-oswald font-bold text-[19px] sm:text-[22px] text-white hover:text-sd-red transition-colors leading-tight [overflow-wrap:anywhere]"
+          className="font-oswald font-bold text-[19px] sm:text-[22px] text-white hover:text-sd-red transition-colors leading-tight wrap-anywhere"
         >
           {draft.draftTitle}
         </Link>
@@ -669,7 +669,7 @@ function PickRow({ pick }: { pick: PickItem }) {
 function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
   const targetName = (veto.targetDrafterDisplayName ?? "Unknown").toUpperCase();
   return (
-    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-sd-red/[0.03]">
+    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-sd-red/3">
       <div className="w-9 h-9 shrink-0 flex items-center justify-center border-2 border-sd-red font-oswald font-bold text-[15px] text-sd-red">
         <span className="line-through">{veto.position}</span>
       </div>

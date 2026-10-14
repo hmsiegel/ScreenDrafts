@@ -18,7 +18,7 @@ export default function CommissionerStandings({
         : null;
 
   return (
-    <div className="bg-white border-2 border-sd-ink rounded-sm min-w-0">
+    <div className="bg-white border-2 border-sd-ink rounded-xs min-w-0">
       <div className="bg-sd-red text-white px-5 py-3.5">
         <div className="font-oswald font-bold text-[19px] sm:text-[22px] tracking-[0.06em]">
           COMMISSIONER PREDICTIONS
@@ -47,13 +47,13 @@ export default function CommissionerStandings({
           {standings.entries.map((s, i) => (
             <div key={s.name} className="flex items-center gap-3 py-3">
               <div
-                className={`w-7 h-7 rounded ${rankColors[i] ?? 'bg-gray-400'} text-white font-oswald font-bold text-sm flex items-center justify-center flex-shrink-0`}
+                className={`w-7 h-7 rounded-sm ${rankColors[i] ?? 'bg-gray-400'} text-white font-oswald font-bold text-sm flex items-center justify-center shrink-0`}
               >
                 {s.rank}
               </div>
               {/* min-w-16 rather than w-16: a longer name grows the column instead of overflowing it */}
               <div className="font-oswald font-semibold text-lg tracking-[0.04em] min-w-16 shrink-0">{s.name}</div>
-              <div className="flex-1 min-w-8 h-2 bg-gray-100 rounded overflow-hidden">
+              <div className="flex-1 min-w-8 h-2 bg-gray-100 rounded-sm overflow-hidden">
                 <div
                   className={`h-full ${i === 0 ? 'bg-sd-red' : 'bg-sd-blue'}`}
                   style={{ width: `${standings.targetPoints > 0 ? Math.min((s.totalPoints / standings.targetPoints) * 100, 100) : 0}%` }}

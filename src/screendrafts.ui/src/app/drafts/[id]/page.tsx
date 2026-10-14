@@ -221,7 +221,7 @@ export default async function DraftDetailPage({ params }: Props) {
                 ★ THE EPISODE
               </div>
 
-              <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] text-sd-ink leading-[1] mb-6 [overflow-wrap:anywhere]">
+              <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] text-sd-ink leading-none mb-6 wrap-anywhere">
                 {draft.title}
               </h1>
 

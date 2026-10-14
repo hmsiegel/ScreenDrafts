@@ -70,7 +70,7 @@ function DraftListRow({
         <div className="flex-1 min-w-0">
           <Link
             href={`/my-drafts/${draft.draftPublicId ?? ""}`}
-            className="font-oswald font-bold text-[15px] uppercase tracking-wide text-sd-ink hover:text-sd-blue transition-colors line-clamp-2 [overflow-wrap:anywhere] sm:line-clamp-none sm:truncate"
+            className="font-oswald font-bold text-[15px] uppercase tracking-wide text-sd-ink hover:text-sd-blue transition-colors line-clamp-2 wrap-anywhere sm:line-clamp-none sm:truncate"
           >
             {draft.title}
           </Link>

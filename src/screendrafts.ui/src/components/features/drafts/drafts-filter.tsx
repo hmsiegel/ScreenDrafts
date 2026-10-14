@@ -82,7 +82,7 @@ function CategoryDropdown({ categories, selected, onChange }: CategoryDropdownPr
         type="button"
         onClick={() => setOpen(v => !v)}
         aria-expanded={open}
-        className="w-full border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue text-left flex items-center justify-between gap-2"
+        className="w-full border border-sd-ink/30 rounded-sm px-3 py-2 text-sm text-sd-ink bg-white focus:outline-hidden focus:border-sd-blue text-left flex items-center justify-between gap-2"
       >
         <span className={`truncate ${selected.size === 0 ? "text-sd-ink/40" : ""}`}>{label}</span>
         <span className="text-sd-ink/40 text-xs">{open ? "▲" : "▼"}</span>
@@ -194,9 +194,9 @@ export default function DraftsFilter({ campaigns, categories }: DraftsFilterProp
 
   const labelCls = "block font-mono text-[9px] tracking-widest text-sd-blue font-bold mb-1.5 uppercase";
   const inputCls =
-    "w-full min-w-0 border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue";
+    "w-full min-w-0 border border-sd-ink/30 rounded-sm px-3 py-2 text-sm text-sd-ink focus:outline-hidden focus:border-sd-blue";
   const selectCls =
-    "w-full min-w-0 border border-sd-ink/30 rounded px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue bg-white";
+    "w-full min-w-0 border border-sd-ink/30 rounded-sm px-3 py-2 text-sm text-sd-ink focus:outline-hidden focus:border-sd-blue bg-white";
 
   return (
     <div className="bg-white border-b-[1.5px] border-sd-ink/20 page-x py-4 lg:py-6">

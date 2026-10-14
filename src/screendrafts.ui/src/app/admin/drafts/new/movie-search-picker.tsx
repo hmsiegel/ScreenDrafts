@@ -6,7 +6,7 @@ import { useMovieSearch } from "@/lib/use-movie-search";
 import type { ResolvedMovie } from "@/lib/movie-resolve";
 
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 
 interface Props {
   accessToken: string;
@@ -54,7 +54,7 @@ export function MovieSearchPicker({
         <p className="text-[11px] font-mono text-sd-ink/40 mt-1 px-1">Searching…</p>
       )}
       {!searching && results.length > 0 && (
-        <div className="border border-sd-ink/10 rounded mt-2 max-h-48 overflow-y-auto">
+        <div className="border border-sd-ink/10 rounded-sm mt-2 max-h-48 overflow-y-auto">
           {results.map((m) => (
             <button
               key={m.tmdbId}

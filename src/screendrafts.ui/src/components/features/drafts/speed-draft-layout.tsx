@@ -270,7 +270,7 @@ export function SpeedDraftLayout({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_minmax(0,1fr)] lg:gap-10 mx-auto max-w-[720px] lg:max-w-[1400px]">
       {/* ── Left sidebar ───────────────────────────────────────────────── */}
       <aside
-        className="order-last lg:order-none bg-white border-2 border-sd-ink lg:sticky lg:top-6 self-start px-5 py-6 lg:px-6 lg:py-7"
+        className="order-last lg:order-0 bg-white border-2 border-sd-ink lg:sticky lg:top-6 self-start px-5 py-6 lg:px-6 lg:py-7"
       >
         <div className="font-mono text-[10px] tracking-widest text-sd-blue font-bold mb-1">
           EPISODE
@@ -403,7 +403,7 @@ export function SpeedDraftLayout({
             ★ THE EPISODE
           </div>
 
-          <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] text-sd-ink leading-[1] mb-6 [overflow-wrap:anywhere]">
+          <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] text-sd-ink leading-none mb-6 wrap-anywhere">
             {draft.title}
           </h1>
 
@@ -421,7 +421,7 @@ export function SpeedDraftLayout({
               lets the active tab sit on the rule lives on the scroller, not the tabs: a scroll
               container clips vertically too, so a per-tab negative margin would be cut off. */}
           <div className="sm:flex sm:items-end border-b-2 border-sd-ink">
-            <div className="flex overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mb-[2px]">
+            <div className="flex overflow-x-auto overscroll-x-contain scrollbar-none mb-[-2px]">
             {tabs.map((tab) => {
               const isActive = tab.index === activeIndex;
               return (

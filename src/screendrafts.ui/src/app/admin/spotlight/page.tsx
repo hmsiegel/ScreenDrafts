@@ -18,7 +18,7 @@ export default async function AdminSpotlightPage() {
         <h1 className="font-oswald font-bold text-[36px] sm:text-[48px] lg:text-[56px] leading-none text-sd-ink">
           DRAFT SPOTLIGHT
         </h1>
-        <p className="text-sm text-sd-ink/100 mt-2 leading-relaxed max-w-lg">
+        <p className="text-sm text-sd-ink mt-2 leading-relaxed max-w-lg">
           The active spotlight appears on the home page hero. Only one can be active at a time —
           activating a new one automatically deactivates the current.
         </p>

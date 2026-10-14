@@ -92,7 +92,7 @@ function EditSpotlightForm({ accessToken, item, onSaved, onCancel }: EditSpotlig
         onChange={e => setDescription(e.target.value)}
         rows={4}
         maxLength={1000}
-        className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink focus:outline-none focus:border-sd-blue resize-none"
+        className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink focus:outline-hidden focus:border-sd-blue resize-none"
       />
       <p className="text-[11px] text-sd-ink/40 mt-1 text-right">{description.length}/1000</p>
 
@@ -104,7 +104,7 @@ function EditSpotlightForm({ accessToken, item, onSaved, onCancel }: EditSpotlig
         value={spotifyUrl}
         onChange={e => setSpotifyUrl(e.target.value)}
         placeholder="https://open.spotify.com/episode/…"
-        className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+        className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-hidden focus:border-sd-blue"
       />
 
       {error && <p className="text-sd-red text-sm mt-2">{error}</p>}
@@ -122,7 +122,7 @@ function EditSpotlightForm({ accessToken, item, onSaved, onCancel }: EditSpotlig
           type="button"
           onClick={onCancel}
           disabled={saving}
-          className="text-sd-ink/40 text-xs font-bold tracking-[0.1em] hover:text-sd-ink transition-colors disabled:opacity-40"
+          className="text-sd-ink/40 text-xs font-bold tracking-widest hover:text-sd-ink transition-colors disabled:opacity-40"
         >
           CANCEL
         </button>
@@ -190,7 +190,7 @@ function AddSpotlightForm({ accessToken, onCreated }: AddSpotlightFormProps) {
   return (
     <section>
       <div className="bg-white border border-sd-ink/10 p-4 sm:p-6">
-        <h2 className="font-oswald font-bold text-base tracking-[0.1em] text-sd-ink mb-5">
+        <h2 className="font-oswald font-bold text-base tracking-widest text-sd-ink mb-5">
           ADD TO LIBRARY
         </h2>
 
@@ -203,11 +203,11 @@ function AddSpotlightForm({ accessToken, onCreated }: AddSpotlightFormProps) {
             value={query}
             onChange={e => { setQuery(e.target.value); setSelected(null); }}
             placeholder="Title or episode number…"
-            className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+            className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-hidden focus:border-sd-blue"
           />
           {searching && <p className="text-[11px] text-sd-ink/40 mt-1.5">Searching…</p>}
           {!searching && candidates.length > 0 && !selected && (
-            <ul className="border border-sd-ink/10 bg-white mt-0.5 divide-y divide-sd-ink/5 max-h-52 overflow-y-auto shadow-sm">
+            <ul className="border border-sd-ink/10 bg-white mt-0.5 divide-y divide-sd-ink/5 max-h-52 overflow-y-auto shadow-xs">
               {candidates.map(c => (
                 <li key={c.draftPublicId}>
                   <button
@@ -238,7 +238,7 @@ function AddSpotlightForm({ accessToken, onCreated }: AddSpotlightFormProps) {
             onChange={e => setDescription(e.target.value)}
             rows={3}
             placeholder="Write a short description for the home page hero…"
-            className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue resize-none"
+            className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-hidden focus:border-sd-blue resize-none"
           />
         </div>
 
@@ -251,7 +251,7 @@ function AddSpotlightForm({ accessToken, onCreated }: AddSpotlightFormProps) {
             value={spotifyUrl}
             onChange={e => setSpotifyUrl(e.target.value)}
             placeholder="https://open.spotify.com/episode/…"
-            className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+            className="w-full border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-hidden focus:border-sd-blue"
           />
         </div>
 
@@ -412,7 +412,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
 
       {/* ── Active spotlight ── */}
       <section>
-        <h2 className="font-oswald font-bold text-base tracking-[0.1em] text-sd-ink/50 mb-3">
+        <h2 className="font-oswald font-bold text-base tracking-widest text-sd-ink/50 mb-3">
           ACTIVE SPOTLIGHT
         </h2>
         {active ? (
@@ -488,7 +488,7 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
       {/* ── Library ── */}
       <section>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <h2 className="font-oswald font-bold text-base tracking-[0.1em] text-sd-ink/50">
+          <h2 className="font-oswald font-bold text-base tracking-widest text-sd-ink/50">
             SPOTLIGHT LIBRARY
             {totalLibraryCount > 0 && (
               <span className="ml-2 text-sd-ink/30 font-normal">({totalLibraryCount})</span>
@@ -504,12 +504,12 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
             value={librarySearch}
             onChange={e => setLibrarySearch(e.target.value)}
             placeholder="Search library…"
-            className="flex-1 min-w-[12rem] border border-sd-ink/15 bg-sd-paper px-3 py-1.5 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+            className="flex-1 min-w-48 border border-sd-ink/15 bg-sd-paper px-3 py-1.5 text-sm text-sd-ink placeholder:text-sd-ink/30 focus:outline-hidden focus:border-sd-blue"
           />
           <select
             value={draftTypeFilter}
             onChange={e => setDraftTypeFilter(e.target.value)}
-            className="border border-sd-ink/15 bg-sd-paper px-3 py-1.5 text-sm text-sd-ink focus:outline-none focus:border-sd-blue"
+            className="border border-sd-ink/15 bg-sd-paper px-3 py-1.5 text-sm text-sd-ink focus:outline-hidden focus:border-sd-blue"
           >
             <option value="">All types</option>
             {DRAFT_TYPES.map(t => (
@@ -562,14 +562,14 @@ export default function SpotlightManager({ accessToken }: SpotlightManagerProps)
                   <div className="flex items-center gap-2 shrink-0 pt-0.5">
                     {editingId === item.publicId ? null : deleteConfirmId === item.publicId ? (
                       <>
-                        <span className="text-xs text-sd-red font-bold tracking-[0.1em]">DELETE?</span>
+                        <span className="text-xs text-sd-red font-bold tracking-widest">DELETE?</span>
                         <button type="button" onClick={() => handleDelete(item.publicId!)}
                           disabled={pendingId === item.publicId}
                           className="border border-sd-red text-sd-red font-oswald font-bold tracking-[0.14em] text-xs px-3 py-1.5 disabled:opacity-40">
                           {pendingId === item.publicId ? '…' : 'CONFIRM'}
                         </button>
                         <button type="button" onClick={() => setDeleteConfirmId(null)}
-                          className="text-sd-ink/40 text-xs font-bold tracking-[0.1em] hover:text-sd-ink transition-colors">
+                          className="text-sd-ink/40 text-xs font-bold tracking-widest hover:text-sd-ink transition-colors">
                           CANCEL
                         </button>
                       </>

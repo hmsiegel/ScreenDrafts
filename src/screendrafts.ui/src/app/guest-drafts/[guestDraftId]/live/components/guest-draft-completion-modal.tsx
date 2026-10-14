@@ -20,7 +20,7 @@ export function GuestDraftCompletionModal({ title, totalPicks, vetoCount }: Prop
   const { picks } = useGuestDraftLive();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-sd-ink/95 backdrop-blur-sm overflow-y-auto py-8 px-6">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-sd-ink/95 backdrop-blur-xs overflow-y-auto py-8 px-6">
       <GuestDraftSummaryContent
         title={title}
         totalPicks={totalPicks}

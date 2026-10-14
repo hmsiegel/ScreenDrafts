@@ -50,7 +50,7 @@ export default function DraftersFilterStrip({
   return (
     <div className="bg-white border-b border-sd-ink/20 page-x py-4 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-6">
       {/* Role tabs */}
-      <div className="flex gap-1 overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="flex gap-1 overflow-x-auto overscroll-x-contain scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         {TABS.map((tab) => (
           <Link
             key={tab.value}
@@ -77,7 +77,7 @@ export default function DraftersFilterStrip({
             name="q"
             defaultValue={q ?? ""}
             placeholder="Search…"
-            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-ink w-full sm:w-40"
+            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-ink w-full sm:w-40"
           />
         </form>
 

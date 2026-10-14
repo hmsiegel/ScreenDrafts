@@ -19,7 +19,7 @@ interface SlideOverProps {
 
 function Toast({ message }: { message: string }) {
   return (
-    <div className="fixed bottom-6 right-6 z-[100] bg-sd-ink text-white font-mono text-[12px] tracking-wide px-5 py-3 rounded-full shadow-lg">
+    <div className="fixed bottom-6 right-6 z-100 bg-sd-ink text-white font-mono text-[12px] tracking-wide px-5 py-3 rounded-full shadow-lg">
       {message}
     </div>
   );
@@ -123,7 +123,7 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue"
+              className="w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-hidden focus:border-sd-blue"
             />
           </div>
           <div>
@@ -134,7 +134,7 @@ function SlideOver({ mode, item, onClose, onSaved, accessToken }: SlideOverProps
               value={description}
               onChange={e => setDescription(e.target.value)}
               rows={4}
-              className="w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-none focus:border-sd-blue resize-none"
+              className="w-full border border-sd-ink/20 px-3 py-2 text-sm text-sd-ink bg-white focus:outline-hidden focus:border-sd-blue resize-none"
             />
           </div>
         </div>
@@ -307,7 +307,7 @@ export default function CampaignManager({ initialData, accessToken }: Props) {
                 key={item.publicId}
                 className={`flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 sm:table-row sm:p-0 border-b border-sd-ink/5 transition-colors ${item.isDeleted ? "opacity-50" : "hover:bg-sd-paper/60"}`}
               >
-                <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink [overflow-wrap:anywhere]">{item.name}</td>
+                <td className="w-full sm:w-auto sm:table-cell sm:px-4 sm:py-3 font-medium text-sd-ink wrap-anywhere">{item.name}</td>
                 <td className="hidden sm:table-cell sm:px-4 sm:py-3 text-sd-ink/60">—</td>
                 <td className="sm:table-cell sm:px-4 sm:py-3">
                   {item.isDeleted && (

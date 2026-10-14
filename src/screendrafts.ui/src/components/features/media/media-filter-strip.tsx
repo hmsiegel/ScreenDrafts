@@ -43,7 +43,7 @@ export default function MediaFilterStrip({ mediaType, sort, q, year }: MediaFilt
             name="q"
             defaultValue={q ?? ""}
             placeholder="Search…"
-            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-ink w-full sm:w-40"
+            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-ink w-full sm:w-40"
           />
         </form>
 
@@ -58,7 +58,7 @@ export default function MediaFilterStrip({ mediaType, sort, q, year }: MediaFilt
             defaultValue={year ?? ""}
             placeholder="Year"
             maxLength={4}
-            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-ink w-20"
+            className="border border-sd-ink/30 px-3 py-1.5 font-mono text-[11px] text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-ink w-20"
           />
         </form>
 

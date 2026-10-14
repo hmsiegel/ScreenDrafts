@@ -135,7 +135,7 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
       )}
 
       {!checkingPredictions && predictionsInvalid && (
-        <div className="border border-sd-red/30 bg-sd-red/5 text-sd-ink text-sm px-4 py-3 rounded space-y-2">
+        <div className="border border-sd-red/30 bg-sd-red/5 text-sd-ink text-sm px-4 py-3 rounded-sm space-y-2">
           <p className="font-medium text-sd-red">
             {standaloneSetCount} predictors would show up as independent standings
             entries — there should only ever be 2.
@@ -150,7 +150,7 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
       )}
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}

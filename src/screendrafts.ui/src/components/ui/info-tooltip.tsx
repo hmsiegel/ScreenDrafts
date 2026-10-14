@@ -99,7 +99,7 @@ export default function InfoTooltip({ children, position = 'top' }: InfoTooltipP
             toggle();
           }
         }}
-        className="text-sd-ink/30 hover:text-sd-blue transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-sd-blue rounded-full cursor-pointer p-1 -m-1"
+        className="text-sd-ink/30 hover:text-sd-blue transition-colors focus:outline-hidden focus-visible:ring-1 focus-visible:ring-sd-blue rounded-full cursor-pointer p-1 -m-1"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

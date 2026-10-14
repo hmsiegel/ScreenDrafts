@@ -38,7 +38,7 @@ export function InProgressGuestDraftsList({ drafts }: Props) {
               key={d.publicId}
               className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 sm:table-row sm:py-0 border-b border-sd-ink/5 last:border-b-0 sm:last:border-b hover:bg-sd-paper/60 transition-colors"
             >
-              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{d.title}</td>
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink wrap-anywhere">{d.title}</td>
               <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">{guestDraftTypeLabel(d.type)}</td>
               <td className="sm:table-cell sm:py-3 sm:pr-4">
                 <span className="font-mono text-[10px] tracking-widest uppercase text-sd-ink/50">

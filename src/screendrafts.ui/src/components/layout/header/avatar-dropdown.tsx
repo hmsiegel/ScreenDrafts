@@ -61,7 +61,7 @@ export default function AvatarDropdown({ name, isDrafter }: Props) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50 py-1">
+        <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-sm shadow-lg z-50 py-1">
           <Link
             href="/profile"
             onClick={() => setOpen(false)}

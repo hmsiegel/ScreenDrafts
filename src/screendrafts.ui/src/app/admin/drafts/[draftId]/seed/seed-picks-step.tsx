@@ -22,7 +22,7 @@ import type { SeedDraftState } from "./seed-draft-wizard";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const BTN_SECONDARY =
@@ -471,7 +471,7 @@ export function SeedPicksStep({
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="bg-white border border-sd-ink/10 rounded p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p className="text-sm text-sd-ink/70">
           {totalPicks == null
             ? "Loading board…"
@@ -484,7 +484,7 @@ export function SeedPicksStep({
 
       {/* Fungible token balances — only shown for drafts that use one */}
       {fungibleTokenName && (
-        <div className="bg-white border border-sd-ink/10 rounded p-3">
+        <div className="bg-white border border-sd-ink/10 rounded-sm p-3">
           <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
             {fungibleTokenName} Remaining
           </p>
@@ -501,7 +501,7 @@ export function SeedPicksStep({
 
       {/* Picks so far */}
       {picks.length > 0 && (
-        <div className="bg-white border border-sd-ink/10 rounded divide-y divide-sd-ink/5">
+        <div className="bg-white border border-sd-ink/10 rounded-sm divide-y divide-sd-ink/5">
           {picks.map((p) => {
             const showingPicker = pendingAction?.playOrder === p.playOrder;
             return (
@@ -590,7 +590,7 @@ export function SeedPicksStep({
                       {pendingAction.type === "veto" ? "Vetoed by" : "Overridden by"}
                     </label>
                     <select
-                      className="border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded flex-1"
+                      className="border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded-sm flex-1"
                       value={pendingAction.issuerIdValue}
                       onChange={(e) =>
                         setPendingAction({ ...pendingAction, issuerIdValue: e.target.value })
@@ -638,11 +638,11 @@ export function SeedPicksStep({
       )}
 
       {/* Next pick form */}
-      <div className="bg-white border border-sd-ink/10 rounded p-6 space-y-4">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-6 space-y-4">
         <div>
           <label className={LABEL}>Movie</label>
           {selectedMovie ? (
-            <div className="flex items-center justify-between border border-sd-ink/20 rounded px-3 py-2">
+            <div className="flex items-center justify-between border border-sd-ink/20 rounded-sm px-3 py-2">
               <span className="text-sm text-sd-ink">
                 {selectedMovie.title} {selectedMovie.year ? `(${selectedMovie.year})` : ""}
               </span>
@@ -761,7 +761,7 @@ export function SeedPicksStep({
         )}
 
         {error && (
-          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
             {error}
           </div>
         )}

@@ -45,7 +45,7 @@ export interface MediaPickerTheme {
 
 export const LIGHT_THEME: MediaPickerTheme = {
   input:
-    "border border-sd-ink/20 bg-white px-3 py-2 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue",
+    "border border-sd-ink/20 bg-white px-3 py-2 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-blue",
   overlayPanel: true,
   panelWrapper: "border border-sd-ink/20 bg-white shadow-lg max-h-64 overflow-y-auto",
   border: "border-sd-ink/10",
@@ -58,9 +58,9 @@ export const LIGHT_THEME: MediaPickerTheme = {
 };
 
 export const DARK_THEME: MediaPickerTheme = {
-  input: "bg-transparent text-sd-paper text-sm font-mono placeholder:text-white/30 outline-none",
+  input: "bg-transparent text-sd-paper text-sm font-mono placeholder:text-white/30 outline-hidden",
   overlayPanel: false,
-  panelWrapper: "border border-white/10 rounded mt-2 max-h-64 overflow-y-auto",
+  panelWrapper: "border border-white/10 rounded-sm mt-2 max-h-64 overflow-y-auto",
   border: "border-white/5",
   row: "text-sd-paper hover:bg-white/5",
   rowMuted: "font-mono text-white/40 text-xs",

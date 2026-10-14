@@ -42,7 +42,7 @@ export default function AdminDropdown() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-sd-ink rounded shadow-lg z-50 py-1">
+        <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-sd-ink rounded-sm shadow-lg z-50 py-1">
           {ADMIN_ITEMS.map(({ label, href }) => {
             const isActive = pathname === href || (href !== "/admin" && pathname.startsWith(href));
             return (

@@ -197,7 +197,7 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
   const hasStandings = summary.standings.length > 0;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center bg-sd-ink/95 backdrop-blur-sm overflow-y-auto py-8">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-sd-ink/95 backdrop-blur-xs overflow-y-auto py-8">
       <div className="w-full max-w-5xl mx-6">
 
         {/* Header */}

@@ -33,7 +33,7 @@ export default async function SeedDraftPage({ params }: Props) {
           {" / SEED"}
         </p>
 
-        <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2 [overflow-wrap:anywhere]">
+        <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2 wrap-anywhere">
           SEED: {detail.title.toUpperCase()}
         </h1>
         <p className="text-sm text-sd-ink/60 mb-10 max-w-2xl">

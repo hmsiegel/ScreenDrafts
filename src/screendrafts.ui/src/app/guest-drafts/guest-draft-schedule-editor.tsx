@@ -33,7 +33,7 @@ const TONES = {
   },
   dark: {
     label: 'text-white/50',
-    input: 'border-white/20 bg-white/5 text-white focus:ring-light-blue [color-scheme:dark]',
+    input: 'border-white/20 bg-white/5 text-white focus:ring-light-blue scheme-dark',
     button: 'border-light-blue text-light-blue hover:bg-light-blue hover:text-sd-ink',
     saved: 'text-green-400',
     readOnly: 'text-white/60',
@@ -110,7 +110,7 @@ export function GuestDraftScheduleEditor({
           </label>
           <input
             type="datetime-local"
-            className={`border px-3 py-2 font-sans text-sm rounded max-w-[240px] focus:outline-none focus:ring-2 ${t.input}`}
+            className={`border px-3 py-2 font-sans text-sm rounded-sm max-w-[240px] focus:outline-hidden focus:ring-2 ${t.input}`}
             value={value}
             onChange={(e) => {
               setValue(e.target.value);

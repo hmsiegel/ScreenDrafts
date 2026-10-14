@@ -12,7 +12,7 @@ import {
 import type { GuestDraftInvitationResponse } from '@/lib/dto';
 
 const INPUT =
-  'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full';
+  'border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full';
 const LABEL = 'block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1';
 const SECTION_HEADING =
   'font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10';
@@ -145,8 +145,8 @@ export function InviteByEmailSection({ accessToken, guestDraftId }: Props) {
               className="flex flex-wrap items-center gap-x-3 gap-y-2 border border-sd-ink/10 p-3"
             >
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-sd-ink [overflow-wrap:anywhere]">{inv.name}</p>
-                <p className="text-[11px] text-sd-ink/50 font-mono [overflow-wrap:anywhere]">
+                <p className="text-sm text-sd-ink wrap-anywhere">{inv.name}</p>
+                <p className="text-[11px] text-sd-ink/50 font-mono wrap-anywhere">
                   {inv.email}
                 </p>
               </div>

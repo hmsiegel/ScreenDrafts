@@ -550,7 +550,7 @@ export function SpeedDraftPickPanel({
                 ? `Filter "${subjectName}" filmography…`
                 : `Refine within "${subjectName}"… (e.g. "of soul")`
             }
-            className="w-full bg-transparent border border-white/20 px-3 py-2 text-sm text-sd-paper placeholder:text-white/30 font-mono focus:outline-none focus:border-white/50"
+            className="w-full bg-transparent border border-white/20 px-3 py-2 text-sm text-sd-paper placeholder:text-white/30 font-mono focus:outline-hidden focus:border-white/50"
           />
         </div>
       )}

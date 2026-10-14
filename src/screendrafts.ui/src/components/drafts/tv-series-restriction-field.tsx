@@ -76,7 +76,7 @@ export function TvSeriesRestrictionField({ accessToken, value, onChange, locked 
       {enabled ? (
         <>
           {locked && (
-            <p className="text-[11px] font-mono text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mb-2">
+            <p className="text-[11px] font-mono text-amber-700 bg-amber-50 border border-amber-200 rounded-sm px-3 py-2 mb-2">
               This can only be changed while the draft hasn&apos;t started yet.
             </p>
           )}
@@ -97,7 +97,7 @@ export function TvSeriesRestrictionField({ accessToken, value, onChange, locked 
               )}
             </div>
           ) : locked ? (
-            <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink/50 text-sm font-mono">
+            <div className="px-3 py-2 bg-sd-ink/5 rounded-sm text-sd-ink/50 text-sm font-mono">
               No restriction
             </div>
           ) : (

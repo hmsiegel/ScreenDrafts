@@ -1,7 +1,4 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "ignore": [
-    ".claude/**",
-    ".claire/**"
-  ]
+  "ignore": ["src/lib/dto.ts"]
 }

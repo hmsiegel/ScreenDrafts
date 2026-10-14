@@ -7,7 +7,7 @@ export default function AuthStrip() {
   return (
     <div className="page-x pb-10 grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Join the league */}
-      <div className="bg-sd-ink text-white p-6 sm:p-9 rounded relative overflow-hidden min-w-0">
+      <div className="bg-sd-ink text-white p-6 sm:p-9 rounded-sm relative overflow-hidden min-w-0">
         <div className="font-oswald font-bold text-[24px] sm:text-[30px] leading-[1.1] tracking-[0.02em]">
           JOIN THE LEAGUE.<br />
           <span className="text-light-blue">PLAY THE GAME.</span>
@@ -19,7 +19,7 @@ export default function AuthStrip() {
           <SignInButton />
           <Link
             href="/register"
-            className="border-2 border-white text-white px-5 py-2.5 font-oswald font-bold tracking-[0.16em] text-sm rounded hover:bg-white/10 transition-colors"
+            className="border-2 border-white text-white px-5 py-2.5 font-oswald font-bold tracking-[0.16em] text-sm rounded-sm hover:bg-white/10 transition-colors"
           >
             REGISTER FREE
           </Link>
@@ -27,7 +27,7 @@ export default function AuthStrip() {
       </div>
 
       {/* Patron tier */}
-      <div className="bg-sd-red text-white p-6 sm:p-9 rounded relative overflow-hidden min-w-0">
+      <div className="bg-sd-red text-white p-6 sm:p-9 rounded-sm relative overflow-hidden min-w-0">
         <div className="relative text-[11px] tracking-[0.28em] opacity-85">★ PATRON TIER</div>
         <div className="relative font-oswald font-bold text-[24px] sm:text-[30px] leading-[1.1] tracking-[0.02em] mt-1">
           UNLOCK BONUS DRAFTS.<br />JOIN THE ZOOM ROOM.
@@ -38,7 +38,7 @@ export default function AuthStrip() {
         <div className="relative mt-6">
           <Link
             href="/patreon"
-            className="bg-white text-sd-red px-5 py-3 font-oswald font-bold tracking-[0.16em] text-sm rounded hover:bg-gray-100 transition-colors inline-block"
+            className="bg-white text-sd-red px-5 py-3 font-oswald font-bold tracking-[0.16em] text-sm rounded-sm hover:bg-gray-100 transition-colors inline-block"
           >
             LINK PATREON →
           </Link>

@@ -34,13 +34,13 @@ import {
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const SELECT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const BTN_SECONDARY =
-  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded";
+  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded-sm";
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
 
@@ -919,7 +919,7 @@ export default function CreateDraftForm({
         {numParts > 1 && (
           <div className="space-y-3">
             {parts.map((part, idx) => (
-              <div key={idx} className="border border-sd-ink/10 rounded">
+              <div key={idx} className="border border-sd-ink/10 rounded-sm">
                 <button
                   type="button"
                   className="w-full flex items-center justify-between px-4 py-3 text-left bg-sd-ink/5 hover:bg-sd-ink/10 transition-colors"
@@ -936,20 +936,20 @@ export default function CreateDraftForm({
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
                         <label className={LABEL}>Part Index</label>
-                        <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono">
+                        <div className="px-3 py-2 bg-sd-ink/5 rounded-sm text-sd-ink text-sm font-mono">
                           {part.partIndex}
                         </div>
                       </div>
                       <div>
                         <label className={LABEL}>Min Positions</label>
-                        <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono">
+                        <div className="px-3 py-2 bg-sd-ink/5 rounded-sm text-sd-ink text-sm font-mono">
                           {part.minPositions}
                         </div>
                       </div>
                       <div>
                         <label className={LABEL}>Max Positions</label>
                         {part.maxLocked ? (
-                          <div className="px-3 py-2 bg-sd-ink/5 rounded text-sd-ink text-sm font-mono flex items-center gap-2">
+                          <div className="px-3 py-2 bg-sd-ink/5 rounded-sm text-sd-ink text-sm font-mono flex items-center gap-2">
                             {part.maxPositions}
                             <span className="text-[10px] text-sd-ink/40 font-mono uppercase tracking-wide">locked</span>
                           </div>
@@ -1001,7 +1001,7 @@ export default function CreateDraftForm({
               {boostersChampionAssignments.map((a) => (
                 <div
                   key={a.drafterPublicId}
-                  className="border border-sd-ink/10 rounded p-3 bg-white"
+                  className="border border-sd-ink/10 rounded-sm p-3 bg-white"
                 >
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-sm font-medium text-sd-ink flex-1">
@@ -1065,7 +1065,7 @@ export default function CreateDraftForm({
             {hosts.map((h) => (
               <div
                 key={h.publicId}
-                className="flex items-center justify-between gap-3 px-3 py-2 bg-white border border-sd-ink/10 rounded"
+                className="flex items-center justify-between gap-3 px-3 py-2 bg-white border border-sd-ink/10 rounded-sm"
               >
                 <span className="text-sm text-sd-ink font-medium">{h.displayName}</span>
                 <div className="flex items-center gap-3">
@@ -1103,7 +1103,7 @@ export default function CreateDraftForm({
           </div>
         )}
 
-        <div className="border border-sd-ink/10 rounded p-4 bg-white">
+        <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
           <input
             type="text"
             placeholder="Search hosts…"
@@ -1120,7 +1120,7 @@ export default function CreateDraftForm({
                   key={h.publicId}
                   type="button"
                   onClick={() => addHost(h)}
-                  className="w-full text-left px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded transition-colors"
+                  className="w-full text-left px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm transition-colors"
                 >
                   {h.displayName}
                 </button>
@@ -1205,14 +1205,14 @@ export default function CreateDraftForm({
           {/* ── Section 5: Category ── */}
           <section>
             <h2 className={SECTION_HEADING}>Category (Optional)</h2>
-            <div className="border border-sd-ink/10 rounded p-4 bg-white">
+            <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
               <div className="max-h-40 overflow-y-auto columns-2 gap-4">
                 {categoryList.map((c) => {
                   const checked = selectedCategoryIds.has(c.publicId);
                   return (
                     <label
                       key={c.publicId}
-                      className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded px-2 py-1 cursor-pointer break-inside-avoid"
+                      className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm px-2 py-1 cursor-pointer break-inside-avoid"
                     >
                       <input
                         type="checkbox"
@@ -1268,7 +1268,7 @@ export default function CreateDraftForm({
             {subDraftSubjects.map((subject, idx) => (
               <div
                 key={subject.index}
-                className="border border-sd-ink/10 rounded p-4 bg-white grid grid-cols-1 sm:grid-cols-[80px_160px_1fr] gap-3 sm:items-end"
+                className="border border-sd-ink/10 rounded-sm p-4 bg-white grid grid-cols-1 sm:grid-cols-[80px_160px_1fr] gap-3 sm:items-end"
               >
                 <div className="font-oswald font-bold text-sd-ink pb-2">
                   Subject {subject.index}
@@ -1340,13 +1340,13 @@ export default function CreateDraftForm({
       )}
 
       {partialParticipantMessage && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {partialParticipantMessage}
         </div>
       )}
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}
