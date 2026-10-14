@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { completeDraftPart, getDraft, getDraftPartPredictions } from "@/services/admin/fetch-admin-drafts";
+import { refreshHomeData } from "@/app/home-actions";
 import type { SeedDraftState } from "./seed-draft-wizard";
 
 const BTN_PRIMARY =
@@ -84,6 +85,7 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
     setError(null);
     try {
       await completeDraftPart(accessToken, draft.draftPublicId, draft.partIndex);
+      void refreshHomeData().catch(() => {});
       onDone();
       setDone(true);
     } catch (err) {
@@ -94,6 +96,7 @@ export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }
       const part = current?.parts.find((p) => p.partIndex === draft.partIndex);
       if (part?.status.name === "Completed") {
         setIsComplete(true);
+        void refreshHomeData().catch(() => {});
         onDone();
         setDone(true);
         return;

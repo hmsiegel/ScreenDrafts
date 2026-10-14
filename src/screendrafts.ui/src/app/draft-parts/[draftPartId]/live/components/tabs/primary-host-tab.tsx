@@ -7,6 +7,7 @@ import { DraftBoard } from '../draft-board';
 import { DraftPickList } from '../draft-pick-list';
 import { submitTriviaResults } from '../../gameplay-fetchers';
 import { completeDraftPart } from '@/services/drafts/fetch-my-drafts';
+import { refreshHomeData } from '@/app/home-actions';
 import * as signalR from '@microsoft/signalr';
 import { SpeedDraftTabs } from '../speed-draft-tabs';
 
@@ -399,6 +400,7 @@ function GameplayView({
     setError(null);
     try {
       await completeDraftPart(accessToken, gameplay.draftId ?? "", gameplay.partIndex ?? 0);
+      void refreshHomeData().catch(() => {});
       await refetch();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete draft part.');
