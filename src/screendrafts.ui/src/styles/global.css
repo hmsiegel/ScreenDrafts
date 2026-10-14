@@ -1,32 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap')
+layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  --background: #88ADD0;
-  --foreground: #171717;
-  --sd-navy:   #0d1430;
-  --sd-red:    #cb2032;
-  --sd-blue:   #1e448b;
-  --sd-cream:  #fbf7ee;
-  --sd-red-dark: #a8182a;
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-light-blue: #88add0;
+  --color-sd-blue: #1e448b;
+  --color-sd-red: #cb2032;
+  --color-sd-ink: #0d1430;
+  --color-sd-paper: #fbf7ee;
+
+  --font-oswald: Oswald, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
-input[type='number'] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+  /* Tailwind 4 dropped the pointer cursor on buttons; v3 preflight set it. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
-input[type='number']::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+@utility page-x {
+  /* Page gutter. Use instead of ad-hoc px-8 / px-10 on page wrappers. */
+  @apply px-4 sm:px-6 lg:px-10;
 }
 
-input[type='number']::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+@layer utilities {
+  :root {
+    --background: #88add0;
+    --foreground: #171717;
+    --sd-navy: #0d1430;
+    --sd-red: #cb2032;
+    --sd-blue: #1e448b;
+    --sd-cream: #fbf7ee;
+    --sd-red-dark: #a8182a;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 @layer base {
@@ -49,9 +91,9 @@ input[type='number']::-webkit-outer-spin-button {
   }
 }
 
-.btn-blue {
-  @apply
-  uppercase
+@layer utilities {
+  .btn-blue {
+    @apply uppercase
   text-center
   bg-sd-blue
   text-white
@@ -60,12 +102,11 @@ input[type='number']::-webkit-outer-spin-button {
   py-2
   px-4
   my-3
-  cursor-pointer
-}
+  cursor-pointer;
+  }
 
-.btn-red {
-  @apply
-  uppercase
+  .btn-red {
+    @apply uppercase
   text-center
   bg-sd-red
   text-white
@@ -74,12 +115,11 @@ input[type='number']::-webkit-outer-spin-button {
   py-2
   px-4
   my-3
-  cursor-pointer
-}
+  cursor-pointer;
+  }
 
-.label {
-  @apply
-  uppercase
+  .label {
+    @apply uppercase
   block
   text-gray-700
   text-base
@@ -87,103 +127,113 @@ input[type='number']::-webkit-outer-spin-button {
   md:text-right
   mb-1
   md:mb-0
-  pr-4
-}
+  pr-4;
+  }
 
-.input {
-  @apply
-bg-gray-200
+  .input {
+    @apply bg-gray-200
 appearance-none
 border-2
 border-gray-200
-rounded
+rounded-sm
 w-full
 py-2
 px-4
 text-gray-700
 leading-tight
-focus:outline-none
+focus:outline-hidden
 focus:bg-white
-focus:border-sd-blue
-}
+focus:border-sd-blue;
+  }
 
-.table-data {
-  @apply
-  px-4
-  py-2
-}
+  .table-data {
+    @apply px-4
+  py-2;
+  }
 
-.sd-page-bg {
-  @apply min-h-screen flex items-center justify-center;
-  background-color: #1e448b;
-  background-image:
-    radial-gradient(ellipse 100% 70% at 50% -10%, #3d6fd4 0%, #1e448b 45%, #0f2660 100%),
-    radial-gradient(ellipse 60% 50% at 85% 105%, rgba(203,32,50,0.18) 0%, transparent 55%);
-}
+  .sd-page-bg {
+    @apply min-h-screen flex items-center justify-center;
+    background-color: #1e448b;
+    background-image:
+      radial-gradient(
+        ellipse 100% 70% at 50% -10%,
+        #3d6fd4 0%,
+        #1e448b 45%,
+        #0f2660 100%
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 85% 105%,
+        rgba(203, 32, 50, 0.18) 0%,
+        transparent 55%
+      );
+  }
 
-.sd-register-card {
-  @apply w-full bg-white rounded-xl shadow-2xl;
-  max-width: 440px;
-  padding: 32px 32px 28px;
-  color: #1a1a2e;
-}
+  .sd-register-card {
+    @apply w-full bg-white rounded-xl shadow-2xl;
+    max-width: 440px;
+    padding: 32px 32px 28px;
+    color: #1a1a2e;
+  }
 
-.sd-register-title {
-  @apply text-center uppercase mb-6;
-  font-family: var(--font-oswald);
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #1a1a2e;
-}
+  .sd-register-title {
+    @apply text-center uppercase mb-6;
+    font-family: var(--font-oswald);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #1a1a2e;
+  }
 
-.sd-register-input {
-  @apply w-full rounded bg-slate-50 border border-slate-300 text-slate-900 text-sm px-3 py-2.5 outline-none transition-all;
-}
+  .sd-register-input {
+    @apply w-full rounded-sm bg-slate-50 border border-slate-300 text-slate-900 text-sm px-3 py-2.5 outline-hidden transition-all;
+  }
 
-.sd-register-input:focus {
-  @apply bg-white;
-  border-color: #1e448b;
-  box-shadow: 0 0 0 3px rgba(30,68,139,0.12);
-}
+  .sd-register-input:focus {
+    @apply bg-white;
+    border-color: #1e448b;
+    box-shadow: 0 0 0 3px rgba(30, 68, 139, 0.12);
+  }
 
-.sd-register-label {
-  @apply block uppercase text-slate-500 text-xs font-bold tracking-widest mb-1;
-}
+  .sd-register-label {
+    @apply block uppercase text-slate-500 text-xs font-bold tracking-widest mb-1;
+  }
 
-.sd-register-btn {
-  @apply w-full text-white uppercase font-bold py-3 rounded transition-colors;
-  font-family: var(--font-oswald);
-  font-size: 16px;
-  letter-spacing: 0.08em;
-  background: #cb2032;
-}
+  .sd-register-btn {
+    @apply w-full text-white uppercase font-bold py-3 rounded-sm transition-colors;
+    font-family: var(--font-oswald);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    background: #cb2032;
+  }
 
-.sd-register-btn:hover  { background: #a8182a; }
-.sd-register-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .sd-register-btn:hover {
+    background: #a8182a;
+  }
+  .sd-register-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-.sd-register-footer {
-  @apply text-center text-sm mt-4;
-  color: #64748b;
-}
+  .sd-register-footer {
+    @apply text-center text-sm mt-4;
+    color: #64748b;
+  }
 
-.sd-register-footer a {
-  @apply font-semibold no-underline;
-  color: #1e448b;
-}
+  .sd-register-footer a {
+    @apply font-semibold no-underline;
+    color: #1e448b;
+  }
 
-.sd-register-footer a:hover { @apply underline; }
+  .sd-register-footer a:hover {
+    @apply underline;
+  }
 
-.sd-alert {
-  @apply rounded px-3 py-2.5 text-sm leading-relaxed;
-}
-.sd-alert-error {
-  @apply bg-red-50 border border-red-300 text-red-800;
-}
-
-@layer components {
-  /* Page gutter. Use instead of ad-hoc px-8 / px-10 on page wrappers. */
-  .page-x { @apply px-4 sm:px-6 lg:px-10; }
+  .sd-alert {
+    @apply rounded-sm px-3 py-2.5 text-sm leading-relaxed;
+  }
+  .sd-alert-error {
+    @apply bg-red-50 border border-red-300 text-red-800;
+  }
 }
 
 /* iOS Safari zooms the whole page when it focuses a field set below 16px.

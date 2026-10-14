@@ -68,7 +68,7 @@ export default async function ClaimPage({
             height={96}
             className="rounded-xl shadow-lg"
           />
-          <div className={`${oswald.className} text-2xl font-semibold tracking-widest text-[#fbf7ee] uppercase`}>
+          <div className={`${oswald.className} text-2xl font-semibold tracking-widest text-sd-paper uppercase`}>
             Screen Drafts
           </div>
         </div>

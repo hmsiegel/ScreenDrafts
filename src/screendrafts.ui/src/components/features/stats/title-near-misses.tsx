@@ -31,7 +31,7 @@ export function TitleNearMisses({ titles }: { titles: TitleNearMissView[] }) {
             <span className="flex-1 min-w-0">
               <Link
                 href={`/media/${entry.mediaPublicId}`}
-                className="font-oswald font-bold text-[18px] sm:text-[20px] leading-tight text-sd-blue hover:text-sd-red transition-colors [overflow-wrap:anywhere]"
+                className="font-oswald font-bold text-[18px] sm:text-[20px] leading-tight text-sd-blue hover:text-sd-red transition-colors wrap-anywhere"
               >
                 {entry.title}
               </Link>

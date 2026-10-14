@@ -15,7 +15,7 @@ const COLS = "grid-cols-[52px_minmax(0,1fr)] sm:grid-cols-[60px_minmax(0,1fr)_10
 
 export default function RecentDrafts({ drafts }: { drafts: RecentDraft[] }) {
   return (
-    <div className="bg-white border-2 border-sd-ink rounded-sm min-w-0">
+    <div className="bg-white border-2 border-sd-ink rounded-xs min-w-0">
       <div className="bg-sd-ink text-white px-5 py-3.5 flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
         <div className="font-oswald font-bold text-[19px] sm:text-[22px] tracking-[0.06em]">MOST RECENT DRAFTS</div>
         <Link href="/drafts" className="text-[11px] tracking-[0.22em] text-light-blue hover:text-white transition-colors">
@@ -45,7 +45,7 @@ export default function RecentDrafts({ drafts }: { drafts: RecentDraft[] }) {
             >
               <div className="font-oswald font-bold text-[24px] sm:text-[26px] text-sd-red leading-none">{draft.number}</div>
               <div className="min-w-0">
-                <div className="font-semibold text-base leading-tight [overflow-wrap:anywhere]">{draft.title}</div>
+                <div className="font-semibold text-base leading-tight wrap-anywhere">{draft.title}</div>
                 <div className="text-xs text-gray-500 mt-0.5 truncate">{draft.drafters}</div>
                 <div className="sm:hidden font-mono text-[11px] text-gray-600 mt-1">{draft.date}</div>
               </div>

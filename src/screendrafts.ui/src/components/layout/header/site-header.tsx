@@ -52,7 +52,7 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
 
       <nav
         aria-label="Main"
-        className="hidden lg:flex items-center gap-5 font-oswald font-medium text-sm tracking-[0.1em]"
+        className="hidden lg:flex items-center gap-5 font-oswald font-medium text-sm tracking-widest"
       >
         {PRIMARY_NAV_ITEMS.map(({ label, href }) => {
           const isActive = activePath?.startsWith(href);
@@ -89,7 +89,7 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
             <SignInButton />
             <Link
               href="/register"
-              className="bg-sd-red text-white px-[18px] py-2.5 rounded font-oswald font-medium text-sm tracking-[0.14em] hover:bg-red-700 transition-colors"
+              className="bg-sd-red text-white px-[18px] py-2.5 rounded-sm font-oswald font-medium text-sm tracking-[0.14em] hover:bg-red-700 transition-colors"
             >
               REGISTER
             </Link>

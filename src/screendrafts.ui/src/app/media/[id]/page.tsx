@@ -54,7 +54,7 @@ function HonorificBadges({ honorific }: { honorific: MediaHonorificResponse }) {
   return (
     <div className="flex flex-wrap gap-2">
       {badges.map((b) => (
-        <span key={b.label} className={`font-mono text-[9px] tracking-widest px-2 py-1 rounded-sm ${b.color}`}>
+        <span key={b.label} className={`font-mono text-[9px] tracking-widest px-2 py-1 rounded-xs ${b.color}`}>
           {b.label}
         </span>
       ))}
@@ -102,13 +102,13 @@ export default async function MediaDetailPage({ params }: Props) {
             <span>{(media.title ?? "").toUpperCase()}</span>
           </p>
 
-          <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white mb-4 [overflow-wrap:anywhere]">
+          <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white mb-4 wrap-anywhere">
             {(media.title ?? "").toUpperCase()}
           </h1>
 
           <div className="flex items-center gap-3 flex-wrap mb-4">
             {media.mediaType && (
-              <span className="font-mono text-[9px] tracking-widest bg-white/20 text-white px-2 py-1 rounded-sm">
+              <span className="font-mono text-[9px] tracking-widest bg-white/20 text-white px-2 py-1 rounded-xs">
                 {mediaTypeLabel(media.mediaType)}
               </span>
             )}
@@ -116,7 +116,7 @@ export default async function MediaDetailPage({ params }: Props) {
               <span className="font-mono text-[12px] text-white/70">{media.year}</span>
             )}
             {genres.map((g, i) => (
-              <span key={i} className="font-mono text-[9px] tracking-widest border border-white/30 text-white/60 px-2 py-1 rounded-sm">
+              <span key={i} className="font-mono text-[9px] tracking-widest border border-white/30 text-white/60 px-2 py-1 rounded-xs">
                 {g}
               </span>
             ))}
@@ -148,7 +148,7 @@ export default async function MediaDetailPage({ params }: Props) {
 
             {/* Trailer */}
             {media.youTubeTrailer && (
-              <div className="order-2 lg:order-none bg-white border-2 border-sd-ink overflow-hidden">
+              <div className="order-2 lg:order-0 bg-white border-2 border-sd-ink overflow-hidden">
                 <div className="bg-sd-ink px-5 py-3">
                   <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red">TRAILER</h2>
                 </div>
@@ -163,7 +163,7 @@ export default async function MediaDetailPage({ params }: Props) {
           </div>
 
           {/* ── Main column ── */}
-          <div className="order-1 lg:order-none flex flex-col gap-8 min-w-0">
+          <div className="order-1 lg:order-0 flex flex-col gap-8 min-w-0">
             <AppearancesSection appearances={appearances} />
           </div>
         </div>
@@ -341,7 +341,7 @@ function CreditsCard({
   kind: "person" | "company";
 }) {
   return (
-    <div className="order-2 lg:order-none bg-white border-2 border-sd-ink p-5">
+    <div className="order-2 lg:order-0 bg-white border-2 border-sd-ink p-5">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-3">{title}</h2>
       <div className="flex flex-col gap-1.5">
         {credits.map((credit, i) => {
@@ -424,7 +424,7 @@ function AppearanceRow({ appearance }: { appearance: MediaAppearanceResponse }) 
             {draftTitle}
           </Link>
           {isPatreon && (
-            <span className="font-mono text-[9px] tracking-widest bg-sd-blue/10 text-sd-blue px-2 py-0.5 rounded-sm">
+            <span className="font-mono text-[9px] tracking-widest bg-sd-blue/10 text-sd-blue px-2 py-0.5 rounded-xs">
               PATREON
             </span>
           )}

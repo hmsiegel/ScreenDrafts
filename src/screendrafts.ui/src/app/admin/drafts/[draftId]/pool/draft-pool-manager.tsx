@@ -110,7 +110,7 @@ export default function DraftPoolManager({
         </p>
 
         <div className="flex items-end justify-between mb-6 sm:mb-10">
-          <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink [overflow-wrap:anywhere]">
+          <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink wrap-anywhere">
             {draftName} — DRAFT POOL
           </h1>
         </div>
@@ -235,7 +235,7 @@ function PoolList({
               : null;
           return (
             <tr key={movie.tmdbId} className="border-b border-sd-ink/5 hover:bg-sd-paper/60">
-              <td className="py-2 pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">
+              <td className="py-2 pr-4 font-medium text-sd-ink wrap-anywhere">
                 {isEpisode && movie.tvSeriesTitle && (
                   <span className="text-sd-ink/60">{movie.tvSeriesTitle} — </span>
                 )}

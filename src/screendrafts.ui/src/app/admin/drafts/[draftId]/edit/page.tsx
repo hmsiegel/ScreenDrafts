@@ -50,7 +50,7 @@ export default async function EditDraftPage({
           {" / EDIT"}
         </p>
 
-        <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink mb-2 [overflow-wrap:anywhere]">
+        <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink mb-2 wrap-anywhere">
           EDIT DRAFT
         </h1>
 

@@ -12,7 +12,7 @@ import type {
 import { QueryResults } from "./query-results";
 
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const LABEL = "block font-mono text-[10px] tracking-widest text-[#5a6075] mb-1";
 const LIMITS = [10, 25, 50, 100];
 
@@ -326,7 +326,7 @@ export function QueryBuilder({ options }: { options: StatsOptionsView }) {
           <button
             type="submit"
             disabled={loading || !form.metric}
-            className="min-h-11 px-6 bg-sd-blue text-white font-oswald font-medium text-sm tracking-[0.14em] rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="min-h-11 px-6 bg-sd-blue text-white font-oswald font-medium text-sm tracking-[0.14em] rounded-sm hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             {loading ? "RUNNING…" : "RUN QUERY"}
           </button>

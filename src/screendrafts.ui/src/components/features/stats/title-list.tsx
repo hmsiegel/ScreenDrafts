@@ -69,15 +69,15 @@ export function TitleList({
                 <span className="flex-1 min-w-0">
                   <Link
                     href={`/media/${entry.mediaPublicId}`}
-                    className="font-oswald font-bold text-[18px] sm:text-[20px] leading-tight text-sd-blue hover:text-sd-red transition-colors [overflow-wrap:anywhere]"
+                    className="font-oswald font-bold text-[18px] sm:text-[20px] leading-tight text-sd-blue hover:text-sd-red transition-colors wrap-anywhere"
                   >
                     {entry.title}
                   </Link>
-                  <span className="block font-mono text-[11px] text-[#5a6075] mt-1 [overflow-wrap:anywhere]">
+                  <span className="block font-mono text-[11px] text-[#5a6075] mt-1 wrap-anywhere">
                     {joinedLine(joinText, entry)}
                   </span>
                   {gap && (
-                    <span className="block font-mono text-[11px] text-[#5a6075] [overflow-wrap:anywhere]">
+                    <span className="block font-mono text-[11px] text-[#5a6075] wrap-anywhere">
                       {gap}
                     </span>
                   )}
@@ -111,7 +111,7 @@ export function TitleList({
                       <span className="min-w-0">
                         <Link
                           href={`/drafts/${appearance.draftPublicId}`}
-                          className="font-oswald font-bold text-[15px] text-sd-blue hover:text-sd-red transition-colors [overflow-wrap:anywhere]"
+                          className="font-oswald font-bold text-[15px] text-sd-blue hover:text-sd-red transition-colors wrap-anywhere"
                         >
                           {appearance.draftTitle}
                         </Link>

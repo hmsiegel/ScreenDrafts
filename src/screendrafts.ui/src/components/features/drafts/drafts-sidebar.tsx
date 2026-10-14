@@ -404,7 +404,7 @@ export default function DraftSidebar({
 
   return (
     <aside
-      className="order-last lg:order-none bg-white border-2 border-sd-ink lg:sticky lg:top-6 self-start px-5 py-6 lg:px-6 lg:py-7"
+      className="order-last lg:order-0 bg-white border-2 border-sd-ink lg:sticky lg:top-6 self-start px-5 py-6 lg:px-6 lg:py-7"
     >
       {/* Episode label */}
       <div className="font-mono text-[10px] tracking-widest text-sd-blue font-bold mb-1">

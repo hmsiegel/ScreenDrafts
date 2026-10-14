@@ -3,7 +3,7 @@ import { TITLE_SORTS } from "@/services/stats/title-levels";
 import type { TitleSort } from "@/services/stats/stats-types";
 
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const LABEL = "block font-mono text-[10px] tracking-widest text-[#5a6075] mb-1";
 
 /** A plain GET form, so it works without client code and every result page is a shareable link. */
@@ -49,7 +49,7 @@ export function TitleFilterBar({
 
       <button
         type="submit"
-        className="min-h-11 px-6 bg-sd-blue text-white font-oswald font-medium text-sm tracking-[0.14em] rounded hover:bg-blue-700 transition-colors"
+        className="min-h-11 px-6 bg-sd-blue text-white font-oswald font-medium text-sm tracking-[0.14em] rounded-sm hover:bg-blue-700 transition-colors"
       >
         APPLY
       </button>

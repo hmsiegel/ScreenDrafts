@@ -48,7 +48,7 @@ export default async function EditMetaPage({
         <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2">
           EDIT CAMPAIGN & CATEGORIES
         </h1>
-        <p className="font-mono text-lg text-sd-ink/50 mb-6 sm:mb-10 [overflow-wrap:anywhere]">{draft.title}</p>
+        <p className="font-mono text-lg text-sd-ink/50 mb-6 sm:mb-10 wrap-anywhere">{draft.title}</p>
 
         <div className="bg-white border border-sd-ink/10 p-4 sm:p-8">
           <EditMetaForm

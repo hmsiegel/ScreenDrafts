@@ -81,7 +81,7 @@ export function DraftPick({ pick, position, isTopPick, participantNames, partici
 
   const titleEl = (
     <span
-      className={`font-sans font-bold ${titleSize} leading-tight [overflow-wrap:anywhere] ${(hasVeto && !vetoIsOverridden) || hasCommissionerOverride
+      className={`font-sans font-bold ${titleSize} leading-tight wrap-anywhere ${(hasVeto && !vetoIsOverridden) || hasCommissionerOverride
           ? "line-through text-sd-red"
           : "text-sd-ink"
         }`}

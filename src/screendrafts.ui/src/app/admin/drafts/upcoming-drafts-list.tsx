@@ -89,7 +89,7 @@ export default function UpcomingDraftsList({ initialDrafts, accessToken }: Upcom
                     d.isDeleted ? "opacity-50" : "hover:bg-sd-paper/60"
                   }`}
                 >
-                  <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{d.title}</td>
+                  <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink wrap-anywhere">{d.title}</td>
                   <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">
                     <DraftTypeBadge type={draftTypeFromNumber(d.draftType)} />
                   </td>

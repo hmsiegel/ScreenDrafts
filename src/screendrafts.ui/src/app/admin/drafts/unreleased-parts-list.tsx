@@ -36,7 +36,7 @@ export default function UnreleasedPartsList({ parts }: UnreleasedPartsListProps)
               key={p.draftPartPublicId}
               className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 sm:table-row sm:py-0 border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors"
             >
-              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{p.draftTitle}</td>
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink wrap-anywhere">{p.draftTitle}</td>
               <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">Part {p.partIndex}</td>
               <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">{p.seriesName ?? "—"}</td>
               <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">

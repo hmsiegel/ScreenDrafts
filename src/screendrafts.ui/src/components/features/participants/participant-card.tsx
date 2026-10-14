@@ -39,7 +39,7 @@ export default function ParticipantCard({ participant, index, honorific }: Parti
   return (
     <Link
       href={`/drafters/${participant.personPublicId}`}
-      className="group block bg-white border-2 border-sd-ink relative transition-all duration-[140ms] hover:-translate-y-[3px] hover:shadow-[6px_6px_0_#0d1430]"
+      className="group block bg-white border-2 border-sd-ink relative transition-all duration-140 hover:translate-y-[-3px] hover:shadow-[6px_6px_0_#0d1430]"
     >
       <div className="p-5 sm:p-6">
         {participant.isCommissioner && (
@@ -70,7 +70,7 @@ export default function ParticipantCard({ participant, index, honorific }: Parti
         </div>
 
         {/* Name */}
-        <div className="font-oswald font-bold text-[24px] text-sd-ink leading-tight mb-3 [overflow-wrap:anywhere]">
+        <div className="font-oswald font-bold text-[24px] text-sd-ink leading-tight mb-3 wrap-anywhere">
           {participant.displayName}
         </div>
 

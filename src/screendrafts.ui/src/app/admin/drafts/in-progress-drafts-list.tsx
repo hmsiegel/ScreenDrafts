@@ -41,7 +41,7 @@ export default function InProgressDraftsList({ drafts }: InProgressDraftsListPro
         <tbody className="block sm:table-row-group">
           {inProgress.map((d) => (
             <tr key={d.publicId} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3 sm:table-row sm:py-0 border-b border-sd-ink/5 hover:bg-sd-paper/60 transition-colors">
-              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink [overflow-wrap:anywhere]">{d.title}</td>
+              <td className="w-full sm:w-auto sm:table-cell sm:py-3 sm:pr-4 font-medium text-sd-ink wrap-anywhere">{d.title}</td>
               <td className="sm:table-cell sm:py-3 sm:pr-4 text-xs sm:text-sm text-sd-ink/70">
                 <DraftTypeBadge type={draftTypeFromNumber(d.draftType)} />
               </td>

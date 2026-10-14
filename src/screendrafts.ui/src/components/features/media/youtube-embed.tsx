@@ -47,7 +47,7 @@ function LinkCard({ url, title }: { url: string; title: string }) {
         <span className="font-oswald font-semibold text-[14px] text-sd-ink group-hover:text-sd-red transition-colors">
           WATCH TRAILER
         </span>
-        <span className="font-mono text-[9px] tracking-widest text-sd-ink/40 [overflow-wrap:anywhere]">
+        <span className="font-mono text-[9px] tracking-widest text-sd-ink/40 wrap-anywhere">
           {title.toUpperCase()}
         </span>
       </div>

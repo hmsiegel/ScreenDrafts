@@ -14,7 +14,7 @@ import type { SeedDraftState } from "./seed-draft-wizard";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const SELECT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm rounded min-w-[200px] focus:outline-none focus:ring-2 focus:ring-sd-blue";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm rounded-sm min-w-[200px] focus:outline-hidden focus:ring-2 focus:ring-sd-blue";
 
 interface Props {
   draft: SeedDraftState;
@@ -92,7 +92,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
 
   if (positions.length === 0) {
     return (
-      <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md text-center space-y-4">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 max-w-md text-center space-y-4">
         <p className="text-sm text-sd-ink/60">
           No positions to assign on this part — Set Draft Positions wasn&apos;t run, or
           this part has none.
@@ -107,7 +107,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
   const allAssigned = positions.every((p) => p.assignedParticipantId !== null);
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-lg space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 max-w-lg space-y-6">
       <p className="text-sm text-sd-ink/60">
         Who plays each position — this is what actually grants a position&apos;s bonus
         veto, override, or fungible token, so it has to happen even when seeding.
@@ -178,7 +178,7 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
       </div>
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}

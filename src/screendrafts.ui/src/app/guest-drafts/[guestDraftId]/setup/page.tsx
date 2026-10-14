@@ -40,7 +40,7 @@ export default async function GuestDraftSetupPage({ params }: Props) {
               / GUEST DRAFTS
             </Link> / SETUP
           </p>
-          <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-6 sm:mb-8 [overflow-wrap:anywhere]">
+          <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-6 sm:mb-8 wrap-anywhere">
             {gameplay.title}
           </h1>
           {/* p-4 on phones: 32px of padding each side left the panel about 260px wide on a 375px screen. */}

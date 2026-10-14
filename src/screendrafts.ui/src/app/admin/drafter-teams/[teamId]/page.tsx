@@ -34,7 +34,7 @@ export default async function EditDrafterTeamPage({ params }: Props) {
           {team.name.toUpperCase()}
         </p>
 
-        <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2 [overflow-wrap:anywhere]">
+        <h1 className="font-oswald font-bold text-[30px] sm:text-[40px] leading-none text-sd-ink mb-2 wrap-anywhere">
           {team.name.toUpperCase()}
         </h1>
         <p className="text-sm text-sd-ink/60 mb-10 max-w-2xl">

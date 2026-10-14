@@ -79,7 +79,7 @@ export default function MyDraftTabs({ detail, accessToken }: MyDraftTabsProps) {
     <div>
       {/* Tab bar — up to four tabs; on phones they scroll sideways instead of overflowing.
           InfoTooltip renders in a portal, so the scroll container can't clip it. */}
-      <div className="flex border-b border-sd-ink/10 mb-6 overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="flex border-b border-sd-ink/10 mb-6 overflow-x-auto overscroll-x-contain scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         {tabs.map((tab) => (
           <button
             key={tab}

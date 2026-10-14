@@ -68,7 +68,7 @@ async function searchMedia(query: string): Promise<MediaSearchResult[]> {
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -157,7 +157,7 @@ export function CommunitySection({ config, onChange }: Props) {
       {config.enabled && (
         <div className="mt-4 space-y-5">
           {/* ── Limits ── */}
-          <div className="border border-sd-ink/10 rounded p-4 bg-white">
+          <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
             <p className={`${LABEL} mb-3`}>Limits</p>
             <div className="grid grid-cols-2 gap-4 max-w-xs">
               <div>
@@ -188,7 +188,7 @@ export function CommunitySection({ config, onChange }: Props) {
           </div>
 
           {/* ── Film Rules ── */}
-          <div className="border border-sd-ink/10 rounded p-4 bg-white">
+          <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
             <p className={`${LABEL} mb-3`}>Film Rules (Optional)</p>
             <p className="text-[11px] font-mono text-sd-ink/50 mb-4">
               Set the rule first, then assign a film once the community has voted.
@@ -200,7 +200,7 @@ export function CommunitySection({ config, onChange }: Props) {
                 {visibleRules.map((rule) => (
                   <div
                     key={rule.localId}
-                    className="border border-sd-ink/10 rounded p-3 bg-sd-paper space-y-3"
+                    className="border border-sd-ink/10 rounded-sm p-3 bg-sd-paper space-y-3"
                   >
                     {/* Rule kind */}
                     <div className="flex items-start gap-4 flex-wrap">
@@ -302,14 +302,14 @@ export function CommunitySection({ config, onChange }: Props) {
               <button
                 type="button"
                 onClick={() => addRule("BoostersVeto")}
-                className="border border-sd-ink/20 text-sd-ink/70 font-mono text-[11px] tracking-wide uppercase px-3 py-1.5 hover:bg-sd-ink/5 rounded transition-colors"
+                className="border border-sd-ink/20 text-sd-ink/70 font-mono text-[11px] tracking-wide uppercase px-3 py-1.5 hover:bg-sd-ink/5 rounded-sm transition-colors"
               >
                 + Boosters Veto Rule
               </button>
               <button
                 type="button"
                 onClick={() => addRule("BoostersPick")}
-                className="border border-sd-ink/20 text-sd-ink/70 font-mono text-[11px] tracking-wide uppercase px-3 py-1.5 hover:bg-sd-ink/5 rounded transition-colors"
+                className="border border-sd-ink/20 text-sd-ink/70 font-mono text-[11px] tracking-wide uppercase px-3 py-1.5 hover:bg-sd-ink/5 rounded-sm transition-colors"
               >
                 + Boosters Pick Rule
               </button>
@@ -330,7 +330,7 @@ export function CommunitySection({ config, onChange }: Props) {
                   <p className="text-sm text-sd-ink/40 font-mono px-1">Searching…</p>
                 )}
                 {!filmSearchLoading && filmResults.length > 0 && (
-                  <div className="border border-sd-ink/10 rounded overflow-hidden">
+                  <div className="border border-sd-ink/10 rounded-sm overflow-hidden">
                     {filmResults.map((film) => (
                       <div
                         key={film.tmdbId}
@@ -354,7 +354,7 @@ export function CommunitySection({ config, onChange }: Props) {
                                 setFilmSearch("");
                                 setFilmResults([]);
                               }}
-                              className="text-[11px] font-mono border border-sd-ink/20 px-2 py-1.5 sm:py-0.5 rounded hover:bg-sd-ink/5 text-sd-ink/70"
+                              className="text-[11px] font-mono border border-sd-ink/20 px-2 py-1.5 sm:py-0.5 rounded-sm hover:bg-sd-ink/5 text-sd-ink/70"
                             >
                               {visibleRules.filter((r) => !r.tmdbId).length > 1
                                 ? `Assign to Rule ${visibleRules.indexOf(rule) + 1}`

@@ -23,17 +23,17 @@ export function HolderList({ holders }: { holders: RecordHolderView[] }) {
             {href ? (
               <Link
                 href={href}
-                className="font-oswald font-bold text-[15px] text-sd-blue hover:text-sd-red transition-colors [overflow-wrap:anywhere]"
+                className="font-oswald font-bold text-[15px] text-sd-blue hover:text-sd-red transition-colors wrap-anywhere"
               >
                 {holder.name}
               </Link>
             ) : (
-              <span className="font-oswald font-bold text-[15px] text-sd-ink [overflow-wrap:anywhere]">
+              <span className="font-oswald font-bold text-[15px] text-sd-ink wrap-anywhere">
                 {holder.name}
               </span>
             )}
             {holder.context && (
-              <span className="font-mono text-[11px] text-[#5a6075] [overflow-wrap:anywhere]">
+              <span className="font-mono text-[11px] text-[#5a6075] wrap-anywhere">
                 {holder.context}
               </span>
             )}

@@ -72,7 +72,7 @@ export function SeedPredictionsSetup({
       />
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}

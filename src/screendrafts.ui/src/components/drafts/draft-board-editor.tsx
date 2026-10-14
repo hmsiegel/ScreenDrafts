@@ -144,14 +144,14 @@ export default function DraftBoardEditor({
                 value={pending.notes}
                 onChange={(e) => setPending((p) => p && { ...p, notes: e.target.value })}
                 placeholder="Notes (optional)"
-                className="flex-1 min-w-0 border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue"
+                className="flex-1 min-w-0 border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-blue"
               />
               <input
                 type="number"
                 value={pending.priority}
                 onChange={(e) => setPending((p) => p && { ...p, priority: e.target.value })}
                 placeholder="Priority"
-                className="w-24 border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-none focus:border-sd-blue"
+                className="w-24 border border-sd-ink/20 bg-white px-3 py-1.5 text-sm font-mono text-sd-ink placeholder:text-sd-ink/40 focus:outline-hidden focus:border-sd-blue"
               />
             </div>
             <div className="flex gap-2">
@@ -188,8 +188,8 @@ export default function DraftBoardEditor({
               className="flex items-center gap-2 sm:gap-3 pl-1 pr-1 sm:px-3 py-2 bg-white hover:bg-sd-paper/40 cursor-grab active:cursor-grabbing"
             >
               {/* Mouse: drag handle. Touch: stacked up/down buttons. */}
-              <span className="text-sd-ink/30 font-mono text-xs select-none pl-2 sm:pl-0 [@media(pointer:coarse)]:hidden">⠿</span>
-              <span className="hidden [@media(pointer:coarse)]:flex flex-col shrink-0">
+              <span className="text-sd-ink/30 font-mono text-xs select-none pl-2 sm:pl-0 pointer-coarse:hidden">⠿</span>
+              <span className="hidden pointer-coarse:flex flex-col shrink-0">
                 <button
                   type="button"
                   onClick={() => moveItem(idx, -1)}
@@ -210,7 +210,7 @@ export default function DraftBoardEditor({
                 </button>
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sd-ink [overflow-wrap:anywhere]">
+                <p className="text-sm font-medium text-sd-ink wrap-anywhere">
                   <BoardEntryLabel
                     title={movie.title ?? `TMDb #${movie.tmdbId}`}
                     year={movie.year}
@@ -225,7 +225,7 @@ export default function DraftBoardEditor({
                   defaultValue={movie.notes ?? ""}
                   onBlur={(e) => handleNotesChange(movie.tmdbId ?? 0, e.target.value)}
                   placeholder="Notes…"
-                  className="mt-1 w-full border-b border-sd-ink/10 bg-transparent text-xs font-mono text-sd-ink placeholder:text-sd-ink/30 focus:outline-none focus:border-sd-blue"
+                  className="mt-1 w-full border-b border-sd-ink/10 bg-transparent text-xs font-mono text-sd-ink placeholder:text-sd-ink/30 focus:outline-hidden focus:border-sd-blue"
                 />
               </div>
               <input
@@ -233,7 +233,7 @@ export default function DraftBoardEditor({
                 defaultValue={movie.priority ?? ""}
                 onBlur={(e) => handlePriorityChange(movie.tmdbId ?? 0, e.target.value)}
                 placeholder="Pri"
-                className="w-14 sm:w-16 shrink-0 border border-sd-ink/20 bg-white px-2 py-1 text-xs font-mono text-center text-sd-ink focus:outline-none focus:border-sd-blue"
+                className="w-14 sm:w-16 shrink-0 border border-sd-ink/20 bg-white px-2 py-1 text-xs font-mono text-center text-sd-ink focus:outline-hidden focus:border-sd-blue"
               />
               <button
                 type="button"

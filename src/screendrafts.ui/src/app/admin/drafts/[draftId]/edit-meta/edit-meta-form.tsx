@@ -15,11 +15,11 @@ import { CampaignResponse, CategoryResponse } from "@/lib/dto";
 import DraftImageUpload from "@/components/features/drafts/draft-image-upload";
 
 const SELECT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const BTN_SECONDARY =
-  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded";
+  "border border-sd-ink/20 text-sd-ink font-sans text-sm px-4 py-2 hover:bg-sd-ink/5 disabled:opacity-50 transition-colors rounded-sm";
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
 
@@ -150,7 +150,7 @@ export default function EditMetaForm({ draft, categoryList, campaignList, unrele
               return (
                 <div
                   key={p.draftPartPublicId}
-                  className="border border-sd-ink/10 rounded p-4 bg-white flex flex-wrap items-end gap-4"
+                  className="border border-sd-ink/10 rounded-sm p-4 bg-white flex flex-wrap items-end gap-4"
                 >
                   <div>
                     <p className="font-oswald font-bold text-sm text-sd-ink uppercase">
@@ -200,7 +200,7 @@ export default function EditMetaForm({ draft, categoryList, campaignList, unrele
             })}
           </div>
           {releaseError && (
-            <div className="mt-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+            <div className="mt-3 border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
               {releaseError}
             </div>
           )}
@@ -251,12 +251,12 @@ export default function EditMetaForm({ draft, categoryList, campaignList, unrele
         {/* Categories */}
         <section>
           <h2 className={SECTION_HEADING}>Categories</h2>
-          <div className="border border-sd-ink/10 rounded p-4 bg-white">
+          <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
             <div className="max-h-48 overflow-y-auto columns-2 gap-4">
               {categoryList.map((c) => (
                 <label
                   key={c.publicId}
-                  className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded px-2 py-1 cursor-pointer break-inside-avoid"
+                  className="flex items-center gap-2 mb-1 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm px-2 py-1 cursor-pointer break-inside-avoid"
                 >
                   <input
                     type="checkbox"
@@ -277,10 +277,10 @@ export default function EditMetaForm({ draft, categoryList, campaignList, unrele
         </section>
 
         {error && (
-          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">{error}</div>
+          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">{error}</div>
         )}
         {successMsg && (
-          <div className="border border-green-300 bg-green-50 text-green-800 text-sm px-4 py-3 rounded">{successMsg}</div>
+          <div className="border border-green-300 bg-green-50 text-green-800 text-sm px-4 py-3 rounded-sm">{successMsg}</div>
         )}
 
         <div className="flex items-center gap-4 pt-2">

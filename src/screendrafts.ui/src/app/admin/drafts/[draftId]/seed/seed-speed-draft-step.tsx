@@ -27,7 +27,7 @@ import {
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 const BTN_SECONDARY =
@@ -224,7 +224,7 @@ export function SeedSpeedDraftStep({ draft, participants, accessToken, onDone }:
   if (error) {
     return (
       <div className="space-y-4 max-w-2xl">
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
         <button type="button" onClick={refresh} className={BTN_SECONDARY}>
@@ -288,7 +288,7 @@ export function SeedSpeedDraftStep({ draft, participants, accessToken, onDone }:
       )}
 
       {current.triviaResults.length > 0 && positionsAssigned && !currentSummary?.subjectName && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           This sub-draft has no subject set — set it (actor, director, or word) before
           entering picks. The seed wizard doesn&apos;t create subjects.
         </div>
@@ -392,7 +392,7 @@ function SpeedDraftTriviaSection({
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 space-y-6">
       <p className="text-sm text-sd-ink/60">
         Position is finishing place for this sub-draft — 1 for whoever won and gets to
         choose a board slot next.
@@ -437,7 +437,7 @@ function SpeedDraftTriviaSection({
       )}
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}
@@ -508,7 +508,7 @@ function SpeedDraftPositionSection({
 
   if (!winnerTrivia || !winner) {
     return (
-      <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+      <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
         No trivia result has finishing position 1 for this sub-draft — can&apos;t determine
         who chooses a board slot. Check the trivia entries just submitted.
       </div>
@@ -516,7 +516,7 @@ function SpeedDraftPositionSection({
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 space-y-6">
       <p className="text-sm text-sd-ink/60">
         <span className="font-medium text-sd-ink">
           {winner.displayName ?? winnerTrivia.participantId}
@@ -533,7 +533,7 @@ function SpeedDraftPositionSection({
               type="button"
               onClick={() => handleChoose(choice)}
               disabled={submitting}
-              className="border border-sd-ink/20 rounded p-4 text-left hover:bg-sd-paper/60 disabled:opacity-50 transition-colors"
+              className="border border-sd-ink/20 rounded-sm p-4 text-left hover:bg-sd-paper/60 disabled:opacity-50 transition-colors"
             >
               <div className="font-oswald text-lg text-sd-ink">Slot {choice}</div>
               <div className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest mt-1">
@@ -545,7 +545,7 @@ function SpeedDraftPositionSection({
       </div>
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}
@@ -912,7 +912,7 @@ function SpeedDraftPicksSection({
 
   return (
     <div className="space-y-6">
-      <div className="bg-white border border-sd-ink/10 rounded p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
         <p className="text-sm text-sd-ink/70">{landedCount} of {totalPicks} positions landed</p>
         <p className="font-mono text-[11px] text-sd-ink/40 uppercase tracking-widest">
           Next: Play Order {nextPlayOrder}
@@ -920,7 +920,7 @@ function SpeedDraftPicksSection({
       </div>
 
       {picks.length > 0 && (
-        <div className="bg-white border border-sd-ink/10 rounded divide-y divide-sd-ink/5">
+        <div className="bg-white border border-sd-ink/10 rounded-sm divide-y divide-sd-ink/5">
           {picks.map((p) => {
             const showingPicker = pendingVeto?.playOrder === p.playOrder;
             return (
@@ -954,7 +954,7 @@ function SpeedDraftPicksSection({
                       Vetoed by
                     </label>
                     <select
-                      className="border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded flex-1"
+                      className="border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded-sm flex-1"
                       value={pendingVeto.issuerIdValue}
                       onChange={(e) => setPendingVeto({ ...pendingVeto, issuerIdValue: e.target.value })}
                     >
@@ -990,7 +990,7 @@ function SpeedDraftPicksSection({
       )}
 
       {!boardFull && (
-        <div className="bg-white border border-sd-ink/10 rounded p-6 space-y-4">
+        <div className="bg-white border border-sd-ink/10 rounded-sm p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={LABEL}>Board Slot</label>
@@ -1100,7 +1100,7 @@ function SpeedDraftPicksSection({
                 )}
 
                 {browseError && (
-                  <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-3 py-2 rounded mb-2">
+                  <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-3 py-2 rounded-sm mb-2">
                     {browseError}
                   </div>
                 )}
@@ -1114,7 +1114,7 @@ function SpeedDraftPicksSection({
                       </p>
                     )}
                     {!tvLoading && tvResults.length > 0 && (
-                      <div className="border border-sd-ink/10 rounded max-h-64 overflow-y-auto">
+                      <div className="border border-sd-ink/10 rounded-sm max-h-64 overflow-y-auto">
                         {tvResults.map((show) => {
                           const submittingKey = `tv-${show.tmdbId}`;
                           return (
@@ -1167,7 +1167,7 @@ function SpeedDraftPicksSection({
                 )}
 
                 {!browseLoading && isPersonSubject && credits.length > 0 && (
-                  <div className="border border-sd-ink/10 rounded max-h-64 overflow-y-auto">
+                  <div className="border border-sd-ink/10 rounded-sm max-h-64 overflow-y-auto">
                     {credits.map((c) => {
                       const submittingKey = `credit-${c.tmdbId}-${c.mediaType}`;
                       return (
@@ -1215,7 +1215,7 @@ function SpeedDraftPicksSection({
                 )}
 
                 {!browseLoading && !isPersonSubject && kind === "movie" && titleResults.length > 0 && (
-                  <div className="border border-sd-ink/10 rounded max-h-64 overflow-y-auto">
+                  <div className="border border-sd-ink/10 rounded-sm max-h-64 overflow-y-auto">
                     {titleResults.map((item) => {
                       const submittingKey = titleKey(item);
                       return (
@@ -1307,7 +1307,7 @@ function SpeedDraftPicksSection({
           </div>
 
           {error && (
-            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
               {error}
             </div>
           )}
@@ -1315,13 +1315,13 @@ function SpeedDraftPicksSection({
       )}
 
       {boardFull && (
-        <div className="bg-white border border-sd-ink/10 rounded p-6 space-y-4">
+        <div className="bg-white border border-sd-ink/10 rounded-sm p-6 space-y-4">
           <p className="text-sm text-sd-ink/60">
             Board full for this sub-draft. Completing it rolls any unused veto tokens into
             the next sub-draft.
           </p>
           {error && (
-            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
               {error}
             </div>
           )}

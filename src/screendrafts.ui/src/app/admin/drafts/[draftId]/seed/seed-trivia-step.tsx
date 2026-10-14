@@ -11,7 +11,7 @@ import type { SeedDraftState } from "./seed-draft-wizard";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm";
 const BTN_PRIMARY =
   "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 
@@ -121,7 +121,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
 
   if (rows.length === 0) {
     return (
-      <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md text-center space-y-4">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 max-w-md text-center space-y-4">
         <p className="text-sm text-sd-ink/60">No participants on this part to assign trivia to.</p>
         <button type="button" onClick={onDone} className={BTN_PRIMARY}>
           Continue →
@@ -131,7 +131,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 rounded p-4 sm:p-8 max-w-md space-y-6">
+    <div className="bg-white border border-sd-ink/10 rounded-sm p-4 sm:p-8 max-w-md space-y-6">
       <p className="text-sm text-sd-ink/60">
         Position is finishing place — 1 for whoever won trivia. Two participants
         can&apos;t share a position.
@@ -176,7 +176,7 @@ export function SeedTriviaStep({ draft, participants, accessToken, onDone }: Pro
       )}
 
       {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded">
+        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
         </div>
       )}

@@ -23,7 +23,7 @@ export function StatsTabs() {
             key={tab.href}
             href={tab.href}
             aria-current={active ? "page" : undefined}
-            className={`min-h-11 flex items-center -mb-0.5 border-b-[3px] font-oswald font-medium text-sm tracking-[0.1em] transition-colors hover:text-sd-red ${
+            className={`min-h-11 flex items-center -mb-0.5 border-b-[3px] font-oswald font-medium text-sm tracking-widest transition-colors hover:text-sd-red ${
               active ? "border-sd-red text-sd-ink" : "border-transparent text-sd-ink/60"
             }`}
           >

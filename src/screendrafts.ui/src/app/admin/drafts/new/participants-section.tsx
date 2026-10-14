@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { searchDrafters, searchDrafterTeams } from "@/services/admin/fetch-admin-drafts";
 
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const SECTION_HEADING =
   "font-oswald font-bold text-[18px] tracking-wide uppercase text-sd-ink mb-4 pb-2 border-b border-sd-ink/10";
 
@@ -140,7 +140,7 @@ export function ParticipantsSection({
           {[...selectedDrafterIds].map((id) => (
             <span
               key={id}
-              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded"
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-ink text-white text-[11px] font-mono rounded-sm"
             >
               {displayNames.get(id) ?? id}
               <button
@@ -156,7 +156,7 @@ export function ParticipantsSection({
           {[...selectedTeamIds].map((id) => (
             <span
               key={id}
-              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-blue text-white text-[11px] font-mono rounded"
+              className="inline-flex items-center gap-1 px-2 py-0.5 bg-sd-blue text-white text-[11px] font-mono rounded-sm"
             >
               {displayNames.get(id) ?? id}
               <button
@@ -173,7 +173,7 @@ export function ParticipantsSection({
       )}
 
       {/* Tab toggle */}
-      <div className="flex gap-0 mb-4 border border-sd-ink/20 rounded overflow-hidden w-fit">
+      <div className="flex gap-0 mb-4 border border-sd-ink/20 rounded-sm overflow-hidden w-fit">
         <button
           type="button"
           onClick={() => setTab("drafter")}
@@ -198,7 +198,7 @@ export function ParticipantsSection({
         </button>
       </div>
 
-      <div className="border border-sd-ink/10 rounded p-4 bg-white">
+      <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
         {tab === "drafter" ? (
           <>
             <input
@@ -217,7 +217,7 @@ export function ParticipantsSection({
                 drafterResults.map((d) => (
                   <label
                     key={d.publicId}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm cursor-pointer"
                   >
                     <input
                       type="checkbox"
@@ -256,7 +256,7 @@ export function ParticipantsSection({
                 teamResults.map((t) => (
                   <label
                     key={t.publicId}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-sd-ink hover:bg-sd-ink/5 rounded-sm cursor-pointer"
                   >
                     <input
                       type="checkbox"

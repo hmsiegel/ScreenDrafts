@@ -28,7 +28,7 @@ export function TitleLevelTabs({
             key={level.slug}
             href={titleListHref(level.slug, { includeAll })}
             aria-current={active ? "page" : undefined}
-            className={`shrink-0 min-h-10 px-4 flex items-center gap-2 border-2 border-sd-ink font-oswald font-medium text-sm tracking-[0.1em] transition-colors ${
+            className={`shrink-0 min-h-10 px-4 flex items-center gap-2 border-2 border-sd-ink font-oswald font-medium text-sm tracking-widest transition-colors ${
               active ? "bg-sd-ink text-white" : "bg-white text-sd-ink hover:bg-sd-paper"
             }`}
           >

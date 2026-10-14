@@ -108,7 +108,7 @@ async function searchContestants(
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
-  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 
 // ── Component ────────────────────────────────────────────────────────────────
 
@@ -276,7 +276,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
       {config.enabled && (
         <div className="mt-4 space-y-5">
           {/* ── Rules ── */}
-          <div className="border border-sd-ink/10 rounded p-4 bg-white">
+          <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
             <p className={`${LABEL} mb-3`}>Rules</p>
             <div className="grid grid-cols-2 gap-4 max-w-lg">
               <div>
@@ -336,7 +336,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
           </div>
 
           {/* ── Predictors ── */}
-          <div className="border border-sd-ink/10 rounded p-4 bg-white">
+          <div className="border border-sd-ink/10 rounded-sm p-4 bg-white">
             <p className={`${LABEL} mb-3`}>Predictors</p>
             <p className="text-[11px] font-mono text-sd-ink/50 mb-4">
               Every slot here gets scored. Toggle a surrogate when the contestant themself
@@ -348,7 +348,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
                 {config.predictors.map((p) => (
                   <div
                     key={p.contestantPublicId}
-                    className="border border-sd-ink/10 rounded p-3 bg-sd-paper space-y-2"
+                    className="border border-sd-ink/10 rounded-sm p-3 bg-sd-paper space-y-2"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-sd-ink font-medium">
@@ -403,7 +403,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
                               }
                             />
                             {(hostResultsBySlot[p.contestantPublicId] ?? []).length > 0 && (
-                              <div className="border border-sd-ink/10 rounded overflow-hidden mt-2">
+                              <div className="border border-sd-ink/10 rounded-sm overflow-hidden mt-2">
                                 {(hostResultsBySlot[p.contestantPublicId] ?? []).map((host) => (
                                   <button
                                     key={host.publicId}
@@ -442,7 +442,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
                 <p className="text-sm text-sd-red font-mono px-1 mt-1">{contestantError}</p>
               )}
               {!contestantLoading && !contestantError && contestantResults.length > 0 && (
-                <div className="border border-sd-ink/10 rounded overflow-hidden mt-2">
+                <div className="border border-sd-ink/10 rounded-sm overflow-hidden mt-2">
                   {contestantResults
                     .filter(
                       (c) => !config.predictors.some((p) => p.contestantPublicId === c.publicId)
@@ -469,7 +469,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
               </button>
 
               {showCreateContestant && (
-                <div className="border border-sd-ink/10 rounded p-3 mt-2 space-y-2 bg-sd-paper/40">
+                <div className="border border-sd-ink/10 rounded-sm p-3 mt-2 space-y-2 bg-sd-paper/40">
                   {eligibleHosts.length > 0 && !manualEntry ? (
                     <>
                       <p className="text-[11px] font-mono text-sd-ink/50">
@@ -477,7 +477,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
                         them below.
                       </p>
                       <select
-                        className="border border-sd-ink/20 bg-white px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full"
+                        className="border border-sd-ink/20 bg-white px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full"
                         value={newPersonPublicId}
                         onChange={(e) => setNewPersonPublicId(e.target.value)}
                       >
@@ -510,7 +510,7 @@ export function PredictionRulesSection({ config, onChange, accessToken, hosts = 
                       <input
                         type="text"
                         placeholder="Person public ID (pe_...)"
-                        className="border border-sd-ink/20 bg-white px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full"
+                        className="border border-sd-ink/20 bg-white px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full"
                         value={newPersonPublicId}
                         onChange={(e) => setNewPersonPublicId(e.target.value)}
                       />

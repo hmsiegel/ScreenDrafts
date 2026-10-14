@@ -14,8 +14,8 @@ interface ProfileFormProps {
   apiBase: string;
 }
 
-const INPUT = "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full";
-const TEXTAREA = "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-none focus:ring-2 focus:ring-sd-blue rounded w-full resize-none";
+const INPUT = "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
+const TEXTAREA = "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full resize-none";
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const BTN_PRIMARY = "bg-sd-red text-white font-oswald tracking-wide uppercase px-4 py-2 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
 
@@ -345,7 +345,7 @@ export default function ProfileForm({ profile, accessToken, apiBase }: ProfileFo
   return (
     <div className="bg-white border border-sd-ink/10">
       {/* Five tabs need ~600px; on phones they scroll sideways instead of overflowing the card. */}
-      <div className="flex border-b border-sd-ink/10 overflow-x-auto overscroll-x-contain [scrollbar-width:none]">
+      <div className="flex border-b border-sd-ink/10 overflow-x-auto overscroll-x-contain scrollbar-none">
         {TABS.map(({ id, label }) => (
           <button
             key={id}

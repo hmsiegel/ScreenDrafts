@@ -186,7 +186,7 @@ function CardList({ rows, isAdmin, selectableIds, sortProps }: LayoutProps) {
                            {row.episodeNumber ?? "—"}
                         </span>
                         <span className="min-w-0 flex-1">
-                           <span className="font-sans font-semibold text-[16px] leading-snug text-sd-ink line-clamp-2 [overflow-wrap:anywhere]">
+                           <span className="font-sans font-semibold text-[16px] leading-snug text-sd-ink line-clamp-2 wrap-anywhere">
                               {row.label}
                            </span>
                            <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
@@ -197,7 +197,7 @@ function CardList({ rows, isAdmin, selectableIds, sortProps }: LayoutProps) {
                               )}
                            </span>
                            {row.participantLine && (
-                              <span className="mt-1.5 block text-[13px] italic text-[#5a6075] truncate [overflow-wrap:anywhere]">
+                              <span className="mt-1.5 block text-[13px] italic text-[#5a6075] truncate wrap-anywhere">
                                  {row.participantLine}
                               </span>
                            )}

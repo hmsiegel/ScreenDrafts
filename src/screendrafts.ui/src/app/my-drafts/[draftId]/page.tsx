@@ -78,7 +78,7 @@ export default async function MyDraftDetailPage({
 
         <div className="mb-8">
           <div className="flex items-start gap-4 flex-wrap mb-3">
-            <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink [overflow-wrap:anywhere] min-w-0">
+            <h1 className="font-oswald font-bold text-[32px] sm:text-[48px] leading-none text-sd-ink wrap-anywhere min-w-0">
               {detail.title}
             </h1>
             <DraftTypeBadge type={draftTypeFromNumber(detail.draftType)} />

@@ -53,7 +53,7 @@ export function QueryResults({ result }: { result: StatsQueryResultView }) {
                 return (
                   <tr key={`${row.rank}:${row.publicId ?? row.name}:${index}`} className="border-b border-sd-ink/10 last:border-b-0">
                     <td className="py-2.5 pr-3 font-mono text-[12px] text-[#5a6075]">{row.rank}</td>
-                    <td className="py-2.5 pr-3 font-oswald font-bold text-[15px] [overflow-wrap:anywhere]">
+                    <td className="py-2.5 pr-3 font-oswald font-bold text-[15px] wrap-anywhere">
                       {href ? (
                         <Link href={href} className="text-sd-blue hover:text-sd-red transition-colors">
                           {row.name}

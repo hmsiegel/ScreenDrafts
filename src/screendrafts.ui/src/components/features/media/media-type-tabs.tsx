@@ -29,7 +29,7 @@ export default function MediaTypeTabs({ mediaType, sort, q, year }: MediaTypeTab
   }
 
   return (
-    <div className="flex gap-1 overflow-x-auto overscroll-x-contain [scrollbar-width:none] -mx-4 px-4 sm:mx-0 sm:px-0">
+    <div className="flex gap-1 overflow-x-auto overscroll-x-contain scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
       {TABS.map((tab) => (
         <button
           key={tab.value}

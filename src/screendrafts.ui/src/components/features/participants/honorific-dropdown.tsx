@@ -34,7 +34,7 @@ export default function HonorificDropdown({ honorific, sort, q }: HonorificDropd
       </span>
       <div className="relative">
         <select
-          className={`appearance-none border font-mono text-[11px] px-3 py-1.5 pr-7 focus:outline-none cursor-pointer transition-colors ${
+          className={`appearance-none border font-mono text-[11px] px-3 py-1.5 pr-7 focus:outline-hidden cursor-pointer transition-colors ${
             honorific
               ? "bg-sd-red text-white border-sd-red"
               : "bg-white text-sd-ink border-sd-ink/30 hover:border-sd-ink"
