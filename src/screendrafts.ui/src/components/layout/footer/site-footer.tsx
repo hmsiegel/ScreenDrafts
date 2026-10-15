@@ -2,6 +2,7 @@
 const SPOTIFY_URL = process.env.NEXT_PUBLIC_SPOTIFY_URL;
 const APPLE_URL = process.env.NEXT_PUBLIC_APPLE_PODCASTS_URL;
 const PATREON_URL = process.env.NEXT_PUBLIC_PATREON_URL;
+const OFFICIAL_URL = process.env.NEXT_PUBLIC_OFFICIAL_URL;
 const RSS_URL = process.env.NEXT_PUBLIC_RSS_URL;
 const WIKI_URL = process.env.NEXT_PUBLIC_WIKI_URL;
 const KOFI_URL = process.env.NEXT_PUBLIC_KO_FI_URL;
@@ -71,6 +72,7 @@ export default function SiteFooter() {
               <FooterLink href="/drafts">Drafts Archive</FooterLink>
               <FooterLink href="/drafters">Drafters</FooterLink>
               <FooterLink href="/media">Films A–Z</FooterLink>
+              {OFFICIAL_URL && <FooterLink href={OFFICIAL_URL} external>Offical Website</FooterLink>}
               {WIKI_URL && <FooterLink href={WIKI_URL} external>The Wiki</FooterLink>}
             </nav>
           </div>
