@@ -72,6 +72,7 @@ export default function SiteFooter() {
               <FooterLink href="/drafts">Drafts Archive</FooterLink>
               <FooterLink href="/drafters">Drafters</FooterLink>
               <FooterLink href="/media">Films A–Z</FooterLink>
+              <FooterLink href="/about">About</FooterLink>
               {OFFICIAL_URL && <FooterLink href={OFFICIAL_URL} external>Offical Website</FooterLink>}
               {WIKI_URL && <FooterLink href={WIKI_URL} external>The Wiki</FooterLink>}
             </nav>
