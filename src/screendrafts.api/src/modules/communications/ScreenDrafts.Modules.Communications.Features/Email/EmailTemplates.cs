@@ -15,6 +15,8 @@ internal static class EmailTemplates
     "You received this because you're part of a Screen Drafts draft.";
   private const string AccountFooter =
     "You received this because someone requested an email change on your Screen Drafts account.";
+  private const string OwnerFooter =
+    "You received this because you're the Screen Drafts owner notification recipient.";
 
   public static string HostAdded(
     string recipientName,
@@ -158,6 +160,29 @@ internal static class EmailTemplates
       """,
       InviteFooter
     );
+
+  public static string NewUserRegistered(
+    string userName,
+    string userEmail,
+    DateTime registeredOnUtc
+  )
+  {
+    var registeredAt = registeredOnUtc.ToString(
+      "yyyy-MM-dd HH:mm",
+      System.Globalization.CultureInfo.InvariantCulture
+    );
+
+    return BaseLayout(
+      "there",
+      "A new user just registered on <strong>Screen Drafts</strong>.",
+      $"""
+      <p style="margin:0 0 8px;">Name: <strong>{Encode(userName)}</strong></p>
+      <p style="margin:0 0 8px;">Email: <strong>{Encode(userEmail)}</strong></p>
+      <p style="margin:0;">Registered: <strong>{registeredAt} UTC</strong></p>
+      """,
+      OwnerFooter
+    );
+  }
 
   private static string PatreonBadge(bool isPatreon) =>
     isPatreon

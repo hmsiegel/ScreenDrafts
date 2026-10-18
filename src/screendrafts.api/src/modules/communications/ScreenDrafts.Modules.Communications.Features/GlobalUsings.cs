@@ -1,5 +1,7 @@
 ﻿global using System.Reflection;
 global using Dapper;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
 global using ScreenDrafts.Common.Abstractions.Exceptions;
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
