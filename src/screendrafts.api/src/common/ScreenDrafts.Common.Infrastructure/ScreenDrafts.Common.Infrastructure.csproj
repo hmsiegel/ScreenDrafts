@@ -34,6 +34,7 @@
     <PackageReference Include="Scrutor" />
     <PackageReference Include="SharpCompress" />
     <PackageReference Include="Snappier" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" />
   </ItemGroup>
 
   <ItemGroup>

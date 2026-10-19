@@ -1,4 +1,4 @@
-using ScreenDrafts.Common.Application.Clock;
+﻿using ScreenDrafts.Common.Application.Clock;
 
 namespace ScreenDrafts.Modules.Communications.IntegrationTests.Inbox;
 
@@ -64,7 +64,12 @@ public sealed class IntegrationEventDispatcherTests
 
     var services = new ServiceCollection();
     services.AddSingleton<IDbConnectionFactory>(connectionFactory);
+    services.AddSingleton<IEmailService>(new RecordingEmailService());
+    services.AddSingleton<IDateTimeProvider>(new FakeDateTimeProvider(DateTime.UtcNow));
+    services.AddSingleton(Options.Create(new OwnerNotificationOptions { Address = null }));
+    services.AddLogging();
     services.AddScoped<UserRegisteredIntegrationEventConsumer>();
+    services.AddScoped<UserRegisteredOwnerNotificationIntegrationEventConsumer>();
     await using var provider = services.BuildServiceProvider();
 
     var integrationEvent = new UserRegisteredIntegrationEvent(
@@ -86,7 +91,9 @@ public sealed class IntegrationEventDispatcherTests
     // event type routed to UserRegisteredIntegrationEventConsumer, not (say) a
     // silently-empty handler list.
     connectionFactory.WasOpened.Should().BeTrue();
-    connectionFactory.ExecutedSql.Should().ContainSingle(sql => sql.Contains("communications.user_emails", StringComparison.Ordinal));
+    connectionFactory
+      .ExecutedSql.Should()
+      .ContainSingle(sql => sql.Contains("communications.user_emails", StringComparison.Ordinal));
   }
 
   [Fact]

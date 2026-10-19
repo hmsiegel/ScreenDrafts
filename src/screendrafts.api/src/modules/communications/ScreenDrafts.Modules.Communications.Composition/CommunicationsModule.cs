@@ -32,6 +32,9 @@ public static class CommunicationsModule
     ArgumentNullException.ThrowIfNull(configuration);
 
     services.Configure<SmtpSettings>(configuration.GetSection(SmtpSettings.SectionName));
+    services.Configure<OwnerNotificationOptions>(
+      configuration.GetSection(OwnerNotificationOptions.SectionName)
+    );
     services.AddScoped<IEmailService, SmtpEmailService>();
 
     services.AddScoped<

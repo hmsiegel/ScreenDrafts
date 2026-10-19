@@ -23,7 +23,7 @@ internal sealed class DraftCreatedIntegrationEventConsumer(
         ue.full_name AS FullName
       FROM communications.user_emails ue
       WHERE (@IsPatreon = false OR ue.is_patreon = true)
-        AND (@AllowPlaceholderRecipients OR ue.email_address NOT ILIKE '%@screendrafts.fake')
+        AND (@AllowPlaceholderRecipients OR ue.email_address NOT ILIKE '%.fake')
         AND NOT EXISTS (
           SELECT 1
           FROM communications.email_deliveries
