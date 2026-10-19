@@ -649,7 +649,12 @@ function SpeedDraftPicksSection({
     setDebouncedRefine("");
   }, [subjectName]);
 
-  const searchQuery = `${subjectName} ${debouncedRefine}`.trim();
+  // Refine text that already contains the subject word (e.g. "bloodsport" for
+  // "Blood") is the full query. Prefixing the word would search "Blood
+  // bloodsport", which TMDb matches as two separate words.
+  const searchQuery = debouncedRefine.toLowerCase().includes(subjectName.toLowerCase())
+    ? debouncedRefine
+    : `${subjectName} ${debouncedRefine}`.trim();
   const searchQueryRef = useRef(searchQuery);
   searchQueryRef.current = searchQuery;
 

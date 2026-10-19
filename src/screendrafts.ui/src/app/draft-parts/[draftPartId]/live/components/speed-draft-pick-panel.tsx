@@ -218,7 +218,9 @@ export function SpeedDraftPickPanel({
   // stays out of the query (and out of the filmography load effect).
   const searchQuery = isPersonSubject
     ? subjectName
-    : `${subjectName} ${debouncedRefine}`.trim();
+    : debouncedRefine.toLowerCase().includes(subjectName.toLowerCase())
+      ? debouncedRefine
+      : `${subjectName} ${debouncedRefine}`.trim();
   const searchQueryRef = useRef(searchQuery);
   searchQueryRef.current = searchQuery;
 
