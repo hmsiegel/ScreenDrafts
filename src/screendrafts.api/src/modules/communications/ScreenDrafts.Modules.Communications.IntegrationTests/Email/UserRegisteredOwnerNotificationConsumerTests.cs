@@ -122,7 +122,7 @@ public sealed class UserRegisteredOwnerNotificationConsumerTests
   // Helpers
   // -------------------------------------------------------------------------
 
-  private static UserRegisteredOwnerNotificationConsumer BuildConsumer(
+  private static UserRegisteredOwnerNotificationIntegrationEventConsumer BuildConsumer(
     FakeDbConnectionFactory factory,
     IEmailService emailService,
     string? ownerAddress
@@ -130,12 +130,12 @@ public sealed class UserRegisteredOwnerNotificationConsumerTests
   {
     var fixedUtcNow = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
 
-    return new UserRegisteredOwnerNotificationConsumer(
+    return new UserRegisteredOwnerNotificationIntegrationEventConsumer(
       factory,
       emailService,
       new FakeDateTimeProvider(fixedUtcNow),
       Options.Create(new OwnerNotificationOptions { Address = ownerAddress }),
-      NullLogger<UserRegisteredOwnerNotificationConsumer>.Instance
+      NullLogger<UserRegisteredOwnerNotificationIntegrationEventConsumer>.Instance
     );
   }
 

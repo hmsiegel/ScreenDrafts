@@ -6,19 +6,20 @@
 /// throws: an SMTP failure here must not abort the dispatcher loop and skip the
 /// user_emails upsert, nor trigger an inbox retry that re-sends the email.
 /// </summary>
-internal sealed partial class UserRegisteredOwnerNotificationConsumer(
+internal sealed partial class UserRegisteredOwnerNotificationIntegrationEventConsumer(
   IDbConnectionFactory connectionFactory,
   IEmailService emailService,
   IDateTimeProvider dateTimeProvider,
   IOptions<OwnerNotificationOptions> options,
-  ILogger<UserRegisteredOwnerNotificationConsumer> logger
+  ILogger<UserRegisteredOwnerNotificationIntegrationEventConsumer> logger
 ) : IntegrationEventHandler<UserRegisteredIntegrationEvent>
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
   private readonly IEmailService _emailService = emailService;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
   private readonly OwnerNotificationOptions _options = options.Value;
-  private readonly ILogger<UserRegisteredOwnerNotificationConsumer> _logger = logger;
+  private readonly ILogger<UserRegisteredOwnerNotificationIntegrationEventConsumer> _logger =
+    logger;
 
   public override async Task Handle(
     UserRegisteredIntegrationEvent integrationEvent,
@@ -120,7 +121,7 @@ internal sealed partial class UserRegisteredOwnerNotificationConsumer(
     Message = "Failed to send owner registration notification for user {UserId}"
   )]
   private static partial void LogOwnerNotificationFailed(
-    ILogger<UserRegisteredOwnerNotificationConsumer> logger,
+    ILogger<UserRegisteredOwnerNotificationIntegrationEventConsumer> logger,
     Exception exception,
     Guid userId
   );
