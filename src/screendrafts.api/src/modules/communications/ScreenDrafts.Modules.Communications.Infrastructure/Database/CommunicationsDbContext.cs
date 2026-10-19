@@ -1,10 +1,10 @@
-﻿using ScreenDrafts.Modules.Communications.Domain.Abstractions.Data;
-
-namespace ScreenDrafts.Modules.Communications.Infrastructure.Database;
+﻿namespace ScreenDrafts.Modules.Communications.Infrastructure.Database;
 
 public sealed class CommunicationsDbContext(DbContextOptions<CommunicationsDbContext> options)
-  : DbContext(options), IUnitOfWork
+  : DbContext(options),
+    IUnitOfWork
 {
+  internal DbSet<ContactMessage> ContactMessages { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {

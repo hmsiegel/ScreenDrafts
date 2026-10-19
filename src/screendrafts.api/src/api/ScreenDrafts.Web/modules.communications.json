@@ -11,10 +11,16 @@
     "Smtp": {
       "Host": "smtp.resend.com",
       "Port": 587,
-      "SecureSocketOptions":  "StartTls",
+      "SecureSocketOptions": "StartTls",
       "FromAddress": "noreply@screen-drafts.com",
       "FromName": "Screen Drafts",
       "Username": "resend"
+    },
+    "Contact": {
+      "RecipientAddress": "support@screen-drafts.com"
+    },
+    "Turnstile": {
+      "AllowedHostNames": "screen-drafts.com,www.screen-drafts.com"
     }
   }
 }

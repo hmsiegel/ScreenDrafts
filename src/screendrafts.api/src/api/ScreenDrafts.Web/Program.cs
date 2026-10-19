@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Infrastructure.Storage;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
 
@@ -101,9 +99,37 @@ builder
 
 ModuleServiceExtensions.AddModules(builder.Services, builder.Configuration);
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+  options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+  // Only Caddy publishes ports in prod, so the API is reachable solely through it.
+  // (.NET 9 and earlier: KnownNetworks instead of KnownIPNetworks.)
+  options.KnownIPNetworks.Clear();
+  options.KnownProxies.Clear();
+});
+
+builder.Services.AddRateLimiter(options =>
+{
+  options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+  options.AddPolicy(
+    "contact",
+    httpContext =>
+      RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+        factory: _ => new FixedWindowRateLimiterOptions
+        {
+          PermitLimit = 5,
+          Window = TimeSpan.FromHours(1),
+          QueueLimit = 0,
+        }
+      )
+  );
+});
+
 var app = builder.Build();
 
 // 1. Diagnostics and logging
+app.UseForwardedHeaders();
 app.UseRequestAbortedHandling();
 app.UseLogContextTraceLogging();
 app.UseSerilogRequestLogging();
@@ -114,6 +140,7 @@ app.UseStaticFiles();
 
 // 4.Explicit routing
 app.UseRouting();
+app.UseRateLimiter();
 
 // 5. CORS must run after UseRouting and before UseAuthentication/UseAuthorization
 app.UseCors("AllowUI");

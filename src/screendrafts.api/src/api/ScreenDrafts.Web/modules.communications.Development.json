@@ -11,12 +11,18 @@
     "Smtp": {
       "Host": "screendrafts.email",
       "Port": 2525,
-      "SecureSocketOptions":  "None",
+      "SecureSocketOptions": "None",
       "FromAddress": "no-reply@screendrafts.com",
       "FromName": "Screen Drafts",
       "Username": "",
       "Password": "",
       "AllowPlaceholderRecipients": true
+    },
+    "Contact": {
+      "RecipientAddress": "support@screen-drafts.com"
+    },
+    "Turnstile": {
+      "AllowedHostNames": ""
     }
   }
 }
