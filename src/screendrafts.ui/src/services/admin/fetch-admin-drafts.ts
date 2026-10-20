@@ -1216,6 +1216,47 @@ export async function applyCommissionerOverride(
   }
 }
 
+// Removes a pick entirely so it can be re-entered. Backend refuses a vetoed or
+// commissioner-overridden pick (409); needs the picks:undo permission, which
+// Administrator and SuperAdministrator have. Regular drafts only — the
+// subDraftPublicId body field is for speed drafts and is deliberately omitted.
+export async function undoPick(
+  accessToken: string,
+  params: { draftPartId: string; playOrder: number }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(params.draftPartId)}/picks/${params.playOrder}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to undo pick: ${res.status}`);
+  }
+}
+
+// Reverses the pick's current veto and refunds the token to whoever issued it.
+// Backend requires the draft part to be InProgress and refuses once the veto has
+// been overridden. Needs picks:veto-undo — see the permission note in the reply.
+export async function undoVeto(
+  accessToken: string,
+  params: { draftPartId: string; playOrder: number }
+): Promise<void> {
+  const res = await fetch(
+    `${apiBase}/draft-parts/${encodeURIComponent(params.draftPartId)}/picks/${params.playOrder}/undo-veto`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+  if (!res.ok) {
+    const problem = await res.json().catch(() => null);
+    throw new Error(problem?.detail ?? `Failed to undo veto: ${res.status}`);
+  }
+}
+
 export async function deleteDraft(
   accessToken: string,
   draftId: string

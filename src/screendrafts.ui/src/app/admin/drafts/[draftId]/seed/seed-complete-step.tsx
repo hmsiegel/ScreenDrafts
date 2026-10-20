@@ -1,171 +1,920 @@
-// app/admin/drafts/[draftId]/seed/seed-complete-step.tsx
+// app/admin/drafts/[draftId]/seed/seed-picks-step.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { completeDraftPart, getDraft, getDraftPartPredictions } from "@/services/admin/fetch-admin-drafts";
-import { refreshHomeData } from "@/app/home-actions";
+import {
+  listDraftPositions,
+  getDraftPartGameplay,
+  playPick,
+  seedRevealPick,
+  applyVeto,
+  applyVetoOverride,
+  applyCommissionerOverride,
+  undoPick,
+  undoVeto,
+  type DraftPartParticipant,
+  type DraftPartHost,
+  type GameplayDraftPosition,
+  type GameplayPick,
+  type GameplayVetoHistoryEntry,
+} from "@/services/admin/fetch-admin-drafts";
+import { importAndResolve, type ResolvedMovie } from "@/lib/movie-resolve";
+import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
+import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
 import type { SeedDraftState } from "./seed-draft-wizard";
 
+const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
+const INPUT =
+  "border border-sd-ink/20 bg-sd-paper px-3 py-2 text-sd-ink font-sans text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full";
 const BTN_PRIMARY =
-  "bg-sd-red text-white font-oswald font-medium uppercase tracking-wide px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
+  "bg-sd-red text-white font-oswald font-medium tracking-wide uppercase px-5 py-2.5 hover:bg-sd-red/90 disabled:opacity-50 transition-colors";
+const BTN_SECONDARY =
+  "border border-sd-ink/20 text-sd-ink font-mono text-[11px] tracking-widest uppercase px-3 py-1.5 hover:bg-sd-ink/5 disabled:opacity-40 transition-colors";
+
+interface LocalPick {
+  playOrder: number;
+  position: number;
+  movieTitle: string;
+  tmdbId: number | null;
+  participantIdValue: string;
+  participantDisplayName: string;
+  status: "landed" | "vetoed" | "vetoOverridden" | "commissionerOverridden";
+  vetoedByName: string | null;
+  savedByName: string | null;
+  // Whether the pick's current veto/override was paid for by a fungible token
+  // rather than a normal one. Only meaningful alongside the matching status.
+  // Always sourced fresh from the server (see refreshFromServer) — the
+  // frontend has no way to know client-side which pool a spend drew from,
+  // that's decided server-side by whichever budget was actually available.
+  vetoWasFungible: boolean;
+  vetoOverrideWasFungible: boolean;
+  // Only set on a hostless part — the participant this pick was "sent to,"
+  // assigned server-side at play time. Used to auto-resolve who reveals it
+  // instead of asking the seeder to pick a host that doesn't exist.
+  revealAuthorizedParticipantId: string | null;
+  revealAuthorizedByName: string | null;
+  // Full veto history for this pick — see GameplayVetoHistoryEntry. Normally holds at
+  // most one entry; a second only appears after a veto → override → re-veto sequence.
+  vetoHistory: GameplayVetoHistoryEntry[];
+}
 
 interface Props {
   draft: SeedDraftState;
+  participants: DraftPartParticipant[];
+  primaryHost: DraftPartHost | null;
+  coHosts: DraftPartHost[];
+  // MiniMega / Mega / Super / MiniSuper allow overrides; Standard and
+  // SpeedDraft don't — ApplyVetoOverride refuses both at the domain level.
+  allowsOverride: boolean;
   accessToken: string;
-  onDone: () => void;
-  alreadyComplete?: boolean;
+  onAllPositionsFilled: () => void;
 }
 
-export function SeedCompleteStep({ draft, accessToken, onDone, alreadyComplete }: Props) {
-  const router = useRouter();
-  const [completing, setCompleting] = useState(false);
+export function SeedPicksStep({
+  draft,
+  participants,
+  primaryHost,
+  coHosts,
+  allowsOverride,
+  accessToken,
+  onAllPositionsFilled,
+}: Props) {
+  const [totalPicks, setTotalPicks] = useState<number | null>(null);
+  const [picks, setPicks] = useState<LocalPick[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Fungible token (BUV/Rabbit's Foot-style formats) — null for the
+  // overwhelming majority of drafts that don't use one. Remaining balances
+  // are keyed by participantIdValue, refreshed alongside picks after every
+  // mutation so they never drift from what the server actually has.
+  const [fungibleTokenName, setFungibleTokenName] = useState<string | null>(null);
+  const [fungibleRemaining, setFungibleRemaining] = useState<Map<string, number>>(new Map());
+
+  // Hostless parts have no primary host to reveal picks — reveal authority
+  // instead belongs to whichever participant the just-played pick was "sent
+  // to" (Pick.RevealAuthorizedParticipant, assigned server-side at play
+  // time). See handleSubmitPick, which branches on this instead of asking
+  // for a host selection that can never be filled in.
+  const [isHostless, setIsHostless] = useState(false);
+
+  // Board positions (slot ownership + who each is assigned to), refreshed with
+  // the picks. Drives the auto-fill of Board Slot / Played By below.
+  const [draftPositions, setDraftPositions] = useState<GameplayDraftPosition[]>([]);
+
+  // Next-pick form state
+  const [position, setPosition] = useState<number | "">("");
+  const [participantIdValue, setParticipantIdValue] = useState(participants[0]?.participantIdValue ?? "");
+  const [revealedByHostId, setRevealedByHostId] = useState(primaryHost?.hostPublicId ?? "");
+  const [selectedMovie, setSelectedMovie] = useState<ResolvedMovie | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState(false);
+  const [importing, setImporting] = useState(false);
+  // Fallback for titles TMDb's own title search can't find — e.g. "$"
+  // (TMDb 31644), which the API appears to treat as an empty/punctuation-only
+  // query and returns zero matches for, independent of any length gate on
+  // this app's side. Bypasses search entirely: goes straight through
+  // handlePickMovie's existing import path with a known TMDb ID.
+  const [manualEntryOpen, setManualEntryOpen] = useState(false);
+  const [manualTmdbId, setManualTmdbId] = useState("");
+  // Set to the play order whose Board Slot / Played By the seeder edited by hand.
+  // While it matches nextPlayOrder, the auto-fill below stands down so it never
+  // overwrites a deliberate choice (e.g. a proxy-drafted pick). Any other value
+  // — including null — lets the board-order suggestion apply again.
+  const [touchedFor, setTouchedFor] = useState<number | null>(null);
+  // Which pick is currently showing an inline "who's doing this" picker,
+  // and what's been selected so far. Veto and Veto Override both need an
+  // explicit issuer — self-veto is a real case (the same drafter who
+  // played the pick can also veto it), and on drafts with more than two
+  // participants there's no single "the other one" to infer at all.
+  const [pendingAction, setPendingAction] = useState<{
+    playOrder: number;
+    type: "veto" | "vetoOverride";
+    issuerIdValue: string;
+  } | null>(null);
 
-  // alreadyComplete is a snapshot from whenever the wizard first loaded —
-  // for a Speed Draft, DraftPart.Complete() can fire automatically off the
-  // back of AllSubDraftsCompletedDomainEvent (raised when the 3rd sub-draft
-  // advances), dispatched via the outbox with its usual delay. That can
-  // land any time during this wizard session, including after this step
-  // has already rendered with alreadyComplete=false. isComplete starts from
-  // the prop but gets corrected against a fresh fetch below and again if a
-  // completion attempt fails.
-  const [isComplete, setIsComplete] = useState(!!alreadyComplete);
+  const allHosts = primaryHost ? [primaryHost, ...coHosts] : coHosts;
+  const nextPlayOrder = picks.length + 1;
+  const lastPick = picks[picks.length - 1] ?? null;
+  // commissionerOverridden deliberately excluded — that pick never lands,
+  // per handleCommissionerOverride's own comment below. Previously included
+  // here by mistake, which let this counter overstate board completion on
+  // any part with a commissioner override.
+  const landedCount = picks.filter(
+    (p) => p.status === "landed" || p.status === "vetoOverridden"
+  ).length;
 
-  // Standings always show exactly two contestants — Ryan and Clay. Any
-  // additional predictor (a sponsor, a guest) is never an independent
-  // standings entry; it must be linked as a surrogate to one of the two
-  // real ones. Completing triggers scoring, and scoring can't be re-run
-  // once PredictionResult rows exist — so this has to be checked and
-  // blocked here, not just left as an available-but-skippable tool in the
-  // Predictions step. This computes "how many submitted sets would show up
-  // as independent standings entries" directly from real data — total
-  // submitted sets minus however many are already referenced as someone
-  // else's surrogate — rather than trying to know in advance which
-  // contestants are "the real ones."
-  const [checkingPredictions, setCheckingPredictions] = useState(true);
-  const [standaloneSetCount, setStandaloneSetCount] = useState<number | null>(null);
+  // A commissioner-overridden film is barred from this draft part
+  // entirely, not just from the slot it was removed from — the slot
+  // itself can still take a different pick. Tracked by tmdbId rather than
+  // title text, since title matching risks both false blocks (formatting
+  // differences on the same film) and false negatives (two different
+  // films sharing a title).
+  const barredTmdbIds = new Set(
+    picks.filter((p) => p.status === "commissionerOverridden" && p.tmdbId != null).map((p) => p.tmdbId)
+  );
+
+  // Board-order suggestion for the next pick. Same rule the server uses in
+  // GetDraftPartGameplayQueryHandler for NextExpectedParticipant: the draft
+  // counts down, so the next pick is the highest board slot with no landed pick.
+  // A vetoed or commissioner-overridden slot reopens and so comes up again,
+  // owned by the same position. Community positions have no participant here,
+  // so for those only the slot is suggested.
+  const landedSlots = new Set(
+    picks.filter((p) => p.status === "landed" || p.status === "vetoOverridden").map((p) => p.position)
+  );
+  const nextOpen = draftPositions
+    .flatMap((pos) => pos.ownedBoardSlots.filter((s) => !landedSlots.has(s)).map((slot) => ({ slot, pos })))
+    .sort((a, b) => b.slot - a.slot)[0] ?? null;
+  const suggestedSlot = nextOpen?.slot ?? null;
+  const suggestedOwnerId =
+    nextOpen && !nextOpen.pos.isCommunityPosition
+      ? (nextOpen.pos.assignedParticipantId?.toLowerCase() ?? null)
+      : null;
+  const suggestedParticipant =
+    suggestedOwnerId != null
+      ? (participants.find((p) => p.participantIdValue.toLowerCase() === suggestedOwnerId) ?? null)
+      : null;
+  const isTouched = touchedFor === nextPlayOrder;
+
+  useEffect(() => {
+    if (touchedFor === nextPlayOrder) return;
+    if (suggestedSlot != null) setPosition(suggestedSlot);
+    if (suggestedParticipant) setParticipantIdValue(suggestedParticipant.participantIdValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [suggestedSlot, suggestedParticipant?.participantIdValue, nextPlayOrder, touchedFor]);
+
+  function statusFromGameplayPick(p: GameplayPick): LocalPick["status"] {
+    if (p.wasCommissionerOverride) return "commissionerOverridden";
+    if (p.wasVetoOverridden) return "vetoOverridden";
+    if (p.wasVetoed) return "vetoed";
+    return "landed";
+  }
+
+  // Single source of truth for picks + participant token state, called on
+  // mount and after every mutation. Replaces the old pattern of optimistic
+  // local patches after each action — those can't be correct here, since
+  // whether a spend drew from a participant's normal pool or their fungible
+  // token is decided server-side, not something the frontend can compute.
+  // Returns the fresh picks so callers can check board-completion state
+  // immediately, since setPicks itself won't be visible in this closure yet.
+  async function refreshFromServer(): Promise<LocalPick[]> {
+    const gameplay = await getDraftPartGameplay(accessToken, draft.draftPartPublicId);
+    if (!gameplay) return picks;
+
+    setFungibleTokenName(gameplay.fungibleTokenName);
+    setIsHostless(gameplay.isHostless);
+    setDraftPositions(gameplay.draftPositions);
+    setFungibleRemaining(
+      new Map(gameplay.participants.map((p) => [p.participantId, p.fungibleTokensRemaining]))
+    );
+
+    const nextPicks: LocalPick[] = gameplay.picks
+      .slice()
+      .sort((a, b) => a.playOrder - b.playOrder)
+      .map((p) => ({
+        playOrder: p.playOrder,
+        position: p.boardPosition,
+        movieTitle: p.movieTitle,
+        tmdbId: p.tmdbId,
+        participantIdValue: p.playedById,
+        participantDisplayName: p.playedByName,
+        status: statusFromGameplayPick(p),
+        vetoedByName: p.vetoedByName,
+        savedByName: p.savedByName,
+        vetoWasFungible: p.wasVetoFungible,
+        vetoOverrideWasFungible: p.wasVetoOverrideFungible,
+        revealAuthorizedParticipantId: p.revealAuthorizedParticipantId,
+        revealAuthorizedByName: p.revealAuthorizedByName,
+        vetoHistory: p.vetoHistory ?? [],
+      }));
+
+    setPicks(nextPicks);
+    return nextPicks;
+  }
+
+  // Hydrates from the server on mount rather than starting from an empty
+  // list — this component previously tracked picks in local state only, so
+  // navigating away mid-entry and coming back showed an empty board with no
+  // veto/override actions available, even though every pick already
+  // submitted was safely recorded server-side.
+  useEffect(() => {
+    (async () => {
+      await refreshFromServer();
+      setHydrated(true);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, draft.draftPartPublicId]);
 
   useEffect(() => {
     (async () => {
-      if (!isComplete) {
-        // Re-check against the server rather than trusting the prop —
-        // catches the case where a Speed Draft auto-completed after this
-        // wizard was first loaded.
-        const current = await getDraft(accessToken, draft.draftPublicId);
-        const part = current?.parts.find((p) => p.partIndex === draft.partIndex);
-        if (part?.status.name === "Completed") {
-          setIsComplete(true);
-          setCheckingPredictions(false);
-          return;
-        }
-      }
-
-      if (isComplete) {
-        setCheckingPredictions(false);
-        return;
-      }
-
-      const sets = await getDraftPartPredictions(accessToken, draft.draftPartPublicId);
-      const surrogateSetIds = new Set(
-        sets.flatMap((s) => s.surrogates.map((sur) => sur.surrogateSetPublicId))
-      );
-      setStandaloneSetCount(sets.filter((s) => !surrogateSetIds.has(s.publicId)).length);
-      setCheckingPredictions(false);
+      const positions = await listDraftPositions(accessToken, draft.draftPartPublicId);
+      setTotalPicks(positions.reduce((sum, p) => sum + p.picks.length, 0));
     })();
+  }, [accessToken, draft.draftPartPublicId]);
+
+  // If re-entering this step finds the board already full from a prior
+  // session, advance immediately rather than showing a full board with
+  // nothing left to do.
+  useEffect(() => {
+    if (!hydrated || totalPicks == null) return;
+    if (landedCount >= totalPicks) onAllPositionsFilled();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hydrated, totalPicks]);
 
-  const predictionsInvalid = standaloneSetCount != null && standaloneSetCount > 2;
-
-  async function handleComplete() {
-    if (predictionsInvalid) return;
-    setCompleting(true);
+  async function handlePickMovie(movie: ResolvedMovie) {
+    if (barredTmdbIds.has(movie.tmdbId)) {
+      setError(`${movie.title} was commissioner-overridden earlier in this part and can't be picked again.`);
+      return;
+    }
+    if (movie.mediaPublicId) {
+      setSelectedMovie(movie);
+      return;
+    }
+    // Not in the local media database yet — import from TMDb and wait for
+    // it to land, same as the live pick-source-panel does.
+    setImporting(true);
     setError(null);
     try {
-      await completeDraftPart(accessToken, draft.draftPublicId, draft.partIndex);
-      void refreshHomeData().catch(() => {});
-      onDone();
-      setDone(true);
-    } catch (err) {
-      // "Cannot complete if it is not in progress" can mean it's already
-      // Completed (auto-completed underneath this session), not that
-      // completion actually failed — check before surfacing an error.
-      const current = await getDraft(accessToken, draft.draftPublicId);
-      const part = current?.parts.find((p) => p.partIndex === draft.partIndex);
-      if (part?.status.name === "Completed") {
-        setIsComplete(true);
-        void refreshHomeData().catch(() => {});
-        onDone();
-        setDone(true);
+      const imported = await importAndResolve(movie.tmdbId, accessToken);
+      if (!imported) {
+        setError("Movie could not be imported in time — try selecting it again in a moment.");
         return;
       }
-      setError(err instanceof Error ? err.message : "Failed to complete the draft part.");
+      setSelectedMovie(imported);
     } finally {
-      setCompleting(false);
+      setImporting(false);
     }
   }
 
-  if (isComplete || done) {
-    return (
-      <div className="bg-white border border-sd-ink/10 p-4 sm:p-8 max-w-md space-y-4">
-        <p className="text-sm text-sd-ink">
-          {done
-            ? "Draft part marked complete. Honorifics and prediction scoring will run from here automatically."
-            : "This draft part is already complete."}
-        </p>
-        <button
-          type="button"
-          onClick={() => router.push("/admin/drafts")}
-          className={BTN_PRIMARY}
-        >
-          Back to Draft Management
-        </button>
-      </div>
-    );
+  // Entry point for MediaPicker's onSelect — branches on mediaType since
+  // movies and TV episodes resolve differently (see tv-episode-resolve.ts).
+  // The movie branch delegates straight to handlePickMovie, unchanged.
+  async function handleMediaSelect(media: SelectedMedia) {
+    if (media.mediaType !== MEDIA_TYPE_TV_EPISODE) {
+      await handlePickMovie({
+        tmdbId: media.tmdbId,
+        mediaPublicId: "",
+        title: media.title,
+        year: media.year,
+        posterUrl: null,
+      });
+      return;
+    }
+
+    if (barredTmdbIds.has(media.tmdbId)) {
+      setError(`${media.title} was commissioner-overridden earlier in this part and can't be picked again.`);
+      return;
+    }
+    if (!media.tvSeriesTmdbId || !media.seasonNumber || !media.episodeNumber) {
+      setError("Missing episode identity — try selecting again.");
+      return;
+    }
+    setImporting(true);
+    setError(null);
+    try {
+      const publicId = await importAndResolveEpisode(
+        media.tmdbId,
+        media.tvSeriesTmdbId,
+        media.seasonNumber,
+        media.episodeNumber,
+        accessToken,
+      );
+      if (!publicId) {
+        setError("Episode could not be imported in time — try selecting it again in a moment.");
+        return;
+      }
+      setSelectedMovie({
+        mediaPublicId: publicId,
+        tmdbId: media.tmdbId,
+        title: media.title,
+        year: media.year,
+        posterUrl: null,
+      });
+    } finally {
+      setImporting(false);
+    }
+  }
+
+  async function handleManualTmdbSubmit() {
+    const parsed = Number.parseInt(manualTmdbId.trim(), 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      setError("Enter a valid TMDb ID.");
+      return;
+    }
+    // mediaPublicId/title/year/posterUrl left blank on purpose — handlePickMovie
+    // only trusts mediaPublicId to decide whether an import is needed, and
+    // importAndResolve fills in the real title/year from TMDb once it lands.
+    await handlePickMovie({
+      tmdbId: parsed,
+      mediaPublicId: "",
+      title: "",
+      year: null,
+      posterUrl: null,
+    });
+    setManualTmdbId("");
+    setManualEntryOpen(false);
+  }
+
+  async function handleSubmitPick() {
+    const hasRevealer = isHostless || !!revealedByHostId;
+    if (!selectedMovie || position === "" || !participantIdValue || !hasRevealer || submitting) {
+      return;
+    }
+    const participant = participants.find((p) => p.participantIdValue === participantIdValue);
+    if (!participant || participant.participantKindValue.value == null) {
+      setError("Selected participant is missing a kind — try re-selecting them.");
+      return;
+    }
+    const participantKind = participant.participantKindValue.value;
+
+    setSubmitting(true);
+    setError(null);
+    try {
+      await playPick(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        position: Number(position),
+        playOrder: nextPlayOrder,
+        participantPublicId: participant.participantPublicId,
+        participantKind,
+        moviePublicId: selectedMovie.mediaPublicId,
+      });
+
+      // The pick is now landed on the server regardless of what happens below — clear
+      // the movie/slot selection immediately so a reveal failure doesn't leave the form
+      // stuck displaying a pick that's already been recorded.
+      setSelectedMovie(null);
+      setTouchedFor(null);
+
+      // Hostless parts have no host to reveal picks — refetch immediately to
+      // pick up Pick.RevealAuthorizedParticipant, which the server assigned
+      // at play time, and reveal as that participant instead.
+      let actedByPublicId = revealedByHostId;
+      if (isHostless) {
+        const freshPicks = await refreshFromServer();
+        const justPlayed = freshPicks.find((p) => p.playOrder === nextPlayOrder);
+        const recipient = participants.find(
+          (p) => p.participantIdValue === justPlayed?.revealAuthorizedParticipantId
+        );
+        if (!recipient?.participantPublicId) {
+          throw new Error(
+            "Could not determine who this pick was sent to — refresh and try revealing manually."
+          );
+        }
+        actedByPublicId = recipient.participantPublicId;
+      }
+
+      await seedRevealPick(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: nextPlayOrder,
+        actedByPublicId,
+      });
+
+      const nextPicks = await refreshFromServer();
+
+      const newLandedCount = nextPicks.filter(
+        (p) => p.status === "landed" || p.status === "vetoOverridden"
+      ).length;
+      if (totalPicks != null && newLandedCount >= totalPicks) {
+        onAllPositionsFilled();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to record pick.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleVetoLast(issuerIdValue: string) {
+    if (
+      !lastPick ||
+      (lastPick.status !== "landed" && lastPick.status !== "vetoOverridden") ||
+      submitting
+    ) {
+      return;
+    }
+    const issuer = participants.find((p) => p.participantIdValue === issuerIdValue);
+    if (!issuer || issuer.participantKindValue.value == null) {
+      setError("Select who's issuing this veto.");
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await applyVeto(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: lastPick.playOrder,
+        participantPublicId: issuer.participantPublicId,
+        participantKind: issuer.participantKindValue.value,
+      });
+      await refreshFromServer();
+      setPendingAction(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to apply veto.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleVetoOverride(pick: LocalPick, issuerIdValue: string) {
+    if (submitting) return;
+    const overrider = participants.find((p) => p.participantIdValue === issuerIdValue);
+    if (!overrider || overrider.participantKindValue.value == null) {
+      setError("Select who's overriding this veto.");
+      return;
+    }
+    if (!overrider.participantPublicId) {
+      setError("Selected overrider has no public ID on record — try re-selecting them.");
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await applyVetoOverride(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: pick.playOrder,
+        participantIdValue: overrider.participantPublicId,
+        participantKind: overrider.participantKindValue.value,
+      });
+      const nextPicks = await refreshFromServer();
+      setPendingAction(null);
+      const newLandedCount = nextPicks.filter(
+        (p) => p.status === "landed" || p.status === "vetoOverridden"
+      ).length;
+      if (totalPicks != null && newLandedCount >= totalPicks) onAllPositionsFilled();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to apply veto override.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleCommissionerOverride(pick: LocalPick) {
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await applyCommissionerOverride(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: pick.playOrder,
+      });
+      await refreshFromServer();
+      // Commissioner override does NOT land the pick on the board — it just
+      // removes it from contention. Doesn't move landedCount, so no
+      // onAllPositionsFilled check here.
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to apply commissioner override.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  // Undo is limited to the most recent pick, same as the live host tab. The
+  // server also refuses to undo a vetoed or commissioner-overridden pick, so
+  // the button is only offered on a "landed" pick; a vetoed pick offers Undo
+  // Veto instead (refunds the veto to its issuer; refused once overridden).
+  async function handleUndoPick(pick: LocalPick) {
+    if (submitting) return;
+    if (
+      !window.confirm(
+        `Remove pick #${pick.playOrder} (${pick.movieTitle}, slot ${pick.position}) from the board? You can then re-enter it.`
+      )
+    ) {
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await undoPick(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: pick.playOrder,
+      });
+      setPendingAction(null);
+      setTouchedFor(null);
+      await refreshFromServer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to undo pick.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleUndoVeto(pick: LocalPick) {
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await undoVeto(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: pick.playOrder,
+      });
+      setPendingAction(null);
+      await refreshFromServer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to undo veto.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (!hydrated) {
+    return <p className="text-sm text-sd-ink/50 font-mono">Loading picks…</p>;
   }
 
   return (
-    <div className="bg-white border border-sd-ink/10 p-4 sm:p-8 max-w-md space-y-4">
-      <p className="text-sm text-sd-ink/70">
-        Completing requires every board position to be filled by a landed pick
-        (or, for Speed Drafts, all three sub-drafts completed).
-      </p>
+    <div className="space-y-6 max-w-2xl">
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+        <p className="text-sm text-sd-ink/70">
+          {totalPicks == null
+            ? "Loading board…"
+            : `${landedCount} of ${totalPicks} positions landed`}
+        </p>
+        <p className="font-mono text-[11px] text-sd-ink/40 uppercase tracking-widest">
+          Next: Play Order {nextPlayOrder}
+        </p>
+      </div>
 
-      {checkingPredictions && (
-        <p className="text-[11px] font-mono text-sd-ink/40">Checking predictions…</p>
-      )}
-
-      {!checkingPredictions && predictionsInvalid && (
-        <div className="border border-sd-red/30 bg-sd-red/5 text-sd-ink text-sm px-4 py-3 rounded-sm space-y-2">
-          <p className="font-medium text-sd-red">
-            {standaloneSetCount} predictors would show up as independent standings
-            entries — there should only ever be 2.
+      {/* Fungible token balances — only shown for drafts that use one */}
+      {fungibleTokenName && (
+        <div className="bg-white border border-sd-ink/10 rounded-sm p-3">
+          <p className="font-mono text-[11px] tracking-widest text-sd-ink/50 uppercase mb-2">
+            {fungibleTokenName} Remaining
           </p>
-          <p className="text-sd-ink/70">
-            Go back to Predictions and link any extra predictor as a surrogate
-            before completing. Once this draft part is marked complete,
-            scoring runs immediately and can&apos;t be re-run — this has to be
-            right before that happens, not fixed after.
-          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-sd-ink/70">
+            {participants.map((p) => (
+              <span key={p.participantIdValue}>
+                {p.displayName ?? p.participantIdValue}:{" "}
+                {fungibleRemaining.get(p.participantIdValue) ?? 0}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
-      {error && (
-        <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
-          {error}
+      {/* Picks so far */}
+      {picks.length > 0 && (
+        <div className="bg-white border border-sd-ink/10 rounded-sm divide-y divide-sd-ink/5">
+          {picks.map((p) => {
+            const showingPicker = pendingAction?.playOrder === p.playOrder;
+            return (
+              <div key={p.playOrder} className="px-4 py-2.5 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                  <div className="min-w-0">
+                    <span className="font-mono text-[11px] text-sd-ink/40 mr-2">#{p.playOrder}</span>
+                    <span className="font-medium text-sd-ink">{p.movieTitle}</span>
+                    <span className="text-sd-ink/50"> — slot {p.position}, {p.participantDisplayName}</span>
+                    {p.status !== "landed" && (
+                      <span className="ml-2 text-[10px] font-mono uppercase tracking-widest text-sd-red">
+                        {p.status === "vetoed"
+                          ? `vetoed${p.vetoedByName ? ` by ${p.vetoedByName}` : ""} — slot open`
+                          : p.status === "vetoOverridden"
+                            ? `veto overridden${p.savedByName ? ` by ${p.savedByName}` : ""}`
+                            : "commissioner override — film barred, slot still open"}
+                      </span>
+                    )}
+                    {p.vetoHistory.length > 1 && (
+                      <div className="mt-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-[10px] font-mono text-sd-ink/40">
+                        <span className="uppercase tracking-widest text-sd-ink/30">Full history:</span>
+                        {p.vetoHistory.map((v) => (
+                          <span key={v.sequence}>
+                            {`vetoed by ${v.vetoedByName}`}
+                            {v.isOverridden && ` → overridden by ${v.overriddenByName ?? "?"} → `}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {!showingPicker && (
+                    <div className="flex items-center gap-2 shrink-0">
+                      {/* All three actions — Veto, Commissioner Override, and Veto
+                          Override — are only offered on the most recent play. Once a
+                          later pick has been made, an earlier slot is settled and none
+                          of these should still be actionable from this form. A veto that
+                          was overridden can still be vetoed again (the override itself
+                          gets overridden), which is why "vetoOverridden" is included
+                          alongside "landed" for the Veto button below. */}
+                      {(p.status === "landed" || p.status === "vetoOverridden") &&
+                        p.playOrder === lastPick?.playOrder && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setPendingAction({ playOrder: p.playOrder, type: "veto", issuerIdValue: "" })
+                            }
+                            disabled={submitting}
+                            className={BTN_SECONDARY}
+                          >
+                            Veto
+                          </button>
+                        )}
+                      {p.status === "landed" && p.playOrder === lastPick?.playOrder && (
+                        <button
+                          type="button"
+                          onClick={() => handleCommissionerOverride(p)}
+                          disabled={submitting}
+                          className={BTN_SECONDARY}
+                        >
+                          Commissioner Override
+                        </button>
+                      )}
+                      {p.status === "vetoed" && allowsOverride && p.playOrder === lastPick?.playOrder && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPendingAction({
+                              playOrder: p.playOrder,
+                              type: "vetoOverride",
+                              issuerIdValue: "",
+                            })
+                          }
+                          disabled={submitting}
+                          className={BTN_SECONDARY}
+                        >
+                          Veto Override
+                        </button>
+                      )}
+                      {p.status === "landed" && p.playOrder === lastPick?.playOrder && (
+                        <button
+                          type="button"
+                          onClick={() => handleUndoPick(p)}
+                          disabled={submitting}
+                          className={BTN_SECONDARY}
+                        >
+                          Undo Pick
+                        </button>
+                      )}
+                      {p.status === "vetoed" && p.playOrder === lastPick?.playOrder && (
+                        <button
+                          type="button"
+                          onClick={() => handleUndoVeto(p)}
+                          disabled={submitting}
+                          className={BTN_SECONDARY}
+                        >
+                          Undo Veto
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {showingPicker && pendingAction && (
+                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-sd-ink/5">
+                    <label className="text-[11px] font-mono text-sd-ink/50 uppercase tracking-widest">
+                      {pendingAction.type === "veto" ? "Vetoed by" : "Overridden by"}
+                    </label>
+                    <select
+                      className="border border-sd-ink/20 bg-sd-paper px-2 py-1 text-sm rounded-sm flex-1"
+                      value={pendingAction.issuerIdValue}
+                      onChange={(e) =>
+                        setPendingAction({ ...pendingAction, issuerIdValue: e.target.value })
+                      }
+                    >
+                      <option value="">Select…</option>
+                      {participants.map((participant) => {
+                        const remaining = fungibleRemaining.get(participant.participantIdValue);
+                        return (
+                          <option key={participant.participantIdValue} value={participant.participantIdValue}>
+                            {participant.displayName ?? participant.participantIdValue}
+                            {participant.participantIdValue === p.participantIdValue ? " (self)" : ""}
+                            {fungibleTokenName && remaining != null
+                              ? ` — ${remaining} ${fungibleTokenName} left`
+                              : ""}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        pendingAction.type === "veto"
+                          ? handleVetoLast(pendingAction.issuerIdValue)
+                          : handleVetoOverride(p, pendingAction.issuerIdValue)
+                      }
+                      disabled={!pendingAction.issuerIdValue || submitting}
+                      className={BTN_SECONDARY}
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingAction(null)}
+                      className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest hover:underline"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={handleComplete}
-        disabled={completing || checkingPredictions || predictionsInvalid}
-        className={BTN_PRIMARY}
-      >
-        {completing ? "Completing…" : "Complete Draft Part"}
-      </button>
+      {/* Next pick form */}
+      <div className="bg-white border border-sd-ink/10 rounded-sm p-6 space-y-4">
+        <div>
+          <label className={LABEL}>Movie</label>
+          {selectedMovie ? (
+            <div className="flex items-center justify-between border border-sd-ink/20 rounded-sm px-3 py-2">
+              <span className="text-sm text-sd-ink">
+                {selectedMovie.title} {selectedMovie.year ? `(${selectedMovie.year})` : ""}
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedMovie(null)}
+                className="text-sd-ink/40 hover:text-sd-red text-sm"
+              >
+                Change
+              </button>
+            </div>
+          ) : (
+            <>
+              <MediaPicker
+                accessToken={accessToken}
+                onSelect={handleMediaSelect}
+                disabled={importing}
+                fixedSeriesTmdbId={draft.restrictedTvSeriesTmdbId ?? undefined}
+              />
+              {importing && <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Importing…</p>}
+
+              {/* Manual TMDb-ID fallback — movie-only. There's no episode
+                  equivalent: TMDb has no title search over episodes, so the
+                  browse-a-season flow above is already the "can't find it"
+                  answer for TV. Kept unconditionally visible (previously
+                  gated on the now-removed free-text query) rather than tied
+                  to which MediaPicker mode is active, since MediaPicker
+                  doesn't expose that upward. */}
+              {manualEntryOpen ? (
+                <div className="flex items-center gap-2 mt-2">
+                  <input
+                    type="number"
+                    placeholder="TMDb ID"
+                    className={`${INPUT} max-w-[140px]`}
+                    value={manualTmdbId}
+                    onChange={(e) => setManualTmdbId(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleManualTmdbSubmit}
+                    disabled={importing}
+                    className="text-[11px] font-mono text-sd-blue uppercase tracking-wide hover:underline disabled:opacity-40"
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setManualEntryOpen(false);
+                      setManualTmdbId("");
+                    }}
+                    className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setManualEntryOpen(true)}
+                  className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline mt-2"
+                >
+                  Movie not showing up? Enter TMDb ID directly →
+                </button>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className={LABEL}>Board Slot</label>
+            <input
+              type="number"
+              min={1}
+              className={INPUT}
+              value={position}
+              onChange={(e) => {
+                setTouchedFor(nextPlayOrder);
+                setPosition(e.target.value === "" ? "" : parseInt(e.target.value, 10));
+              }}
+            />
+          </div>
+          <div>
+            <label className={LABEL}>Played By</label>
+            <select
+              className={INPUT}
+              value={participantIdValue}
+              onChange={(e) => {
+                setTouchedFor(nextPlayOrder);
+                setParticipantIdValue(e.target.value);
+              }}
+            >
+              {participants.map((p) => (
+                <option key={p.participantIdValue} value={p.participantIdValue}>
+                  {p.displayName ?? p.participantIdValue}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {suggestedSlot != null && (
+          <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
+            {suggestedParticipant
+              ? `Board order: slot ${suggestedSlot} → ${suggestedParticipant.displayName ?? suggestedParticipant.participantIdValue}`
+              : `Board order: slot ${suggestedSlot} has no assigned drafter — choose one`}
+            {isTouched && (
+              <button
+                type="button"
+                onClick={() => setTouchedFor(null)}
+                className="ml-3 normal-case tracking-normal text-sd-blue hover:underline"
+              >
+                Reset to board order
+              </button>
+            )}
+          </p>
+        )}
+
+        {isHostless ? (
+          <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
+            Hostless draft — reveal recipient is assigned automatically at play time.
+          </p>
+        ) : (
+          <div>
+            <label className={LABEL}>Revealed By (Host)</label>
+            <select
+              className={INPUT}
+              value={revealedByHostId}
+              onChange={(e) => setRevealedByHostId(e.target.value)}
+            >
+              {allHosts.map((h) => (
+                <option key={h.hostPublicId} value={h.hostPublicId}>
+                  {h.displayName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {error && (
+          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
+            {error}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={handleSubmitPick}
+          disabled={
+            !selectedMovie ||
+            position === "" ||
+            !participantIdValue ||
+            (!isHostless && !revealedByHostId) ||
+            submitting
+          }
+          className={BTN_PRIMARY}
+        >
+          {submitting ? "Recording…" : "Record Pick"}
+        </button>
+      </div>
     </div>
   );
 }
