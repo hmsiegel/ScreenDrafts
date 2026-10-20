@@ -5,6 +5,7 @@
     <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="IMDbApiLib" />
     <PackageReference Include="MediatR.Contracts" />
+    <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="OmdbApiNet" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
   </ItemGroup>

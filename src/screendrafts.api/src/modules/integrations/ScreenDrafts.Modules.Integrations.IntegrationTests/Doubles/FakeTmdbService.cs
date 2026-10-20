@@ -98,10 +98,10 @@ public sealed class FakeTmdbService : ITmdbService
       }
     );
 
-  public Task<int?> FindPersonByImdbIdAsync(
+  public Task<TmdbPersonProfile?> FindPersonByImdbIdAsync(
     string imdbId,
     CancellationToken cancellationToken = default
-  ) => Task.FromResult<int?>(null);
+  ) => Task.FromResult<TmdbPersonProfile?>(null);
 
   public Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
     int tmdbPersonId,

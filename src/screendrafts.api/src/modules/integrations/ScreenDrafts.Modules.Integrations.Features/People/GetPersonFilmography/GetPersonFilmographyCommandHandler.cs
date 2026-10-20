@@ -1,11 +1,8 @@
 ﻿namespace ScreenDrafts.Modules.Integrations.Features.People.GetPersonFilmography;
 
-internal sealed class GetPersonFilmographyCommandHandler(
-  IImdbService imdbService,
-  ITmdbService tmdbService
-) : ICommandHandler<GetPersonFilmographyCommand, GetPersonFilmographyResponse>
+internal sealed class GetPersonFilmographyCommandHandler(ITmdbService tmdbService)
+  : ICommandHandler<GetPersonFilmographyCommand, GetPersonFilmographyResponse>
 {
-  private readonly IImdbService _imdbService = imdbService;
   private readonly ITmdbService _tmdbService = tmdbService;
 
   public async Task<Result<GetPersonFilmographyResponse>> Handle(
@@ -13,31 +10,16 @@ internal sealed class GetPersonFilmographyCommandHandler(
     CancellationToken cancellationToken
   )
   {
-    var nameData = await _imdbService.GetPersonInformation(request.ImdbId);
+    // Name and photo come from TMDb: the IMDb API no longer has a person lookup.
+    var person = await _tmdbService.FindPersonByImdbIdAsync(request.ImdbId, cancellationToken);
 
-    if (nameData is null || !string.IsNullOrEmpty(nameData.ErrorMessage))
+    if (person is null)
     {
       return Result.Failure<GetPersonFilmographyResponse>(MovieErrors.NotFound(request.ImdbId));
     }
 
-    var tmdbPersonId = await _tmdbService.FindPersonByImdbIdAsync(
-      request.ImdbId,
-      cancellationToken
-    );
-
-    if (tmdbPersonId is null)
-    {
-      return Result.Success(
-        new GetPersonFilmographyResponse
-        {
-          PersonName = nameData.Name,
-          PersonPhotoUrl = nameData.Image,
-        }
-      );
-    }
-
     var credits = await _tmdbService.GetPersonCombinedCreditsAsync(
-      tmdbPersonId.Value,
+      person.TmdbId,
       cancellationToken
     );
 
@@ -60,8 +42,8 @@ internal sealed class GetPersonFilmographyCommandHandler(
     return Result.Success(
       new GetPersonFilmographyResponse
       {
-        PersonName = nameData.Name,
-        PersonPhotoUrl = nameData.Image,
+        PersonName = person.Name,
+        PersonPhotoUrl = person.PhotoUrl,
         Credits = mapped,
       }
     );

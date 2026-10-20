@@ -6,36 +6,36 @@ internal sealed class ImdbService(IOptions<ImdbSettings> imdbSettings) : IImdbSe
 
   private ApiLib ApiLib => new(_imdbSettings.Key);
 
-  public async Task<AdvancedSearchData> AdvancedSearch(AdvancedSearchInput advancedSearchQuery) =>
+  public async Task<AdvancedSearchData?> AdvancedSearch(AdvancedSearchInput advancedSearchQuery) =>
     await ApiLib.AdvancedSearchAsync(advancedSearchQuery);
 
-  public Task<FullCastData> GetFullCast(string id) => ApiLib.FullCastDataAsync(id);
+  public Task<FullCastData?> GetFullCast(string id) => ApiLib.FullCastAsync(id);
 
-  public async Task<TitleData> GetMovieInformation(string id, TitleOptions? options) =>
-    await ApiLib.TitleAsync(id, Language.en, options.ToString());
+  public async Task<TitleData?> GetMovieInformation(string id, TitleOptions? options) =>
+    await ApiLib.TitleAsync(id, Language.EN, options.ToString());
 
-  public async Task<TitleData> GetMovieInformation(string id) =>
-    await ApiLib.TitleAsync(id, Language.en);
+  public async Task<TitleData?> GetMovieInformation(string id) =>
+    await ApiLib.TitleAsync(id, Language.EN, null);
 
-  public async Task<NameData> GetPersonInformation(string nmId) => await ApiLib.NameAsync(nmId);
+  public async Task<NameData?> GetPersonInformation(string nmId) => await ApiLib.NameAsync(nmId);
 
-  public async Task<SearchData> SearchByKeyword(string searchExpression) =>
+  public async Task<SearchKeywordData?> SearchByKeyword(string searchExpression) =>
     await ApiLib.SearchKeywordAsync(searchExpression);
 
-  public async Task<SearchData> SearchByName(string searchExpression) =>
+  public async Task<SearchNameData?> SearchByName(string searchExpression) =>
     await ApiLib.SearchNameAsync(searchExpression);
 
-  public async Task<SearchData> SearchByTitle(string searchExpression) =>
+  public async Task<SearchTitleData?> SearchByTitle(string searchExpression) =>
     await ApiLib.SearchTitleAsync(searchExpression);
 
-  public async Task<SearchData> SearchForMovie(string searchExpression) =>
+  public async Task<SearchTitleData?> SearchForMovie(string searchExpression) =>
     await ApiLib.SearchMovieAsync(searchExpression);
 
-  public async Task<PosterData> SearchForPoster(string id) => await ApiLib.PostersAsync(id);
+  public async Task<PosterData?> SearchForPoster(string id) => await ApiLib.PostersAsync(id);
 
-  public async Task<SearchData> SearchForSeries(string searchExpression) =>
-    await ApiLib.SearchSeriesAsync(searchExpression);
+  public async Task<SearchTitleData?> SearchForSeries(string searchExpression) =>
+    await ApiLib.SearchTVSeriesAsync(searchExpression);
 
-  public async Task<YouTubeTrailerData> SearchForYouTubeTrailer(string id) =>
+  public async Task<YouTubeTrailerData?> SearchForYouTubeTrailer(string id) =>
     await ApiLib.YouTubeTrailerAsync(id);
 }

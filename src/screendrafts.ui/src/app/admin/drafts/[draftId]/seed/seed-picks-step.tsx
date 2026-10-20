@@ -10,8 +10,11 @@ import {
   applyVeto,
   applyVetoOverride,
   applyCommissionerOverride,
+  undoPick,
+  undoVeto,
   type DraftPartParticipant,
   type DraftPartHost,
+  type GameplayDraftPosition,
   type GameplayPick,
   type GameplayVetoHistoryEntry,
 } from "@/services/admin/fetch-admin-drafts";
@@ -94,6 +97,10 @@ export function SeedPicksStep({
   // for a host selection that can never be filled in.
   const [isHostless, setIsHostless] = useState(false);
 
+  // Board positions (slot ownership + who each is assigned to), refreshed with
+  // the picks. Drives the auto-fill of Board Slot / Played By below.
+  const [draftPositions, setDraftPositions] = useState<GameplayDraftPosition[]>([]);
+
   // Next-pick form state
   const [position, setPosition] = useState<number | "">("");
   const [participantIdValue, setParticipantIdValue] = useState(participants[0]?.participantIdValue ?? "");
@@ -109,6 +116,11 @@ export function SeedPicksStep({
   // handlePickMovie's existing import path with a known TMDb ID.
   const [manualEntryOpen, setManualEntryOpen] = useState(false);
   const [manualTmdbId, setManualTmdbId] = useState("");
+  // Set to the play order whose Board Slot / Played By the seeder edited by hand.
+  // While it matches nextPlayOrder, the auto-fill below stands down so it never
+  // overwrites a deliberate choice (e.g. a proxy-drafted pick). Any other value
+  // — including null — lets the board-order suggestion apply again.
+  const [touchedFor, setTouchedFor] = useState<number | null>(null);
   // Which pick is currently showing an inline "who's doing this" picker,
   // and what's been selected so far. Veto and Veto Override both need an
   // explicit issuer — self-veto is a real case (the same drafter who
@@ -141,6 +153,36 @@ export function SeedPicksStep({
     picks.filter((p) => p.status === "commissionerOverridden" && p.tmdbId != null).map((p) => p.tmdbId)
   );
 
+  // Board-order suggestion for the next pick. Same rule the server uses in
+  // GetDraftPartGameplayQueryHandler for NextExpectedParticipant: the draft
+  // counts down, so the next pick is the highest board slot with no landed pick.
+  // A vetoed or commissioner-overridden slot reopens and so comes up again,
+  // owned by the same position. Community positions have no participant here,
+  // so for those only the slot is suggested.
+  const landedSlots = new Set(
+    picks.filter((p) => p.status === "landed" || p.status === "vetoOverridden").map((p) => p.position)
+  );
+  const nextOpen = draftPositions
+    .flatMap((pos) => pos.ownedBoardSlots.filter((s) => !landedSlots.has(s)).map((slot) => ({ slot, pos })))
+    .sort((a, b) => b.slot - a.slot)[0] ?? null;
+  const suggestedSlot = nextOpen?.slot ?? null;
+  const suggestedOwnerId =
+    nextOpen && !nextOpen.pos.isCommunityPosition
+      ? (nextOpen.pos.assignedParticipantId?.toLowerCase() ?? null)
+      : null;
+  const suggestedParticipant =
+    suggestedOwnerId != null
+      ? (participants.find((p) => p.participantIdValue.toLowerCase() === suggestedOwnerId) ?? null)
+      : null;
+  const isTouched = touchedFor === nextPlayOrder;
+
+  useEffect(() => {
+    if (touchedFor === nextPlayOrder) return;
+    if (suggestedSlot != null) setPosition(suggestedSlot);
+    if (suggestedParticipant) setParticipantIdValue(suggestedParticipant.participantIdValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [suggestedSlot, suggestedParticipant?.participantIdValue, nextPlayOrder, touchedFor]);
+
   function statusFromGameplayPick(p: GameplayPick): LocalPick["status"] {
     if (p.wasCommissionerOverride) return "commissionerOverridden";
     if (p.wasVetoOverridden) return "vetoOverridden";
@@ -161,6 +203,7 @@ export function SeedPicksStep({
 
     setFungibleTokenName(gameplay.fungibleTokenName);
     setIsHostless(gameplay.isHostless);
+    setDraftPositions(gameplay.draftPositions);
     setFungibleRemaining(
       new Map(gameplay.participants.map((p) => [p.participantId, p.fungibleTokensRemaining]))
     );
@@ -340,7 +383,7 @@ export function SeedPicksStep({
       // the movie/slot selection immediately so a reveal failure doesn't leave the form
       // stuck displaying a pick that's already been recorded.
       setSelectedMovie(null);
-      setPosition("");
+      setTouchedFor(null);
 
       // Hostless parts have no host to reveal picks — refetch immediately to
       // pick up Pick.RevealAuthorizedParticipant, which the server assigned
@@ -465,6 +508,54 @@ export function SeedPicksStep({
     }
   }
 
+  // Undo is limited to the most recent pick, same as the live host tab. The
+  // server also refuses to undo a vetoed or commissioner-overridden pick, so
+  // the button is only offered on a "landed" pick; a vetoed pick offers Undo
+  // Veto instead (refunds the veto to its issuer; refused once overridden).
+  async function handleUndoPick(pick: LocalPick) {
+    if (submitting) return;
+    if (
+      !window.confirm(
+        `Remove pick #${pick.playOrder} (${pick.movieTitle}, slot ${pick.position}) from the board? You can then re-enter it.`
+      )
+    ) {
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      await undoPick(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: pick.playOrder,
+      });
+      setPendingAction(null);
+      setTouchedFor(null);
+      await refreshFromServer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to undo pick.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleUndoVeto(pick: LocalPick) {
+    if (submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      await undoVeto(accessToken, {
+        draftPartId: draft.draftPartPublicId,
+        playOrder: pick.playOrder,
+      });
+      setPendingAction(null);
+      await refreshFromServer();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to undo veto.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   if (!hydrated) {
     return <p className="text-sm text-sd-ink/50 font-mono">Loading picks…</p>;
   }
@@ -578,6 +669,26 @@ export function SeedPicksStep({
                           className={BTN_SECONDARY}
                         >
                           Veto Override
+                        </button>
+                      )}
+                      {p.status === "landed" && p.playOrder === lastPick?.playOrder && (
+                        <button
+                          type="button"
+                          onClick={() => handleUndoPick(p)}
+                          disabled={submitting}
+                          className={BTN_SECONDARY}
+                        >
+                          Undo Pick
+                        </button>
+                      )}
+                      {p.status === "vetoed" && p.playOrder === lastPick?.playOrder && (
+                        <button
+                          type="button"
+                          onClick={() => handleUndoVeto(p)}
+                          disabled={submitting}
+                          className={BTN_SECONDARY}
+                        >
+                          Undo Veto
                         </button>
                       )}
                     </div>
@@ -720,7 +831,10 @@ export function SeedPicksStep({
               min={1}
               className={INPUT}
               value={position}
-              onChange={(e) => setPosition(e.target.value === "" ? "" : parseInt(e.target.value, 10))}
+              onChange={(e) => {
+                setTouchedFor(nextPlayOrder);
+                setPosition(e.target.value === "" ? "" : parseInt(e.target.value, 10));
+              }}
             />
           </div>
           <div>
@@ -728,7 +842,10 @@ export function SeedPicksStep({
             <select
               className={INPUT}
               value={participantIdValue}
-              onChange={(e) => setParticipantIdValue(e.target.value)}
+              onChange={(e) => {
+                setTouchedFor(nextPlayOrder);
+                setParticipantIdValue(e.target.value);
+              }}
             >
               {participants.map((p) => (
                 <option key={p.participantIdValue} value={p.participantIdValue}>
@@ -738,6 +855,23 @@ export function SeedPicksStep({
             </select>
           </div>
         </div>
+
+        {suggestedSlot != null && (
+          <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
+            {suggestedParticipant
+              ? `Board order: slot ${suggestedSlot} → ${suggestedParticipant.displayName ?? suggestedParticipant.participantIdValue}`
+              : `Board order: slot ${suggestedSlot} has no assigned drafter — choose one`}
+            {isTouched && (
+              <button
+                type="button"
+                onClick={() => setTouchedFor(null)}
+                className="ml-3 normal-case tracking-normal text-sd-blue hover:underline"
+              >
+                Reset to board order
+              </button>
+            )}
+          </p>
+        )}
 
         {isHostless ? (
           <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
