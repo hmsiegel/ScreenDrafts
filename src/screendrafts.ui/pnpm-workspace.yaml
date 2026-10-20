@@ -1,0 +1,9 @@
+overrides:
+  source-map-js: ^1.2.2
+
+minimumReleaseAgeExclude:
+  - caniuse-lite
+  - electron-to-chromium
+
+allowBuilds:
+  unrs-resolver: false
