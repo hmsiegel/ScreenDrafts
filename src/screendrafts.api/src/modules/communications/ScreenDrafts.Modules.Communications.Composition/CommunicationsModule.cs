@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Communications.Composition;
+﻿using ScreenDrafts.Modules.Communications.Features.ContactMessages;
+
+namespace ScreenDrafts.Modules.Communications.Composition;
 
 public static class CommunicationsModule
 {
@@ -35,6 +37,7 @@ public static class CommunicationsModule
     services.Configure<OwnerNotificationOptions>(
       configuration.GetSection(OwnerNotificationOptions.SectionName)
     );
+    services.Configure<ContactOptions>(configuration.GetSection(ContactOptions.SectionName));
     services.AddScoped<IEmailService, SmtpEmailService>();
 
     services.AddScoped<

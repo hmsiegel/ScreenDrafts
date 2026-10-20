@@ -761,6 +761,38 @@
         ]
       }
     },
+    "/contact": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "operationId": "Contact.SubmitMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitContactMessageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "429": {
+            "description": "Too Many Requests"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/wiki-exports/drafts": {
       "post": {
         "tags": [
@@ -23334,6 +23366,32 @@
           }
         }
       },
+      "SubmitContactMessageRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "turnstileToken": {
+            "type": "string"
+          },
+          "website": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "SubmitPredictionSetRequest": {
         "type": "object",
         "properties": {
@@ -24426,6 +24484,9 @@
     },
     {
       "name": "Audit"
+    },
+    {
+      "name": "Contact"
     },
     {
       "name": "WikiExport"

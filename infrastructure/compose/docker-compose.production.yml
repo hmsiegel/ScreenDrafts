@@ -329,7 +329,7 @@ secrets:
 
   Communications__Smtp__Password:
     file: ./secrets/Communications__Smtp__Password.txt
-  Communications__OwnerNoticifaction__Address:
+  Communications__OwnerNotification__Address:
     file: ./secrets/Communications__OwnerNotification__Address.txt
 
   MediatR__LicenseKey:

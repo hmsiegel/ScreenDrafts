@@ -17,6 +17,10 @@ internal static class EmailTemplates
     "You received this because someone requested an email change on your Screen Drafts account.";
   private const string OwnerFooter =
     "You received this because you're the Screen Drafts owner notification recipient.";
+  private const string ContactFooter =
+    "You received this because someone submitted the Screen Drafts contact form. Reply to answer them directly.";
+  private const string InviteFooter =
+    "You received this because someone invited you to a Screen Drafts guest draft.";
 
   public static string HostAdded(
     string recipientName,
@@ -138,8 +142,41 @@ internal static class EmailTemplates
     );
   }
 
-  private const string InviteFooter =
-    "You received this because someone invited you to a Screen Drafts guest draft.";
+  public static string NewContactMessage(
+    string name,
+    string email,
+    string category,
+    string message,
+    string? userPublicId,
+    DateTime createdOnUtc
+  )
+  {
+    var receivedAt = createdOnUtc.ToString(
+      "yyyy-MM-dd HH:mm",
+      System.Globalization.CultureInfo.InvariantCulture
+    );
+
+    // Encode first, then turn line breaks into <br /> — never the other way round.
+    var messageHtml = Encode(message)
+      .ReplaceLineEndings("\n")
+      .Replace("\n", "<br />", StringComparison.Ordinal);
+
+    var accountHtml = string.IsNullOrWhiteSpace(userPublicId)
+      ? "<p style=\"margin:0 0 8px;\">Account: <strong>not signed in</strong></p>"
+      : $"<p style=\"margin:0 0 8px;\">Account: <strong>{Encode(userPublicId)}</strong></p>";
+
+    return BaseLayout(
+      "there",
+      $"New <strong>{Encode(category)}</strong> message on <strong>Screen Drafts</strong>.",
+      $"""
+      <p style="margin:0 0 8px;">From: <strong>{Encode(name)}</strong> ({Encode(email)})</p>
+      {accountHtml}
+      <p style="margin:0 0 16px;">Received: <strong>{receivedAt} UTC</strong></p>
+      <div style="padding:16px;background:#fbf7ee;border-radius:6px;">{messageHtml}</div>
+      """,
+      ContactFooter
+    );
+  }
 
   public static string GuestDraftInvite(
     string recipientName,

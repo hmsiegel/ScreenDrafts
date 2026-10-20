@@ -63,6 +63,13 @@ internal sealed partial class SmtpEmailService(
 
     mimeMessage.From.Add(new MailboxAddress(_smtpSettings.FromName, _smtpSettings.FromAddress));
     mimeMessage.To.Add(new MailboxAddress(emailMessage.ToName, emailMessage.ToAddress));
+
+    if (!string.IsNullOrWhiteSpace(emailMessage.ReplyToAddress))
+    {
+      mimeMessage.ReplyTo.Add(
+        new MailboxAddress(emailMessage.ReplyToName, emailMessage.ReplyToAddress)
+      );
+    }
     mimeMessage.Subject = emailMessage.Subject;
 
     var bodyBuilder = new BodyBuilder { HtmlBody = emailMessage.HtmlBody };

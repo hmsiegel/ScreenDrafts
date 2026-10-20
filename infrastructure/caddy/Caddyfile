@@ -43,22 +43,17 @@
 			2405:b500::/32 \
 			2405:8100::/32 \
 			2a06:98c0::/29 \
-			2c0f:f248::/32
+			2c0f:f248::/32 \
+			client_ip_headers CF-Connecting-IP
 	}
 }
 
 # API
 api.screen-drafts.com {
 	reverse_proxy screendrafts.web:8080 {
-		# Pass real client IP from Cloudflare
-		header_up X-Real-IP {http.request.header.CF-Connecting-IP}
-	}
-
-	# SignalR WebSocket passthrough
-	@signalr path /drafts/hub*
-	reverse_proxy @signalr screendrafts.web:8080 {
-		header_up Connection {http.request.header.Connection}
-		header_up Upgrade {http.request.header.Upgrade}
+		# Overwrite with the verified visitor IP (trusted Cloudflare ranges only)
+		header_up X-Forwarded-For {client_ip}
+		header_up X-Real-IP {client_ip}
 	}
 }
 
