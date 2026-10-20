@@ -21,7 +21,7 @@
     "@keycloakify/email-native": "~260007.0.0",
     "keycloakify": "^11.15.3",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
