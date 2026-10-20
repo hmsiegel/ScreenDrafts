@@ -6,4 +6,5 @@ export const env = {
       redirectUri: process.env.NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI,
    },
    apiUrl: process.env.NEXT_PUBLIC_API_URL,
+   turnstileSiteKey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
 };

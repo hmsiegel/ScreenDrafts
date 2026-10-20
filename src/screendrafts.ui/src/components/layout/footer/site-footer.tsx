@@ -80,6 +80,7 @@ export default function SiteFooter() {
           <div>
             <ColHeader>SUPPORT</ColHeader>
             <nav className="flex flex-col gap-1 lg:gap-2.5">
+              <FooterLink href="/contact">Contact Us</FooterLink>
               {KOFI_URL && <FooterLink href={KOFI_URL} external>Ko-Fi</FooterLink>}
               {COFFEE_URL && <FooterLink href={COFFEE_URL} external>Buy Me A Coffee</FooterLink>}
             </nav>

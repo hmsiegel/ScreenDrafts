@@ -101,6 +101,11 @@ export interface IClient {
     audit_ExportAuthAuditLogs(body: ExportAuthAuditLogsRequest): Promise<FileResult>;
 
     /**
+     * @return No Content
+     */
+    contact_SubmitMessage(body: SubmitContactMessageRequest): Promise<void>;
+
+    /**
      * @return OK
      */
     wikiExport_Drafts(body: ExportDraftsWikiRequest): Promise<ExportWikiResponse>;
@@ -2071,6 +2076,52 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<FileResult>(null as any);
+    }
+
+    /**
+     * @return No Content
+     */
+    contact_SubmitMessage(body: SubmitContactMessageRequest, signal?: AbortSignal): Promise<void> {
+        let url_ = this.baseUrl + "/contact";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processContact_SubmitMessage(_response);
+        });
+    }
+
+    protected processContact_SubmitMessage(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status === 429) {
+            return response.text().then((_responseText) => {
+            return throwException("Too Many Requests", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -17969,6 +18020,17 @@ export interface StringSegment {
     length?: number;
     value?: string | undefined;
     hasValue?: boolean;
+
+    [key: string]: any;
+}
+
+export interface SubmitContactMessageRequest {
+    name?: string;
+    email?: string;
+    category?: string;
+    message?: string;
+    turnstileToken?: string;
+    website?: string | undefined;
 
     [key: string]: any;
 }
