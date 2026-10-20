@@ -318,7 +318,7 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     return response?.ImdbId;
   }
 
-  public async Task<int?> FindPersonByImdbIdAsync(
+  public async Task<TmdbPersonProfile?> FindPersonByImdbIdAsync(
     string imdbId,
     CancellationToken cancellationToken = default
   )
@@ -328,7 +328,19 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
       cancellationToken
     );
 
-    return response?.PersonResults.Count > 0 ? response.PersonResults[0].Id : null;
+    if (response is null || response.PersonResults.Count == 0)
+    {
+      return null;
+    }
+
+    var person = response.PersonResults[0];
+
+    return new TmdbPersonProfile
+    {
+      TmdbId = person.Id,
+      Name = person.Name,
+      PhotoUrl = BuildPosterUrl(person.ProfilePath)?.ToString(),
+    };
   }
 
   public async Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
@@ -779,7 +791,8 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
 
   private sealed record TmdbPersonResultApiResponse(
     [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("profile_path")] string? ProfilePath
   );
 
   private sealed record TmdbMovieCreditsApiResponse(

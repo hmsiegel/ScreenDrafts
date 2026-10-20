@@ -19,12 +19,21 @@ internal sealed class SearchImdbPeopleCommandHandler(IImdbService imdbService)
 
     var searchData = await _imdbService.SearchByName(request.Query);
 
-    var mapped = (searchData?.Results ?? [])
+    // The IMDb API reports a bad key or exhausted quota as an HTTP 200 with
+    // ErrorMessage set and no results. Return it instead of an empty list.
+    if (searchData is not null && !string.IsNullOrEmpty(searchData.ErrorMessage))
+    {
+      return Result.Failure<SearchImdbPeopleResponse>(
+        MovieErrors.ImdbSearchFailed(searchData.ErrorMessage)
+      );
+    }
+
+    var mapped = (searchData?.Items ?? [])
       .Select(r => new ImdbPersonSearchResult
       {
-        ImdbId = r.Id,
-        Name = r.Title,
-        Description = r.Description,
+        ImdbId = r.IMDbId,
+        Name = r.Name,
+        Description = r.Professions,
         PhotoUrl = r.Image,
       })
       .ToList()

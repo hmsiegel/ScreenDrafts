@@ -34,6 +34,9 @@ public static class MovieErrors
     "The external ID is required."
   );
 
+  public static SDError ImdbSearchFailed(string message) =>
+    SDError.Problem("Movies.ImdbSearchFailed", $"The IMDb search failed: {message}");
+
   public static SDError NotFound(string imdbId) =>
     SDError.NotFound("Movies.NotFound", $"The movie with the IMDB ID {imdbId} was not found.");
 
