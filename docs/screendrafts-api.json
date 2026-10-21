@@ -29,7 +29,7 @@
         "operationId": "Administration.SendPasswordReset",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/SendPasswordResetRequest"
               }
@@ -71,11 +71,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveRoleFromUserRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveRoleFromUserRequest"
-              }
             }
           },
           "required": true
@@ -105,7 +100,7 @@
         "operationId": "Administration.AddUserRole",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/AddRoleToUserRequest"
               }
@@ -256,11 +251,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetUserRolesRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetUserRolesRequest"
-              }
             }
           },
           "required": true
@@ -368,11 +358,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetRolePermissionsRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetRolePermissionsRequest"
-              }
             }
           },
           "required": true
@@ -415,11 +400,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetPermissionByCodeRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetPermissionByCodeRequest"
               }
@@ -1007,11 +987,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetSeriesRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetSeriesRequest"
-              }
             }
           },
           "required": true
@@ -1182,11 +1157,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftPartPredictionsRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetDraftPartPredictionsRequest"
               }
@@ -2066,11 +2036,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetPersonRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetPersonRequest"
-              }
             }
           },
           "required": true
@@ -2332,11 +2297,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetHostRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetHostRequest"
-              }
             }
           },
           "required": true
@@ -2499,11 +2459,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetDraftRequest"
               }
@@ -2987,11 +2942,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetMyDraftDetailRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetMyDraftDetailRequest"
-              }
             }
           },
           "required": true
@@ -3176,11 +3126,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetDraftStatusRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftStatusRequest"
-              }
             }
           },
           "required": true
@@ -3223,11 +3168,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveMovieFromDraftPoolRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveMovieFromDraftPoolRequest"
-              }
             }
           },
           "required": true
@@ -3263,11 +3203,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftPoolRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetDraftPoolRequest"
               }
@@ -3307,7 +3242,7 @@
         "operationId": "DraftPools.CreatePool",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/CreateDraftPoolRequest"
               }
@@ -3511,11 +3446,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetDraftBoardRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftBoardRequest"
-              }
             }
           },
           "required": true
@@ -3680,7 +3610,7 @@
         "operationId": "DraftParts.StopZoomRecording",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/StopZoomRecordingRequest"
               }
@@ -3718,7 +3648,7 @@
         "operationId": "DraftParts.StartZoomSession",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/StartZoomSessionRequest"
               }
@@ -3765,11 +3695,6 @@
               "schema": {
                 "$ref": "#/components/schemas/EndZoomSessionRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EndZoomSessionRequest"
-              }
             }
           },
           "required": true
@@ -3804,7 +3729,7 @@
         "operationId": "DraftParts.StartZoomRecording",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/StartZoomRecordingRequest"
               }
@@ -3843,11 +3768,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetZoomSessionTokenRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetZoomSessionTokenRequest"
               }
@@ -3893,11 +3813,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetTriviaResultsRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetTriviaResultsRequest"
               }
@@ -4719,11 +4634,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetPickListRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetPickListRequest"
-              }
             }
           },
           "required": true
@@ -4841,7 +4751,7 @@
         "operationId": "DraftParts.ApplyCommissionerOverride",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/ApplyCommissionerOverrideRequest"
               }
@@ -4962,11 +4872,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveHostDraftPartRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveHostDraftPartRequest"
-              }
             }
           },
           "required": true
@@ -5043,11 +4948,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetDraftPartRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftPartRequest"
-              }
             }
           },
           "required": true
@@ -5081,11 +4981,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDraftPartGameplayRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetDraftPartGameplayRequest"
               }
@@ -5202,11 +5097,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/ListDraftPositionsRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ListDraftPositionsRequest"
               }
@@ -5492,11 +5382,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveCandidateListEntryRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveCandidateListEntryRequest"
-              }
             }
           },
           "required": true
@@ -5670,11 +5555,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveBoostersChampionAssignmentRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveBoostersChampionAssignmentRequest"
-              }
             }
           },
           "required": true
@@ -5789,7 +5669,7 @@
         "operationId": "WithdrawAttendance",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/WithdrawAttendanceRequest"
               }
@@ -5827,7 +5707,7 @@
         "operationId": "ReinstateAttendance",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/ReinstateAttendanceRequest"
               }
@@ -5866,11 +5746,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/ListAttendancesRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ListAttendancesRequest"
               }
@@ -5986,7 +5861,7 @@
         "operationId": "ConfirmAttendance",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/ConfirmAttendanceRequest"
               }
@@ -6061,11 +5936,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDrafterTeamRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetDrafterTeamRequest"
               }
@@ -6412,11 +6282,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetDrafterProfileRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetDrafterProfileRequest"
-              }
             }
           },
           "required": true
@@ -6568,11 +6433,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetCategoryRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetCategoryRequest"
               }
@@ -6887,7 +6747,7 @@
         "operationId": "GuestDrafts.ResendInvitation",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/ResendGuestDraftInvitationRequest"
               }
@@ -6929,11 +6789,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/ListGuestDraftInvitationsRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ListGuestDraftInvitationsRequest"
               }
@@ -7058,11 +6913,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetGuestDraftGameplayRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetGuestDraftGameplayRequest"
               }
@@ -7238,11 +7088,6 @@
               "schema": {
                 "$ref": "#/components/schemas/RemoveParticipantRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RemoveParticipantRequest"
-              }
             }
           },
           "required": true
@@ -7315,7 +7160,7 @@
         "operationId": "GuestDrafts.UndoVeto",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/UndoGuestDraftVetoRequest"
               }
@@ -7357,11 +7202,6 @@
               "schema": {
                 "$ref": "#/components/schemas/UndoGuestDraftPickRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UndoGuestDraftPickRequest"
-              }
             }
           },
           "required": true
@@ -7393,7 +7233,7 @@
         "operationId": "GuestDrafts.RevealPick",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/RevealGuestDraftPickRequest"
               }
@@ -7545,7 +7385,7 @@
         "operationId": "GuestDrafts.ApplyCommissionerOverride",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/ApplyGuestDraftCommissionerOverrideRequest"
               }
@@ -7610,11 +7450,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetGuestDraftDetailsRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetGuestDraftDetailsRequest"
               }
@@ -8492,11 +8327,6 @@
               "schema": {
                 "$ref": "#/components/schemas/GetMediaRequest"
               }
-            },
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetMediaRequest"
-              }
             }
           },
           "required": true
@@ -8530,11 +8360,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/GetMediaSummaryRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/GetMediaSummaryRequest"
               }
@@ -8777,11 +8602,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/DeleteSpotlightRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DeleteSpotlightRequest"
               }
@@ -9195,7 +9015,7 @@
         "operationId": "Spotlight.Deactivate",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/DeactivateSpotlightRequest"
               }
@@ -9233,7 +9053,7 @@
         "operationId": "Spotlight.Activate",
         "requestBody": {
           "content": {
-            "application/json": {
+            "*/*": {
               "schema": {
                 "$ref": "#/components/schemas/ActivateSpotlightRequest"
               }
@@ -18134,6 +17954,15 @@
               "null",
               "string"
             ]
+          },
+          "roles": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
           },
           "page": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",

@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Common.Presentation.Responses;
-
-namespace ScreenDrafts.Modules.Administration.Features.Users.ListUsers;
+﻿namespace ScreenDrafts.Modules.Administration.Features.Users.ListUsers;
 
 internal sealed class ListUsersQueryHandler(
   IDbConnectionFactory connectionFactory,
@@ -17,9 +15,36 @@ internal sealed class ListUsersQueryHandler(
   {
     var allUsers = await _usersApi.GetAllUsersAsync(request.Search, cancellationToken);
 
-    var totalCount = allUsers.Count;
+    using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
-    var pageUsers = allUsers
+    // Role filter runs before paging so TotalCount and page boundaries
+    // describe the filtered set, not the whole user table.
+    IReadOnlyList<UserPublicApiResponse> matchingUsers = allUsers;
+
+    if (request.Roles.Count > 0)
+    {
+      const string roleFilterSql = """
+        SELECT DISTINCT ur.user_id
+        FROM administration.user_roles ur
+        WHERE ur.role_name = ANY(@Roles)
+        """;
+
+      var userIdsWithRole = (
+        await connection.QueryAsync<Guid>(
+          new CommandDefinition(
+            roleFilterSql,
+            new { Roles = request.Roles.ToArray() },
+            cancellationToken: cancellationToken
+          )
+        )
+      ).ToHashSet();
+
+      matchingUsers = allUsers.Where(u => userIdsWithRole.Contains(u.UserId)).ToList();
+    }
+
+    var totalCount = matchingUsers.Count;
+
+    var pageUsers = matchingUsers
       .Skip((request.Page - 1) * request.PageSize)
       .Take(request.PageSize)
       .ToList();
@@ -38,8 +63,6 @@ internal sealed class ListUsersQueryHandler(
     }
 
     var userIds = pageUsers.Select(u => u.UserId).ToList();
-
-    using var connection = await _connectionFactory.OpenConnectionAsync(cancellationToken);
 
     const string sql = $"""
       SELECT
@@ -73,7 +96,7 @@ internal sealed class ListUsersQueryHandler(
       new PagedResult<UserItem>
       {
         Items = users,
-        TotalCount = allUsers.Count,
+        TotalCount = totalCount,
         Page = request.Page,
         PageSize = request.PageSize,
       }

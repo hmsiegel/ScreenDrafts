@@ -1168,7 +1168,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -1272,7 +1272,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -4575,7 +4575,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -5087,7 +5087,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -5141,7 +5141,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
                 "Accept": "application/json"
             }
         };
@@ -5252,7 +5252,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -6660,7 +6660,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -7912,7 +7912,7 @@ export class Client implements IClient {
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -7966,7 +7966,7 @@ export class Client implements IClient {
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -8184,7 +8184,7 @@ export class Client implements IClient {
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -9369,7 +9369,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -9920,7 +9920,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -10024,7 +10024,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -10240,7 +10240,7 @@ export class Client implements IClient {
             method: "POST",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -12218,7 +12218,7 @@ export class Client implements IClient {
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -12272,7 +12272,7 @@ export class Client implements IClient {
             method: "PUT",
             signal,
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "*/*",
             }
         };
 
@@ -16478,6 +16478,7 @@ export interface ListUpcomingDraftsResponse {
 
 export interface ListUsersRequest {
     search?: string | undefined;
+    roles?: string[] | undefined;
     page?: number;
     pageSize?: number;
 

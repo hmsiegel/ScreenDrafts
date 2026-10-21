@@ -33,7 +33,8 @@ export async function fetchAdminUsers(
   accessToken: string | undefined,
   search?: string,
   page = 1,
-  pageSize = 25
+  pageSize = 25,
+  roles: string[] = []
 ): Promise<PagedResult<AdminUserItem>> {
   const empty: PagedResult<AdminUserItem> = {
     items: [], totalCount: 0, page, pageSize,
@@ -42,6 +43,7 @@ export async function fetchAdminUsers(
   try {
     const url = new URL(`${apiBase}/admin/users`);
     if (search) url.searchParams.set("search", search);
+    for (const role of roles) url.searchParams.append("roles", role);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", String(pageSize));
     const response = await fetch(url.toString(), {
