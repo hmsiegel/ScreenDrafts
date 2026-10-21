@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { AdminUserItem, AdminRoleItem, PagedResult, fetchAdminUsers } from "@/services/admin/fetch-admin";
 import ManageRolesPanel from "./manage-roles-panel";
+import RoleFilter from "./role-filter";
 
 interface UserTableProps {
   initialData: PagedResult<AdminUserItem>;
@@ -57,19 +58,23 @@ const PAGE_SIZE = 25;
 export default function UserTable({ initialData, allRoles, accessToken, apiBase }: UserTableProps) {
   const [data, setData] = useState<PagedResult<AdminUserItem>>(initialData);
   const [search, setSearch] = useState('');
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [managingUser, setManagingUser] = useState<AdminUserItem | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Re-fetch whenever search or page changes
+  // Stable dependency for the effect below; the array itself changes identity on every render.
+  const rolesKey = selectedRoles.join(',');
+
+  // Re-fetch whenever search, role filter, or page changes
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const delay = search !== '' ? 300 : 0;
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const result = await fetchAdminUsers(accessToken, search || undefined, page, PAGE_SIZE);
+        const result = await fetchAdminUsers(accessToken, search || undefined, page, PAGE_SIZE, selectedRoles);
         setData(result);
       } catch {
         // keep current data on error
@@ -78,11 +83,17 @@ export default function UserTable({ initialData, allRoles, accessToken, apiBase 
       }
     }, delay);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
-  }, [search, page, accessToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- rolesKey stands in for selectedRoles
+  }, [search, rolesKey, page, accessToken]);
 
-  // Reset to page 1 when search changes
+  // Reset to page 1 when search or role filter changes
   function handleSearch(value: string) {
     setSearch(value);
+    setPage(1);
+  }
+
+  function handleRolesFilter(roles: string[]) {
+    setSelectedRoles(roles);
     setPage(1);
   }
 
@@ -100,13 +111,20 @@ export default function UserTable({ initialData, allRoles, accessToken, apiBase 
         <p className="font-mono text-[10px] tracking-widest text-sd-ink/50 uppercase">
           {loading ? 'Loading…' : `${data.totalCount} users`}
         </p>
-        <input
-          type="search"
-          value={search}
-          onChange={e => handleSearch(e.target.value)}
-          placeholder="Search users…"
-          className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full sm:w-[220px]"
-        />
+        <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+          <RoleFilter
+            allRoles={allRoles}
+            selected={selectedRoles}
+            onChange={handleRolesFilter}
+          />
+          <input
+            type="search"
+            value={search}
+            onChange={e => handleSearch(e.target.value)}
+            placeholder="Search users…"
+            className="border border-sd-ink/20 bg-sd-paper px-3 py-1.5 text-sd-ink text-sm focus:outline-hidden focus:ring-2 focus:ring-sd-blue rounded-sm w-full sm:w-[220px]"
+          />
+        </div>
       </div>
 
       {/* Table from sm up. Below sm each user is a card — name, email, role badges,

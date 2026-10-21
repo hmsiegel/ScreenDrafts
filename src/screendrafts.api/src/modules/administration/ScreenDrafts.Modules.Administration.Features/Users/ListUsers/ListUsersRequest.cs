@@ -5,6 +5,9 @@ internal sealed record ListUsersRequest
   [FromQuery(Name = "search")]
   public string? Search { get; init; }
 
+  [FromQuery(Name = "roles")]
+  public List<string>? Roles { get; init; }
+
   [FromQuery(Name = "page")]
   public int Page { get; init; }
 

@@ -25,9 +25,16 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListUsersRequest, PagedRes
     var page = req.Page is > 0 ? req.Page : DefaultPage;
     var pageSize = req.PageSize is > 0 ? Math.Min(req.PageSize, MaxPageSize) : DefaultPageSize;
 
+    var roles = (req.Roles ?? [])
+      .Where(r => !string.IsNullOrWhiteSpace(r))
+      .Select(r => r.Trim())
+      .Distinct(StringComparer.OrdinalIgnoreCase)
+      .ToList();
+
     var query = new ListUsersQuery
     {
       Search = req.Search,
+      Roles = roles,
       Page = page,
       PageSize = pageSize,
     };
