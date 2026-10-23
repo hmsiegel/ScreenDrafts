@@ -8,6 +8,7 @@ import { Avatar } from "./draft-pick";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import EpisodeImage from "@/components/ui/episode-image";
+import { getPartListenLinks, ListenButtons } from "./listen-links";
 
 function formatDate(raw: Date | string | undefined): string {
   if (!raw) return "—";
@@ -237,6 +238,8 @@ function PartSidebarSection({
         </div>
       )}
 
+      <ListenButtons links={getPartListenLinks(part)} className="mb-4" />
+
       {drafterEntries.length > 0 && (
         <div className="mb-4">
           <SectionLabel>DRAFTERS</SectionLabel>
@@ -340,6 +343,8 @@ export default function DraftSidebar({
       : draftTypeFromNumber((draft as Record<string, unknown>).draftTypeValue as number | undefined);
 
   const listenUrl = process.env.NEXT_PUBLIC_SPOTIFY_URL ?? "#";
+  const singlePartLinks = !isMultiPart && firstPart ? getPartListenLinks(firstPart) : [];
+  const anyPartLinks = parts.some((p) => getPartListenLinks(p).length > 0);
 
   // ── Single-part: collect drafters/hosts/trivia flat ───────────────────────
   const singlePartDrafters: PersonEntry[] = [];
@@ -536,17 +541,10 @@ export default function DraftSidebar({
         />
       ))}
 
-      {/* Listen button */}
-      <div className="mt-4">
-        <a
-          href={listenUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block w-full bg-sd-ink text-white text-center font-oswald text-[12px] tracking-wide px-4 py-3 hover:opacity-80 transition-opacity"
-        >
-          ▶ LISTEN ON SPOTIFY
-        </a>
-      </div>
+      {/* Listen buttons. Multi-part drafts show theirs per part; the show link is the fallback. */}
+      {(!isMultiPart || !anyPartLinks) && (
+        <ListenButtons links={singlePartLinks} fallbackUrl={listenUrl} className="mt-4" />
+      )}
     </aside>
   );
 }
