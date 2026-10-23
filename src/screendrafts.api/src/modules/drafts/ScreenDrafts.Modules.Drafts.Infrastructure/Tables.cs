@@ -31,6 +31,7 @@ internal static class Tables
   internal const string Campaigns = "campaigns";
   internal const string DraftParts = "draft_parts";
   internal const string DraftReleases = "draft_releases";
+  internal const string DraftReleaseLinks = "draft_release_links";
   internal const string DraftCampaigns = "drafts_campaigns";
   internal const string MovieVersions = "movie_versions";
   internal const string RequiredMovieVersions = "required_movie_versions";

@@ -26,4 +26,10 @@ public interface IIntegrationsApi
     string imdbId,
     CancellationToken cancellationToken = default
   );
+
+  Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
+    PodcastPlatform platform,
+    DateOnly releasedOnOrAfter,
+    CancellationToken cancellationToken = default
+  );
 }

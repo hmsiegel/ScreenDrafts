@@ -14759,6 +14759,18 @@
           }
         }
       },
+      "GetDraftReleaseLinkResponse": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
       "GetDraftReleaseResponse": {
         "type": "object",
         "properties": {
@@ -14768,6 +14780,12 @@
           "releaseDate": {
             "type": "string",
             "format": "date"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetDraftReleaseLinkResponse"
+            }
           }
         }
       },

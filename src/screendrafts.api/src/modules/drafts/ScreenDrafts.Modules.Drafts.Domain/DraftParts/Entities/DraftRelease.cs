@@ -2,6 +2,8 @@
 
 public sealed class DraftRelease
 {
+  private readonly List<DraftReleaseLink> _links = [];
+
   private DraftRelease(
     DraftPartId partId,
     ReleaseChannel releaseChannel,
@@ -25,6 +27,7 @@ public sealed class DraftRelease
   public ReleaseChannel ReleaseChannel { get; private set; } = default!;
   public DateOnly ReleaseDate { get; private set; }
   public DateTime CreatedOnUtc { get; private set; } = DateTime.UtcNow;
+  public IReadOnlyCollection<DraftReleaseLink> Links => _links.AsReadOnly();
 
   public static Result<DraftRelease> Create(
     DraftPartId partId,
@@ -52,6 +55,11 @@ public sealed class DraftRelease
       createdOnUtc: DateTime.UtcNow
     );
 
+    if (releaseChannel == ReleaseChannel.MainFeed)
+    {
+      draftRelease.AddPendingLinks();
+    }
+
     return Result.Success(draftRelease);
   }
 
@@ -70,5 +78,20 @@ public sealed class DraftRelease
     ReleaseDate = releaseDate;
 
     return Result.Success();
+  }
+
+  private void AddPendingLinks()
+  {
+    foreach (var platform in ReleaseLinkPlatform.List)
+    {
+      _links.Add(
+        DraftReleaseLink.CreatePending(
+          partId: PartId,
+          releaseChannel: ReleaseChannel,
+          platform: platform,
+          nowUtc: CreatedOnUtc
+        )
+      );
+    }
   }
 }
