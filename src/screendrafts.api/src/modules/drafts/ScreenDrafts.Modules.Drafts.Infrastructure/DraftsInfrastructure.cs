@@ -31,6 +31,9 @@ public static class DraftsInfrastructure
     services.Configure<InboxOptions>(configuration.GetSection("Drafts:Inbox"));
     services.ConfigureOptions<ConfigureProcessInboxJob>();
 
+    services.Configure<PodcastLinksOptions>(configuration.GetSection("Drafts:PodcastLinks"));
+    services.ConfigureOptions<ConfigureResolvePodcastLinksJob>();
+
     return services;
   }
 }

@@ -22,6 +22,7 @@ public sealed class DraftsDbContext(DbContextOptions<DraftsDbContext> options)
   internal DbSet<Campaign> Campaigns { get; set; }
   internal DbSet<DraftPart> DraftParts { get; set; }
   internal DbSet<DraftRelease> DraftReleases { get; set; }
+  internal DbSet<DraftReleaseLink> DraftReleaseLinks { get; set; }
   internal DbSet<DraftChannelRelease> DraftChannelReleases { get; set; }
   internal DbSet<DraftPartParticipant> DraftPartParticipants { get; set; }
   internal DbSet<DraftBoard> DraftBoards { get; set; }

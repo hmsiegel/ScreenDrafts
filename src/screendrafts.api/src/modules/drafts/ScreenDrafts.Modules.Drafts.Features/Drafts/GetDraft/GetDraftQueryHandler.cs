@@ -427,6 +427,28 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
       DateOnly ReleaseDate
     )>(new CommandDefinition(releaseSql, new { partIds, allowedChannels }));
 
+    const string releaseLinkSql = """
+      SELECT
+        l.part_id AS PartId,
+        l.release_channel AS ReleaseChannel,
+        l.platform AS Platform,
+        l.url AS Url
+      FROM drafts.draft_release_links l
+      WHERE l.part_id = ANY(@partIds)
+        AND l.status = 1
+        AND l.url IS NOT NULL
+      ORDER BY l.platform ASC;
+      """;
+
+    var linkRows = await connection.QueryAsync<(
+      Guid PartId,
+      int ReleaseChannel,
+      int Platform,
+      string Url
+    )>(new CommandDefinition(releaseLinkSql, new { partIds }));
+
+    var linksByRelease = linkRows.ToLookup(r => (r.PartId, r.ReleaseChannel));
+
     foreach (var (partId, channel, date) in releaseRows)
     {
       if (!partMap.TryGetValue(partId, out var part))
@@ -438,6 +460,18 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         ReleaseChannel = channel,
         ReleaseDate = date,
       };
+
+      foreach (var link in linksByRelease[(partId, channel.Value)])
+      {
+        releaseResponse.Links.Add(
+          new GetDraftReleaseLinkResponse
+          {
+            Platform = ReleaseLinkPlatform.FromValue(link.Platform).Name,
+            Url = new Uri(link.Url),
+          }
+        );
+      }
+
       part.AddRelease(releaseResponse);
     }
 

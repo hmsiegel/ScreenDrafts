@@ -15455,9 +15455,17 @@ export interface GetDraftPoolRequest {
     [key: string]: any;
 }
 
+export interface GetDraftReleaseLinkResponse {
+    platform?: string;
+    url?: string;
+
+    [key: string]: any;
+}
+
 export interface GetDraftReleaseResponse {
     releaseChannel?: ReleaseChannel;
     releaseDate?: Date;
+    links?: GetDraftReleaseLinkResponse[];
 
     [key: string]: any;
 }

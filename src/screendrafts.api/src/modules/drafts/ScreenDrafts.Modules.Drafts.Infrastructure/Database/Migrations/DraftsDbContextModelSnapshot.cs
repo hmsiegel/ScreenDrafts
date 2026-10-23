@@ -19,7 +19,7 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("drafts")
-                .HasAnnotation("ProductVersion", "10.0.11")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -785,6 +785,50 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                         .HasDatabaseName("ix_draft_releases_release_channel_release_date");
 
                     b.ToTable("draft_releases", "drafts");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftReleaseLink", b =>
+                {
+                    b.Property<Guid>("PartId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("part_id");
+
+                    b.Property<int>("ReleaseChannel")
+                        .HasColumnType("integer")
+                        .HasColumnName("release_channel");
+
+                    b.Property<int>("Platform")
+                        .HasColumnType("integer")
+                        .HasColumnName("platform");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer")
+                        .HasColumnName("attempts");
+
+                    b.Property<DateTime?>("NextCheckAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_check_at_utc");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime>("UpdatedOnUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on_utc");
+
+                    b.Property<string>("Url")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("url");
+
+                    b.HasKey("PartId", "ReleaseChannel", "Platform")
+                        .HasName("pk_draft_release_links");
+
+                    b.HasIndex("Status", "NextCheckAtUtc")
+                        .HasDatabaseName("ix_draft_release_links_status_next_check_at_utc");
+
+                    b.ToTable("draft_release_links", "drafts");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard", b =>
@@ -2367,6 +2411,18 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("DraftPart");
                 });
 
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftReleaseLink", b =>
+                {
+                    b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftRelease", "Release")
+                        .WithMany("_links")
+                        .HasForeignKey("PartId", "ReleaseChannel")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_draft_release_links_draft_releases_part_id_release_channel");
+
+                    b.Navigation("Release");
+                });
+
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard", b =>
                 {
                     b.HasOne("ScreenDrafts.Modules.Drafts.Domain.DraftParts.DraftPart", "DraftPart")
@@ -2879,6 +2935,11 @@ namespace ScreenDrafts.Modules.Drafts.Infrastructure.Database.Migrations
                     b.Navigation("_subDrafts");
 
                     b.Navigation("_triviaResults");
+                });
+
+            modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.DraftRelease", b =>
+                {
+                    b.Navigation("_links");
                 });
 
             modelBuilder.Entity("ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities.GameBoard", b =>
