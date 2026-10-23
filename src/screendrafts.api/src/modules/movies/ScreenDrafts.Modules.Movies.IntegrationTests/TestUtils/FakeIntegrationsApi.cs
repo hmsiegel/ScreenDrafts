@@ -36,4 +36,10 @@ public sealed class FakeIntegrationsApi : IIntegrationsApi
   {
     return Task.FromResult(Result.Success(new PersonFilmographyApiResponse()));
   }
+
+  public Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
+    PodcastPlatform platform,
+    DateOnly releasedOnOrAfter,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(Result.Success(new ListPodcastEpisodesApiResponse()));
 }

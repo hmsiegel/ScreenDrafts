@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Integrations.Features.People.GetPersonFilmography;
-
-namespace ScreenDrafts.Modules.Integrations.Features.PublicApi;
+﻿namespace ScreenDrafts.Modules.Integrations.Features.PublicApi;
 
 internal class IntegrationsApi(ISender sender) : IIntegrationsApi
 {
@@ -142,5 +140,34 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
         Credits = mapped,
       }
     );
+  }
+
+  public async Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
+    PodcastPlatform platform,
+    DateOnly releasedOnOrAfter,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var result = await _sender.Send(
+      new ListPodcastEpisodesCommand { Platform = platform, ReleasedOnOrAfter = releasedOnOrAfter },
+      cancellationToken
+    );
+
+    if (result.IsFailure)
+    {
+      return Result.Failure<ListPodcastEpisodesApiResponse>(result.Errors);
+    }
+
+    var mapped = result
+      .Value.Episodes.Select(e => new PodcastEpisodeApiResult
+      {
+        Title = e.Title,
+        ReleaseDate = e.ReleaseDate,
+        Url = e.Url,
+      })
+      .ToList()
+      .AsReadOnly();
+
+    return Result.Success(new ListPodcastEpisodesApiResponse { Results = mapped });
   }
 }

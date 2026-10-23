@@ -33,6 +33,8 @@ global using ScreenDrafts.Modules.Integrations.Features.Games.SearchGames;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.FetchMedia;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.GetOnlineMedia;
 global using ScreenDrafts.Modules.Integrations.Features.Movies.SearchForMovie;
+global using ScreenDrafts.Modules.Integrations.Features.People.GetPersonFilmography;
+global using ScreenDrafts.Modules.Integrations.Features.Podcasts.ListPodcastEpisodes;
 global using ScreenDrafts.Modules.Integrations.Features.YouTube.SearchYouTube;
 global using ScreenDrafts.Modules.Integrations.Features.Zoom.ProcessZoomRecording;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;

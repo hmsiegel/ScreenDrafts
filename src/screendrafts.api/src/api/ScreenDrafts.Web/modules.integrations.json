@@ -26,6 +26,17 @@
     },
     "YouTube": {
       "BaseAddress": "https://www.googleapis.com/youtube/v3/"
+    },
+    "Spotify": {
+      "BaseAddress": "https://api.spotify.com/v1/",
+      "TokenUrl": "https://accounts.spotify.com/api/token",
+      "ShowId": "5qXizYahLTEgZSS7Cos9jB",
+      "Market": "US"
+    },
+    "ApplePodcasts": {
+      "BaseAddress": "https://itunes.apple.com/",
+      "CollectionId": "1431963108",
+      "Country": "US"
     }
   }
 }

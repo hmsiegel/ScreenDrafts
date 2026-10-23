@@ -1,6 +1,4 @@
-﻿using ScreenDrafts.Modules.Integrations.Domain.Services.Omdb;
-using ScreenDrafts.Modules.Integrations.Domain.Services.YouTube;
-using ScreenDrafts.Modules.Integrations.Infrastructure.Services.YouTube;
+﻿using ScreenDrafts.Modules.Integrations.Domain.Services.Podcasts;
 
 namespace ScreenDrafts.Modules.Integrations.Composition;
 
@@ -61,6 +59,10 @@ public static class IntegrationsModule
     services.Configure<TmdbSettings>(configuration.GetSection(TmdbSettings.SectionName));
     services.Configure<IgdbSettings>(configuration.GetSection(IgdbSettings.SectionName));
     services.Configure<YouTubeSettings>(configuration.GetSection(YouTubeSettings.SectionName));
+    services.Configure<SpotifySettings>(configuration.GetSection(SpotifySettings.SectionName));
+    services.Configure<ApplePodcastsSettings>(
+      configuration.GetSection(ApplePodcastsSettings.SectionName)
+    );
 
     services.AddHttpClient<ITmdbService, TmdbService>(
       (sp, client) =>
@@ -92,6 +94,32 @@ public static class IntegrationsModule
       {
         YouTubeSettings youTubeSettings = sp.GetRequiredService<IOptions<YouTubeSettings>>().Value;
         client.BaseAddress = new Uri(youTubeSettings.BaseAddress);
+        client.Timeout = TimeSpan.FromSeconds(10);
+        client.DefaultRequestHeaders.Accept.Add(
+          new MediaTypeWithQualityHeaderValue("application/json")
+        );
+      }
+    );
+
+    services.AddSingleton<SpotifyTokenCache>();
+
+    services.AddHttpClient<ISpotifyService, SpotifyService>(
+      (sp, client) =>
+      {
+        var settings = sp.GetRequiredService<IOptions<SpotifySettings>>().Value;
+        client.BaseAddress = new Uri(settings.BaseAddress);
+        client.Timeout = TimeSpan.FromSeconds(10);
+        client.DefaultRequestHeaders.Accept.Add(
+          new MediaTypeWithQualityHeaderValue("application/json")
+        );
+      }
+    );
+
+    services.AddHttpClient<IApplePodcastsService, ApplePodcastsService>(
+      (sp, client) =>
+      {
+        var settings = sp.GetRequiredService<IOptions<ApplePodcastsSettings>>().Value;
+        client.BaseAddress = new Uri(settings.BaseAddress);
         client.Timeout = TimeSpan.FromSeconds(10);
         client.DefaultRequestHeaders.Accept.Add(
           new MediaTypeWithQualityHeaderValue("application/json")
