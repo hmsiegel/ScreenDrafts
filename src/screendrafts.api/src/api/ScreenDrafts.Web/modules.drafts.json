@@ -11,12 +11,12 @@
       "BatchSize": 20
     },
     "PodcastLinks": {
-      "IntervalInSeconds": 900,
-      "BatchSize": 100,
+      "IntervalInSeconds": 300,
+      "BatchSize": 400,
       "ToleranceDays": 2,
       "MinTitleScore": 0.6,
       "MinScoreMargin": 0.2,
-      "DryRun": true
+      "DryRun": false
     }
   }
 }
