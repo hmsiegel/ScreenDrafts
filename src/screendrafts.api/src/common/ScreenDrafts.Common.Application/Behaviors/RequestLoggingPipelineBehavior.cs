@@ -1,11 +1,8 @@
-﻿using ScreenDrafts.Common.Abstractions.Results;
-using ScreenDrafts.Common.Application.Behaviors;
+﻿namespace ScreenDrafts.Common.Application.Behaviors;
 
-namespace ScreenDrafts.Common.Application.Behaviors;
-
-internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
-  (ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> logger)
-  : IPipelineBehavior<TRequest, TResponse>
+internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>(
+  ILogger<RequestLoggingPipelineBehavior<TRequest, TResponse>> logger
+) : IPipelineBehavior<TRequest, TResponse>
   where TRequest : class
   where TResponse : Result
 {
@@ -14,7 +11,8 @@ internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
   public async Task<TResponse> Handle(
     TRequest request,
     RequestHandlerDelegate<TResponse> next,
-    CancellationToken cancellationToken)
+    CancellationToken cancellationToken
+  )
   {
     var moduleName = GetModuleName(typeof(TRequest).FullName!);
     var requsestName = typeof(TRequest).Name;
@@ -36,7 +34,14 @@ internal sealed class RequestLoggingPipelineBehavior<TRequest, TResponse>
       {
         using (LogContext.PushProperty("Error", result.Errors, true))
         {
-          BehaviorMessages.RequestProcessedWithError(_logger, requsestName, result.Errors);
+          if (result.Errors.Length > 0 && result.Errors.All(e => e.Type == ErrorType.NotFound))
+          {
+            BehaviorMessages.RequestNotFound(_logger, requsestName, result.Errors);
+          }
+          else
+          {
+            BehaviorMessages.RequestProcessedWithError(_logger, requsestName, result.Errors);
+          }
         }
       }
 

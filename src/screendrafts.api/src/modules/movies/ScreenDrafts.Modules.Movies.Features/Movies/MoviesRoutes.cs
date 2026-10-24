@@ -8,6 +8,7 @@ internal static class MoviesRoutes
   internal const string MediaSearch = "/media/search";
   internal const string MediaByTmdbIds = Base + "/by-tmdb-ids";
   internal const string MediaByImdbIds = Base + "/by-imdb-ids";
+  internal const string GetMediaPublicIdByImdbId = Base + "/by-imdb-id/{imdbId}";
   internal const string MediaByExternalIds = Base + "/by-external-ids";
   internal const string GamesMediaSearch = Base + "/search-games";
   internal const string MediaByIgdbIds = Base + "/by-igdb-ids";

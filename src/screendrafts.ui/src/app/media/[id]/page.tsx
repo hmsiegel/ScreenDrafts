@@ -2,16 +2,23 @@
 import YouTubeEmbed from "@/components/features/media/youtube-embed";
 import { fetchMediaDetail } from "@/services/media/fetch-media-detail";
 import { MediaResponse, MediaType, MediaAppearanceResponse, MediaStatsResponse, MediaHonorificResponse } from "@/lib/dto";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import Link from "next/link";
 import { artifactUrl } from "@/lib/cdn";
+import { fetchMediaPublicIdByImdbId } from "@/services/media/fetch-media-public-id-by-imdb-id";
 
 type Props = { params: Promise<{ id: string }> };
 
 export const dynamic = "force-dynamic";
+const IMDB_ID_PATTERN = /^tt\d{7,10}$/;
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
+  if (IMDB_ID_PATTERN.test(id)) {
+    return {
+      title: "Media"
+    }
+  }
   try {
     const media = await fetchMediaDetail(id);
     return { title: media.title ?? "Media" };
@@ -66,6 +73,12 @@ function HonorificBadges({ honorific }: { honorific: MediaHonorificResponse }) {
 
 export default async function MediaDetailPage({ params }: Props) {
   const { id } = await params;
+
+  if (IMDB_ID_PATTERN.test(id)) {
+    const publicId = await fetchMediaPublicIdByImdbId(id);
+    if (publicId) permanentRedirect(`/media/${publicId}`);
+    notFound();
+  }
 
   let media: MediaResponse;
   try {
