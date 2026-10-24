@@ -1001,6 +1001,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    media_GetPublicIdByImdbId(body: GetMediaPublicIdByImdbIdRequest): Promise<GetMediaPublicIdByImdbIdResponse>;
+
+    /**
+     * @return OK
+     */
     media_GetByTmdbIds(body: GetMediaByTmdbIdsRequest): Promise<GetMediaByTmdbIdsResponse>;
 
     /**
@@ -11450,6 +11455,51 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    media_GetPublicIdByImdbId(body: GetMediaPublicIdByImdbIdRequest, signal?: AbortSignal): Promise<GetMediaPublicIdByImdbIdResponse> {
+        let url_ = this.baseUrl + "/media/by-imdb-id/{imdbId}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetPublicIdByImdbId(_response);
+        });
+    }
+
+    protected processMedia_GetPublicIdByImdbId(response: Response): Promise<GetMediaPublicIdByImdbIdResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as GetMediaPublicIdByImdbIdResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<GetMediaPublicIdByImdbIdResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     media_GetByTmdbIds(body: GetMediaByTmdbIdsRequest, signal?: AbortSignal): Promise<GetMediaByTmdbIdsResponse> {
         let url_ = this.baseUrl + "/media/by-tmdb-ids";
         url_ = url_.replace(/[?&]$/, "");
@@ -15660,6 +15710,18 @@ export interface GetMediaByTmdbIdsRequest {
 
 export interface GetMediaByTmdbIdsResponse {
     items?: MediaTmdbSummary[];
+
+    [key: string]: any;
+}
+
+export interface GetMediaPublicIdByImdbIdRequest {
+    imdbId?: string;
+
+    [key: string]: any;
+}
+
+export interface GetMediaPublicIdByImdbIdResponse {
+    publicId?: string;
 
     [key: string]: any;
 }

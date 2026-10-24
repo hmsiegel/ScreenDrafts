@@ -8393,6 +8393,42 @@
         ]
       }
     },
+    "/media/by-imdb-id/{imdbId}": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.GetPublicIdByImdbId",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/GetMediaPublicIdByImdbIdRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetMediaPublicIdByImdbIdResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/media/by-tmdb-ids": {
       "get": {
         "tags": [
@@ -15365,6 +15401,22 @@
             "items": {
               "$ref": "#/components/schemas/MediaTmdbSummary"
             }
+          }
+        }
+      },
+      "GetMediaPublicIdByImdbIdRequest": {
+        "type": "object",
+        "properties": {
+          "imdbId": {
+            "type": "string"
+          }
+        }
+      },
+      "GetMediaPublicIdByImdbIdResponse": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
           }
         }
       },

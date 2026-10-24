@@ -16,6 +16,7 @@ internal static class MoviesOpenApi
     public const string Media_ListMedia = "Media.List";
     public const string Media_GetMediaByTmdbIds = "Media.GetByTmdbIds";
     public const string Media_GetMediaByImdbIds = "Media.GetByImdbIds";
+    public const string Media_GetPublicIdByImdbId = "Media.GetPublicIdByImdbId";
     public const string Media_GetMediaByIgdbIds = "Media.GetByIgdbIds";
     public const string Media_GetMediaByExternalIds = "Media.GetByExternalIds";
     public const string Media_SearchGames = "Media.SearchGames";

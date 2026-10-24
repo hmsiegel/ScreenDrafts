@@ -26,6 +26,11 @@ public static class MediaErrors
       $"The media with the TMDB ID '{tmdbId}' was not found."
     );
 
+  public static readonly SDError MediaNotFoundByImdbId = SDError.NotFound(
+    "Media.MediaNotFoundByImdbId",
+    "No media matches that IMDb ID."
+  );
+
   public static readonly SDError RequiredFieldsMissing = SDError.Failure(
     "Media.RequiredFieldsMissing",
     "The title and IMDB ID are required fields."
