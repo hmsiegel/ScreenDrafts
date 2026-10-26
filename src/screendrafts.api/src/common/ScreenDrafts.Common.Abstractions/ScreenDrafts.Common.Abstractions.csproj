@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" VersionOverride="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" VersionOverride="10.0.14" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
   </ItemGroup>
 </Project>

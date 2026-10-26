@@ -5,6 +5,8 @@
     <PackageReference Include="Ardalis.SmartEnum" />
     <PackageReference Include="IMDbApiLib" />
     <PackageReference Include="MediatR.Contracts" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" VersionOverride="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" VersionOverride="10.0.14" />
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="OmdbApiNet" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
