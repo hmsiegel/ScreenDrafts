@@ -1,17 +1,19 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Inbox;
+﻿using Rebus.Handlers;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Infrastructure.Inbox;
 
 public sealed class IntegrationEventConsumer<TIntegrationEvent>(
   IDbConnectionFactory dbConnectionFactory
-) : IConsumer<TIntegrationEvent>
+) : IHandleMessages<TIntegrationEvent>
   where TIntegrationEvent : IntegrationEvent
 {
-  public async Task Consume(ConsumeContext<TIntegrationEvent> context)
+  public async Task Handle(TIntegrationEvent message)
   {
-    ArgumentNullException.ThrowIfNull(context);
+    ArgumentNullException.ThrowIfNull(message);
 
     await using var connection = await dbConnectionFactory.OpenConnectionAsync();
 
-    var integrationEvent = context.Message;
+    var integrationEvent = message;
 
     var inboxMessage = new InboxMessage
     {

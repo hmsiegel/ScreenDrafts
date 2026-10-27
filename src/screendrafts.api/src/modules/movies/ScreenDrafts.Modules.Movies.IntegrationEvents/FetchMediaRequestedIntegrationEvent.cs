@@ -24,7 +24,7 @@ public sealed class FetchMediaRequestedIntegrationEvent : IntegrationEvent
     MediaType = mediaType;
   }
 
-  // Parameterless constructor required for MassTransit deserialization
+  // Parameterless constructor required for Rebus deserialization
   public FetchMediaRequestedIntegrationEvent()
     : base(Guid.Empty, DateTime.MinValue) { }
 

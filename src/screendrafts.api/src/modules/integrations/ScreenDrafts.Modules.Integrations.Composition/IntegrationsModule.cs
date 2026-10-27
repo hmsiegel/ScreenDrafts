@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Integrations.Domain.Services.Podcasts;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+using ScreenDrafts.Modules.Integrations.Domain.Services.Podcasts;
 
 namespace ScreenDrafts.Modules.Integrations.Composition;
 
@@ -25,7 +26,7 @@ public static class IntegrationsModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -33,17 +34,19 @@ public static class IntegrationsModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<FetchMediaRequestedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<StartZoomRecordingRequestedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<FetchMediaRequestedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<StopZoomRecordingRequestedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<StartZoomRecordingRequestedIntegrationEvent>
+    >();
+
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<StopZoomRecordingRequestedIntegrationEvent>
+    >();
   }
 
   public static void AddIntegrationFeatures(

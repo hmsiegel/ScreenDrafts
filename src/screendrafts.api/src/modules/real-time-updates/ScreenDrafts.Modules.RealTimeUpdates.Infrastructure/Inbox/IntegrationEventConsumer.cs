@@ -2,14 +2,14 @@
 
 internal sealed class IntegrationEventConsumer<TIntegrationEvent>(
   IDbConnectionFactory dbConnectionFactory
-) : IConsumer<TIntegrationEvent>
+) : IHandleMessages<TIntegrationEvent>
   where TIntegrationEvent : IntegrationEvent
 {
-  public async Task Consume(ConsumeContext<TIntegrationEvent> context)
+  public async Task Handle(TIntegrationEvent message)
   {
     await using DbConnection connection = await dbConnectionFactory.OpenConnectionAsync();
 
-    TIntegrationEvent integrationEvent = context.Message;
+    TIntegrationEvent integrationEvent = message;
 
     var inboxMessage = new InboxMessage
     {

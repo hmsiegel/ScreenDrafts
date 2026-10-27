@@ -17,7 +17,7 @@ internal sealed partial class WeeklySpotlightRotationJob(
 
   public async Task Execute(IJobExecutionContext context)
   {
-    var ct = context.CancellationToken;
+    var ct = CancellationToken.None;
 
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(ct);
     await using var transaction = await connection.BeginTransactionAsync(ct);

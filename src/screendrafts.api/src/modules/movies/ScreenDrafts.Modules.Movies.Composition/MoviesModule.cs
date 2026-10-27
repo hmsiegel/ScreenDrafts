@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
 
 namespace ScreenDrafts.Modules.Movies.Composition;
 
@@ -34,7 +35,7 @@ public static class MoviesModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -42,9 +43,9 @@ public static class MoviesModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaFetchedIntegrationEvent>>();
   }
 
   private static void AddMoviesFeatures(this IServiceCollection services)

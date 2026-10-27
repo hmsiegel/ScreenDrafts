@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.GuestDrafts.Composition;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+
+namespace ScreenDrafts.Modules.GuestDrafts.Composition;
 
 public static class GuestDraftsModule
 {
@@ -42,7 +44,7 @@ public static class GuestDraftsModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -50,17 +52,17 @@ public static class GuestDraftsModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserRegisteredIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserNameUpdatedIntegrationEvent>
+    >();
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<MediaAddedIntegrationEvent>>();
   }
 
   private static void AddDraftsFeatures(

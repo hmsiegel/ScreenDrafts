@@ -68,7 +68,7 @@ internal sealed partial class KeycloakAuthEventPollerJob(
 
     try
     {
-      var token = await GetAdminTokenAsync(context.CancellationToken);
+      var token = await GetAdminTokenAsync(CancellationToken.None);
 
       if (string.IsNullOrEmpty(token))
       {
@@ -76,9 +76,9 @@ internal sealed partial class KeycloakAuthEventPollerJob(
         return;
       }
 
-      var watermark = await GetWatermarkAsync(context.CancellationToken);
+      var watermark = await GetWatermarkAsync(CancellationToken.None);
 
-      var events = await FetchEventsAsync(token, watermark, context.CancellationToken);
+      var events = await FetchEventsAsync(token, watermark, CancellationToken.None);
 
       if (events.Count == 0)
       {
@@ -102,7 +102,7 @@ internal sealed partial class KeycloakAuthEventPollerJob(
             ? System.Text.Json.JsonSerializer.Serialize(evt.Details, Common.Infrastructure.Serialization.SerializerOptions.Instance)
             : null);
 
-        await _auditWriteService.WriteAuthLogAsync(log, context.CancellationToken);
+        await _auditWriteService.WriteAuthLogAsync(log, CancellationToken.None);
 
         if (latestEventTime is null || evt.OccurredOnUtc > latestEventTime)
         {
@@ -112,7 +112,7 @@ internal sealed partial class KeycloakAuthEventPollerJob(
 
       if (latestEventTime.HasValue)
       {
-        await UpdateWatermarkAsync(latestEventTime.Value, context.CancellationToken);
+        await UpdateWatermarkAsync(latestEventTime.Value, CancellationToken.None);
       }
     }
     catch (HttpRequestException ex)

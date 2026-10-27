@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Administration.Composition;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+
+namespace ScreenDrafts.Modules.Administration.Composition;
 
 public static class AdministrationModule
 {
@@ -25,7 +27,7 @@ public static class AdministrationModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -33,17 +35,17 @@ public static class AdministrationModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DrafterCreatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserRegisteredIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<HostCreatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DrafterCreatedIntegrationEvent>
+    >();
+
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<HostCreatedIntegrationEvent>>();
   }
 
   private static void AddAdministrationFeatures(this IServiceCollection services)

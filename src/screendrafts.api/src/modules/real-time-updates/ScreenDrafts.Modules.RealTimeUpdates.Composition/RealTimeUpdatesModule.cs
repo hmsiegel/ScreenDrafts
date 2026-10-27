@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.GuestDrafts.IntegrationEvents;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+using ScreenDrafts.Modules.GuestDrafts.IntegrationEvents;
 
 namespace ScreenDrafts.Modules.RealTimeUpdates.Composition;
 
@@ -47,7 +48,7 @@ public static class RealTimeUpdatesModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -55,115 +56,101 @@ public static class RealTimeUpdatesModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PickAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PickRevealedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickAddedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PickSubmittedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickRevealedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<VetoAppliedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickSubmittedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<VetoOverrideAppliedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<VetoAppliedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<CommissionerOverrideAppliedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<VetoOverrideAppliedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPositionAssignedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<CommissionerOverrideAppliedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPositionUnassignedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPositionAssignedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DrafterHonorificEarnedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPositionUnassignedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<MovieHonorificEarnedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DrafterHonorificEarnedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<VetoUndoneIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<MovieHonorificEarnedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PositionsSetIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<VetoUndoneIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PickUndoneIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PositionsSetIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickUndoneIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftCompletedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<CommunityRuleAppliedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartCompletedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartStartedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<CommunityRuleAppliedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<SubDraftUpdatedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartStartedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<
-        IntegrationEventConsumer<GuestDraftCommissionerOverrideAppliedIntegrationEvent>
-      >()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<SubDraftUpdatedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftPickRevealedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftCommissionerOverrideAppliedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftPickSubmittedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftPickRevealedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftPickUndoneIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftPickSubmittedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftVetoAppliedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftPickUndoneIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftVetoOverrideAppliedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftVetoAppliedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftVetoUndoneIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftVetoOverrideAppliedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftVetoUndoneIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftStartedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftCompletedIntegrationEvent>
+    >();
+
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftStartedIntegrationEvent>
+    >();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

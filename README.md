@@ -81,7 +81,7 @@ Vault itself is health-checked before the init container runs, using a `wget` pr
 
 **HashiCorp Vault:** Secrets are not stored in environment variables or config files. Vault runs in dev mode (auto-unsealed, in-memory) during development; a `vault-init` container seeds all secrets on startup and exits, and the API depends on that init completing successfully before it boots. This is the same pattern used in production Vault deployments, just without persistence.
 
-**RabbitMQ + MassTransit:** Domain events (pick made, veto cast) are published to RabbitMQ via MassTransit rather than handled synchronously. This decouples cache invalidation and any future notification logic from the request path. MassTransit's mediator pattern means handlers don't know about the message broker — swapping transports requires no application code changes.
+**RabbitMQ + Rebus:** Domain events (pick made, veto cast) are published to RabbitMQ via Rebus rather than handled synchronously. This decouples cache invalidation and any future notification logic from the request path. Publishers depend on an IEventBus abstraction, so application code does not know about the message broker.
 
 **Polyglot persistence (PostgreSQL + MongoDB):** The primary relational data (drafts, picks, films) lives in PostgreSQL, managed through Entity Framework Core with code-first migrations. MongoDB handles user-specific data that maps poorly to a relational schema. A dedicated PostgreSQL instance backs Keycloak, keeping identity data isolated from application data.
 
@@ -165,7 +165,7 @@ screendrafts
 | FastEndpoints | Lightweight endpoint definition |
 | Entity Framework Core | ORM / database migrations |
 | MediatR | CQRS mediator (commands, queries, domain events) |
-| MassTransit + RabbitMQ | Async messaging / event-driven architecture |
+| Rebus + RabbitMQ | Async messaging / event-driven architecture |
 | YARP | Reverse proxy / API gateway |
 | Keycloak | OAuth2 / OIDC identity server (custom theme + authenticator) |
 | HashiCorp Vault | Secrets management |
@@ -272,7 +272,7 @@ The UI will be available at `http://localhost:3000` (proxied through YARP).
 - [x] IMDB / OMDB integration for film metadata
 - [x] Auth via Keycloak (OIDC) with custom theme and authenticator
 - [x] Redis caching with event-driven invalidation
-- [x] RabbitMQ async event bus via MassTransit
+- [x] RabbitMQ async event bus via Rebus
 - [x] HashiCorp Vault for secrets management
 - [x] Distributed tracing with Jaeger / OpenTelemetry
 - [x] Structured logging with Serilog → Seq + ELK
