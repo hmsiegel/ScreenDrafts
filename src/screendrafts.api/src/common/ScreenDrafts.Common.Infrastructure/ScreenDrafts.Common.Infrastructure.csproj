@@ -10,8 +10,6 @@
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="MailKit" />
-    <PackageReference Include="MassTransit" />
-    <PackageReference Include="MassTransit.RabbitMQ" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
@@ -31,6 +29,9 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" />
     <PackageReference Include="Polly" />
     <PackageReference Include="Quartz.Extensions.Hosting" />
+    <PackageReference Include="Rebus" />
+    <PackageReference Include="Rebus.Microsoft.Extensions.Logging" />
+    <PackageReference Include="Rebus.RabbitMq" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="SharpCompress" />
     <PackageReference Include="Snappier" />

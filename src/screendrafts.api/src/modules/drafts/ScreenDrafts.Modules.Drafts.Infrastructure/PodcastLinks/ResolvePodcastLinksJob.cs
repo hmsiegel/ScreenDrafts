@@ -21,7 +21,7 @@ internal sealed partial class ResolvePodcastLinksJob(
   {
     ArgumentNullException.ThrowIfNull(context);
 
-    var cancellationToken = context.CancellationToken;
+    var cancellationToken = CancellationToken.None;
 
     await using var scope = _serviceScopeFactory.CreateAsyncScope();
     var services = scope.ServiceProvider;

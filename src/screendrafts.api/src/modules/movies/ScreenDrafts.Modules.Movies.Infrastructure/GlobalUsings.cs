@@ -2,11 +2,7 @@
 global using System.Data.Common;
 global using System.Reflection;
 global using System.Runtime.CompilerServices;
-
 global using Dapper;
-
-global using MassTransit;
-
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Migrations;
@@ -14,13 +10,10 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-
 global using Newtonsoft.Json;
-
 global using Npgsql;
-
 global using Quartz;
-
+global using Rebus.Handlers;
 global using ScreenDrafts.Common.Application.Clock;
 global using ScreenDrafts.Common.Application.Data;
 global using ScreenDrafts.Common.Application.EventBus;

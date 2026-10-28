@@ -6,8 +6,7 @@ public static class InfrastructureConfiguration
     this IServiceCollection services,
     IConfiguration configuration,
     string serviceName,
-    Action<IRegistrationConfigurator, string>[] moduleConfigureConsumers,
-    Action<IRabbitMqBusFactoryConfigurator, IBusRegistrationContext>[] moduleConfigureEndpoints,
+    Action<IModuleConsumerRegistry, string>[] moduleConfigureConsumers,
     RabbitMqSettings rabbitMqSettings,
     string redisConnectionString,
     string mongoConnectionString,
@@ -34,12 +33,7 @@ public static class InfrastructureConfiguration
 
     services.AddMongoDb(mongoConnectionString);
 
-    services.AddEventBus(
-      serviceName,
-      moduleConfigureConsumers,
-      moduleConfigureEndpoints,
-      rabbitMqSettings
-    );
+    services.AddEventBus(serviceName, moduleConfigureConsumers, rabbitMqSettings);
 
     return services;
   }

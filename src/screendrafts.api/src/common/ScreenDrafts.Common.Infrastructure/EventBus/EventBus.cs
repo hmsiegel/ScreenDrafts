@@ -1,12 +1,18 @@
 ﻿namespace ScreenDrafts.Common.Infrastructure.EventBus;
 
-internal sealed class EventBus(IBus bus) : IEventBus
+internal sealed class EventBus(EventBusRuntime runtime) : IEventBus
 {
-  private readonly IBus _bus = bus;
+  private readonly EventBusRuntime _runtime = runtime;
 
-  public async Task PublishAsync<T>(T integrationEvent, CancellationToken cancellationToken = default)
+  public async Task PublishAsync<T>(
+    T integrationEvent,
+    CancellationToken cancellationToken = default
+  )
     where T : IIntegrationEvent
   {
-    await _bus.Publish(integrationEvent, cancellationToken);
+    ArgumentNullException.ThrowIfNull(integrationEvent);
+    cancellationToken.ThrowIfCancellationRequested();
+
+    await _runtime.Publisher.Publish(integrationEvent);
   }
 }

@@ -52,7 +52,6 @@ builder.Services.AddInfrastructure(
     RealTimeUpdatesModule.ConfigureConsumers,
     UsersModule.ConfigureConsumers,
   ],
-  [AuditModule.ConfigureEndpoints],
   rabbitMqSettings,
   redisConnectionString,
   mongoConnectionString,

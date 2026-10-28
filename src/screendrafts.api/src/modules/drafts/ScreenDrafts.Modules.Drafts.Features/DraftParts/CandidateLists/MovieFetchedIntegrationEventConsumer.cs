@@ -1,17 +1,22 @@
 ﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.CandidateLists;
 
-internal sealed class MovieFetchedIntegrationEventConsumer(ICandidateListRepository candidateListRepository)
-  : IConsumer<MediaFetchedIntegrationEvent>
+internal sealed class MovieFetchedIntegrationEventConsumer(
+  ICandidateListRepository candidateListRepository
+) : IntegrationEventHandler<MediaFetchedIntegrationEvent>
 {
   private readonly ICandidateListRepository _candidateListRepository = candidateListRepository;
 
-  public async Task Consume(ConsumeContext<MediaFetchedIntegrationEvent> context)
+  public override async Task Handle(
+    MediaFetchedIntegrationEvent integrationEvent,
+    CancellationToken cancellationToken = default
+  )
   {
-    var tmdbId = context.Message.TmdbId!.Value;
+    var tmdbId = integrationEvent.TmdbId!.Value;
 
     var movieId = await _candidateListRepository.FindMovieByTmdbIdAsync(
       tmdbId,
-      context.CancellationToken);
+      CancellationToken.None
+    );
 
     if (movieId is null)
     {
@@ -20,7 +25,8 @@ internal sealed class MovieFetchedIntegrationEventConsumer(ICandidateListReposit
 
     var pendingEntries = await _candidateListRepository.GetPendingEntriesByTmdbIdAsync(
       tmdbId,
-      context.CancellationToken);
+      CancellationToken.None
+    );
 
     foreach (var entry in pendingEntries)
     {

@@ -37,7 +37,7 @@ export const CREDIT_GROUPS: CreditGroup[] = [
       { name: "Dapper", href: "https://github.com/DapperLib/Dapper", role: "Reads" },
       { name: "Npgsql", href: "https://www.npgsql.org", role: "PostgreSQL driver" },
       { name: "MediatR", href: "https://github.com/jbogard/MediatR", role: "Commands, queries, events" },
-      { name: "MassTransit", href: "https://masstransit.io", role: "Messaging" },
+      { name: "Rebus", href: "https://github.com/rebus-org/Rebus", role: "Messaging" },
       { name: "Quartz.NET", href: "https://www.quartz-scheduler.net", role: "Background jobs" },
       { name: "DbUp", href: "https://dbup.readthedocs.io", role: "Database migrations" },
       { name: "FluentValidation", href: "https://docs.fluentvalidation.net", role: "Request validation" },

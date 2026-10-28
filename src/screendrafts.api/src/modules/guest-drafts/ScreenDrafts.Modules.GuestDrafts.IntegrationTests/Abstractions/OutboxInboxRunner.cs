@@ -1,28 +1,18 @@
-using System.Reflection;
-
-using MassTransit;
-
-using Quartz;
-
-using ScreenDrafts.Common.Application.Data;
-using ScreenDrafts.Common.Application.EventBus.Dispatchers;
-using ScreenDrafts.Common.Application.Messaging.Dispatchers;
-using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Inbox;
-using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Outbox;
+﻿using ScreenDrafts.Modules.GuestDrafts.Infrastructure.Outbox;
 
 namespace ScreenDrafts.Modules.GuestDrafts.IntegrationTests.Abstractions;
 
-/// <summary>
 /// Drives the module's real <c>ProcessOutboxJob</c> / <c>ProcessInboxJob</c> and the real
-/// MassTransit <c>IntegrationEventConsumer</c> without a Quartz scheduler or a broker. The
-/// jobs only read <c>CancellationToken</c> from the Quartz context, and the consumer only
-/// reads <c>Message</c> from the MassTransit context, so those are proxied.
-/// </summary>
+/// <c>IntegrationEventConsumer</c> handler without a Quartz scheduler or a broker. The jobs
+/// only read <c>CancellationToken</c> from the Quartz context, so that is proxied.
 public static class OutboxInboxRunner
 {
   private const int BatchSize = 100;
 
-  public static async Task RunOutboxAsync(IServiceProvider services, CancellationToken cancellationToken)
+  public static async Task RunOutboxAsync(
+    IServiceProvider services,
+    CancellationToken cancellationToken
+  )
   {
     ArgumentNullException.ThrowIfNull(services);
 
@@ -41,7 +31,10 @@ public static class OutboxInboxRunner
     await job.Execute(JobContext(cancellationToken));
   }
 
-  public static async Task RunInboxAsync(IServiceProvider services, CancellationToken cancellationToken)
+  public static async Task RunInboxAsync(
+    IServiceProvider services,
+    CancellationToken cancellationToken
+  )
   {
     ArgumentNullException.ThrowIfNull(services);
 
@@ -75,10 +68,7 @@ public static class OutboxInboxRunner
       scope.ServiceProvider.GetRequiredService<IDbConnectionFactory>()
     );
 
-    var proxy = DispatchProxy.Create<ConsumeContext<TEvent>, ConsumeContextProxy<TEvent>>();
-    ((ConsumeContextProxy<TEvent>)(object)proxy).Message = integrationEvent;
-
-    await consumer.Consume(proxy);
+    await consumer.Handle(integrationEvent);
   }
 
   private static IJobExecutionContext JobContext(CancellationToken cancellationToken)
@@ -98,22 +88,14 @@ public class JobContextProxy : DispatchProxy
     targetMethod?.Name == "get_CancellationToken" ? Token : ProxyDefaults.For(targetMethod);
 }
 
-/// <summary>Stands in for <c>ConsumeContext&lt;T&gt;</c>: only <c>Message</c> is read.</summary>
-public class ConsumeContextProxy<TMessage> : DispatchProxy
-  where TMessage : class
-{
-  public TMessage? Message { get; set; }
-
-  protected override object? Invoke(MethodInfo? targetMethod, object?[]? args) =>
-    targetMethod?.Name == "get_Message" ? Message : ProxyDefaults.For(targetMethod);
-}
-
 internal static class ProxyDefaults
 {
   public static object? For(MethodInfo? method)
   {
     var type = method?.ReturnType;
 
-    return type is { IsValueType: true } && type != typeof(void) ? Activator.CreateInstance(type) : null;
+    return type is { IsValueType: true } && type != typeof(void)
+      ? Activator.CreateInstance(type)
+      : null;
   }
 }

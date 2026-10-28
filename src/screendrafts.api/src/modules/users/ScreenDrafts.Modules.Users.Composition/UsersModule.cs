@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Users.Features.Users.EmailChange;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+using ScreenDrafts.Modules.Users.Features.Users.EmailChange;
 
 namespace ScreenDrafts.Modules.Users.Composition;
 
@@ -39,28 +40,29 @@ public static class UsersModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
     ArgumentNullException.ThrowIfNull(registrationConfigurator);
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PermissionAddedToRoleIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PermissionRemovedFromRoleIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PersonCreatedForUserIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
+
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<PermissionAddedToRoleIntegrationEvent>
+    >();
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>();
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>
+    >();
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<PermissionRemovedFromRoleIntegrationEvent>
+    >();
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<PersonCreatedForUserIntegrationEvent>
+    >();
   }
 
   private static void AddUsersFeatures(

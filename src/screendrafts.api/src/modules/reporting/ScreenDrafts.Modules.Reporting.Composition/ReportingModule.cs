@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Reporting.Composition;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+
+namespace ScreenDrafts.Modules.Reporting.Composition;
 
 public static class ReportingModule
 {
@@ -40,7 +42,7 @@ public static class ReportingModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -48,33 +50,31 @@ public static class ReportingModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartStartedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PickLockedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartStartedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickLockedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartCompletedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftCompletedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartReleaseAddedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartCompletedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<PickUnlockedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartReleaseAddedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartStatsRecordedIntegrationEvent>>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<PickUnlockedIntegrationEvent>>();
+
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartStatsRecordedIntegrationEvent>
+    >();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

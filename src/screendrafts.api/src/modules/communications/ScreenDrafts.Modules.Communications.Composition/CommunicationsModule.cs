@@ -1,4 +1,5 @@
-﻿using ScreenDrafts.Modules.Communications.Features.ContactMessages;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+using ScreenDrafts.Modules.Communications.Features.ContactMessages;
 
 namespace ScreenDrafts.Modules.Communications.Composition;
 
@@ -48,7 +49,7 @@ public static class CommunicationsModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -56,45 +57,43 @@ public static class CommunicationsModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartParticipantAddedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftPartHostAddedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartParticipantAddedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRegisteredIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftPartHostAddedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftCompletedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserRegisteredIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<DraftCreatedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<DraftCompletedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserEmailChangedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<DraftCreatedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<EmailChangeConfirmationRequestedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserEmailChangedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<EmailChangeConfirmationRequestedIntegrationEvent>
+    >();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<IntegrationEventConsumer<UserRoleAddedIntegrationEvent>>();
 
-    registrationConfigurator
-      .AddConsumer<IntegrationEventConsumer<GuestDraftInvitationSentIntegrationEvent>>()
-      .Endpoint(x => x.InstanceId = moduleInstanceId);
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<UserRoleRemovedIntegrationEvent>
+    >();
+
+    registrationConfigurator.AddConsumer<
+      IntegrationEventConsumer<GuestDraftInvitationSentIntegrationEvent>
+    >();
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Audit.Composition;
+﻿using ScreenDrafts.Common.Infrastructure.EventBus;
+
+namespace ScreenDrafts.Modules.Audit.Composition;
 
 public static class AuditModule
 {
@@ -35,7 +37,7 @@ public static class AuditModule
   }
 
   public static void ConfigureConsumers(
-    IRegistrationConfigurator registrationConfigurator,
+    IModuleConsumerRegistry registrationConfigurator,
     string instanceId
   )
   {
@@ -43,37 +45,15 @@ public static class AuditModule
 
     var moduleInstanceId = $"{instanceId}-{_moduleName.ToLowerInvariant()}";
 
-    registrationConfigurator
-      .AddConsumer<GenericIntegrationAuditConsumer>()
-      .Endpoint(c => c.InstanceId = moduleInstanceId);
-  }
+    registrationConfigurator.ForQueue(moduleInstanceId.ToLowerInvariant());
 
-  public static void ConfigureEndpoints(
-    IRabbitMqBusFactoryConfigurator configurator,
-    IBusRegistrationContext context
-  )
-  {
-    ArgumentNullException.ThrowIfNull(configurator);
-
-    configurator.ReceiveEndpoint(
-      "screendrafts.audit",
-      endpoint =>
-      {
-        endpoint.ConfigureConsumeTopology = false;
-
-        endpoint.Bind(
-          "ScreenDrafts.Common.Application.EventBus:IIntegrationEvent",
-          x =>
-          {
-            x.ExchangeType = "fanout";
-            x.Durable = true;
-            x.AutoDelete = false;
-          }
-        );
-
-        endpoint.ConfigureConsumer<GenericIntegrationAuditConsumer>(context);
-      }
-    );
+    foreach (var eventType in IntegrationEventTypeCatalog.GetAll())
+    {
+      registrationConfigurator.AddConsumer(
+        eventType,
+        typeof(IntegrationAuditHandler<>).MakeGenericType(eventType)
+      );
+    }
   }
 
   private static void AddDomainEventHandlers(this IServiceCollection services)

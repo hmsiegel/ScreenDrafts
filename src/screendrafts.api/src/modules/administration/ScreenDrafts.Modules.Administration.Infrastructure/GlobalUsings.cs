@@ -2,7 +2,7 @@
 global using System.Data.Common;
 global using System.Reflection;
 global using Dapper;
-global using MassTransit;
+
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Migrations;
 global using Microsoft.Extensions.Configuration;

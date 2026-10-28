@@ -122,13 +122,13 @@ Commands flow through:
 
 Domain events raised inside the aggregate are dispatched after persistence by `DraftsDomainEventDispatcher` (outbox-backed, idempotent via `IdempotentDomainEventHandler<>`).
 
-Integration events flow via MassTransit/RabbitMQ. Each module registers its consumers in `XxxModule.ConfigureConsumers`.
+Integration events flow via Rebus/RabbitMQ. Each module registers its consumers in `XxxModule.ConfigureConsumers`; every module gets its own queue and its own Rebus bus.
 
 ### Infrastructure
 - **Database**: PostgreSQL with one schema per module (e.g., `drafts`, `users`). EF Core with `EFCore.NamingConventions` (snake_case). Each module has its own `DbContext`.
 - **Read queries**: Dapper via `IDbConnectionFactory` — feature-specific query handlers query the DB directly with SQL.
 - **Cache**: Redis (`IDistributedCache`).
-- **Event bus**: MassTransit over RabbitMQ.
+- **Event bus**: Rebus over RabbitMQ.
 - **Scheduled jobs**: Quartz.NET (outbox/inbox processors).
 - **Auth**: Keycloak JWT. Authorization is permission-based (claims from the token).
 - **Logging**: Serilog → Seq (`:8081`). Tracing: OpenTelemetry → Jaeger (`:16686`).

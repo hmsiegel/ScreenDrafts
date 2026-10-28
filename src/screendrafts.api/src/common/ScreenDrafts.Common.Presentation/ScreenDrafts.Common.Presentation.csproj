@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <ItemGroup>
     <PackageReference Include="FastEndpoints" />
-    <PackageReference Include="MassTransit.Abstractions" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
   </ItemGroup>
@@ -14,5 +12,4 @@
   <ItemGroup>
     <ProjectReference Include="..\ScreenDrafts.Common.Abstractions\ScreenDrafts.Common.Abstractions.csproj" />
   </ItemGroup>
-
 </Project>

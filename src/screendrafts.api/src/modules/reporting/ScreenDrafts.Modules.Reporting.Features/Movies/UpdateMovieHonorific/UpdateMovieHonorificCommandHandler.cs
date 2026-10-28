@@ -46,7 +46,7 @@ internal sealed class UpdateMovieHonorificCommandHandler(
     {
       // The row for this (movie, draft part) pair already exists, so nothing about the movie's
       // canonical appearance set has changed — most likely PickLockedIntegrationEvent was
-      // delivered more than once for the same pick (MassTransit retries / at-least-once
+      // delivered more than once for the same pick (Rebus retries / at-least-once
       // delivery) rather than a genuine new lock. A re-lock that follows a real revert is NOT
       // this branch: RevertMovieHonorificCommandHandler deletes the row on unlock, so a
       // subsequent lock (undo-veto, veto-override) finds no row and inserted == 1 below,
