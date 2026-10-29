@@ -177,6 +177,8 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
         ))}
       </div>
 
+      <VetoSummary participants={participants} positions={positions} />
+
       {error && (
         <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
           {error}
@@ -198,6 +200,83 @@ export function SeedPositionsStep({ draft, accessToken, onDone }: Props) {
           </span>
         )}
       </div>
+    </div>
+  );
+}
+// Per-participant veto inventory, derived from data this step already loads.
+// Starting isn't exposed by /gameplay, so it's total - rolling in - awarded,
+// where awarded is counted from the bonus flags on the positions assigned
+// above. Before any pick is entered, "total" is the full inventory
+// (starting + rolling in + awarded, nothing used yet), so this is the number
+// to check against the spreadsheet before moving on to Picks.
+function VetoSummary({
+  participants,
+  positions,
+}: {
+  participants: GameplayParticipant[];
+  positions: GameplayDraftPosition[];
+}) {
+  const rows = participants
+    .filter((p) => p.participantKind !== 2 && p.participantPublicId)
+    .map((p) => {
+      const held = positions.filter((pos) => pos.assignedParticipantId === p.participantPublicId);
+      const awardedVetoes = held.filter((pos) => pos.hasBonusVeto).length;
+      const awardedOverrides = held.filter((pos) => pos.hasBonusVetoOverride).length;
+      return {
+        key: p.participantPublicId!,
+        name: p.participantName,
+        rolling: p.vetoesRollingIn,
+        awarded: awardedVetoes,
+        starting: p.vetoTokensRemaining - p.vetoesRollingIn - awardedVetoes,
+        total: p.vetoTokensRemaining,
+        overrides: p.overrideTokensRemaining,
+        overridesAwarded: awardedOverrides,
+        tokens: p.fungibleTokensRemaining,
+      };
+    });
+
+  if (rows.length === 0) return null;
+
+  const showOverrides = rows.some((r) => r.overrides > 0);
+  const showTokens = rows.some((r) => r.tokens > 0);
+
+  return (
+    <div className="space-y-2">
+      <h3 className="text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase">
+        Vetoes going into the draft
+      </h3>
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-[10px] font-mono uppercase tracking-widest text-sd-ink/40">
+            <th className="py-1 pr-3 font-normal">Drafter</th>
+            <th className="py-1 px-2 font-normal text-right">Start</th>
+            <th className="py-1 px-2 font-normal text-right">Rolling in</th>
+            <th className="py-1 px-2 font-normal text-right">Position</th>
+            <th className="py-1 pl-2 font-normal text-right">Total</th>
+            {showOverrides && <th className="py-1 pl-2 font-normal text-right">Overrides</th>}
+            {showTokens && <th className="py-1 pl-2 font-normal text-right">Tokens</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.key} className="border-t border-sd-ink/5">
+              <td className="py-1.5 pr-3 text-sd-ink">{r.name}</td>
+              <td className="py-1.5 px-2 text-right font-mono">{r.starting}</td>
+              <td className="py-1.5 px-2 text-right font-mono">{r.rolling}</td>
+              <td className="py-1.5 px-2 text-right font-mono">{r.awarded}</td>
+              <td className="py-1.5 pl-2 text-right font-mono font-bold text-sd-blue">{r.total}</td>
+              {showOverrides && (
+                <td className="py-1.5 pl-2 text-right font-mono">{r.overrides}</td>
+              )}
+              {showTokens && <td className="py-1.5 pl-2 text-right font-mono">{r.tokens}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="text-[11px] text-sd-ink/40">
+        Compare Total to your sheet before continuing. A wrong total means the rollover or a
+        position award is off — fix it now, not after the picks.
+      </p>
     </div>
   );
 }
