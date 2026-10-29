@@ -15,6 +15,7 @@ import {
   type DraftPartParticipant,
   type DraftPartHost,
   type GameplayDraftPosition,
+  type GameplayParticipant,
   type GameplayPick,
   type GameplayVetoHistoryEntry,
 } from "@/services/admin/fetch-admin-drafts";
@@ -89,6 +90,10 @@ export function SeedPicksStep({
   // mutation so they never drift from what the server actually has.
   const [fungibleTokenName, setFungibleTokenName] = useState<string | null>(null);
   const [fungibleRemaining, setFungibleRemaining] = useState<Map<string, number>>(new Map());
+
+  // Latest per-participant veto/override balances from /gameplay, refreshed
+  // with the picks so the pips below always match what the server will accept.
+  const [balances, setBalances] = useState<GameplayParticipant[]>([]);
 
   // Hostless parts have no primary host to reveal picks — reveal authority
   // instead belongs to whichever participant the just-played pick was "sent
@@ -204,6 +209,7 @@ export function SeedPicksStep({
     setFungibleTokenName(gameplay.fungibleTokenName);
     setIsHostless(gameplay.isHostless);
     setDraftPositions(gameplay.draftPositions);
+    setBalances(gameplay.participants.filter((p) => p.participantKind !== 2));
     setFungibleRemaining(
       new Map(gameplay.participants.map((p) => [p.participantId, p.fungibleTokensRemaining]))
     );
@@ -573,6 +579,37 @@ export function SeedPicksStep({
         </p>
       </div>
 
+      {/* Vetoes (and overrides, on extended drafts) remaining per drafter */}
+      {balances.length > 0 && (
+        <div className="bg-white border border-sd-ink/10 rounded-sm flex flex-wrap divide-x divide-sd-ink/5">
+          {balances.map((b) => {
+            const position = draftPositions.find(
+              (pos) => pos.assignedParticipantId === b.participantPublicId
+            );
+            return (
+              <div key={b.participantId} className="flex-1 min-w-[160px] px-4 py-2">
+                <div className="flex items-center gap-2 mb-1">
+                  {position && (
+                    <span className="font-oswald text-sd-red font-bold text-sm">
+                      {position.positionName}
+                    </span>
+                  )}
+                  <span className="font-oswald text-xs tracking-wider text-sd-ink/70 truncate">
+                    {b.participantName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <VetoPips label="V" remaining={b.vetoTokensRemaining} min={3} />
+                  {allowsOverride && (
+                    <VetoPips label="O" remaining={b.overrideTokensRemaining} min={2} />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* Fungible token balances — only shown for drafts that use one */}
       {fungibleTokenName && (
         <div className="bg-white border border-sd-ink/10 rounded-sm p-3">
@@ -915,6 +952,27 @@ export function SeedPicksStep({
           {submitting ? "Recording…" : "Record Pick"}
         </button>
       </div>
+    </div>
+  );
+}
+
+// Same pip row as the live draft's veto status bar, on a light background.
+// Draws at least `min` pips (3 vetoes / 2 overrides, as live) but grows to
+// show every remaining token — a drafter holding a rollover plus a bonus
+// position can exceed the usual count.
+function VetoPips({ label, remaining, min }: { label: string; remaining: number; min: number }) {
+  const count = Math.max(min, remaining);
+  return (
+    <div className="flex items-center gap-1">
+      <span className="text-[10px] text-sd-ink/40 font-mono mr-1">{label}</span>
+      {Array.from({ length: count }).map((_, i) => (
+        <span
+          key={i}
+          className={`inline-block w-2.5 h-2.5 rounded-full border ${
+            i < remaining ? "bg-sd-red border-sd-red" : "bg-transparent border-sd-ink/30"
+          }`}
+        />
+      ))}
     </div>
   );
 }
