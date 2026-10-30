@@ -167,12 +167,19 @@ internal sealed class SetDraftPartStatusCommandHandler(
       FROM drafts.draft_part_participants dpp
       INNER JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
       INNER JOIN drafts.drafts d ON d.id = dp.draft_id
+      LEFT JOIN LATERAL (
+        SELECT MIN(r.release_date) AS release_date
+        FROM drafts.draft_releases r
+        WHERE r.part_id = dp.id
+      ) rel ON TRUE
       WHERE dpp.participant_id_value = ANY(@DrafterIds)
         AND dpp.participant_kind_value = 0
         AND dp.status = 3
         AND dp.id != @CurrentPartIds
         {scopeFilter}
-      ORDER BY dpp.participant_id_value, dp.created_at_utc DESC
+      -- Most recent prior part by release date. Completed parts with no release yet are the
+      -- newest (DESC puts NULLs first). created_at_utc only breaks ties.
+      ORDER BY dpp.participant_id_value, rel.release_date DESC, dp.created_at_utc DESC
       """;
 
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
