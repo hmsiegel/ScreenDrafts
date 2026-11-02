@@ -1,6 +1,11 @@
 # .github/workflows/deploy.yml
 name: Deploy
 
+# Runs after "Build API" succeeds on a push to main (deploys to production) or
+# to test (deploys to the TEST server).
+#
+# GitHub runs the copy of this file on the default branch (main) for every
+# workflow_run event, so a change here takes effect only once it is on main.
 on:
   workflow_run:
     workflows: ["Build API"]
@@ -8,13 +13,14 @@ on:
       - completed
     branches:
       - main
+      - test
 
 # Nothing by default; the job below grants only what it needs.
 permissions: {}
 
-# Two deploys never overlap; a second one waits for the first.
+# One deploy per environment at a time; a second one waits for the first.
 concurrency:
-  group: deploy-production
+  group: deploy-${{ github.event.workflow_run.head_branch }}
   cancel-in-progress: false
 
 env:
@@ -24,19 +30,22 @@ env:
 
 jobs:
   deploy:
-    name: Build, Push, Deploy
+    name: Deploy ${{ github.event.workflow_run.head_branch }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Secrets live in this environment, which only main can deploy to.
+    # main -> production (waits for your approval); test -> test.
+    # With workflow_run the job's ref is always the default branch, so the test
+    # environment must NOT restrict deployment branches. This expression is
+    # the guard that keeps a test run away from production secrets.
     environment:
-      name: production
-    # Only deploy a green push to main, never a PR-triggered Build API run.
+      name: ${{ github.event.workflow_run.head_branch == 'main' && 'production' || 'test' }}
+    # Only deploy a green push, never a PR-triggered Build API run.
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     permissions:
       contents: read
       packages: write
     env:
-      # The exact commit whose tests passed, not whatever main is by now.
+      # The exact commit whose tests passed, not whatever the branch is by now.
       DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
 
     steps:
@@ -53,28 +62,42 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # Promotion case: TEST already built this commit, so PROD deploys the
+      # exact image TEST ran instead of building a second one.
+      - name: Check for images already built for this commit
+        id: existing
+        run: |
+          if docker buildx imagetools inspect "${IMAGE_API}:${DEPLOY_SHA}" > /dev/null 2>&1 \
+            && docker buildx imagetools inspect "${IMAGE_MIGRATOR}:${DEPLOY_SHA}" > /dev/null 2>&1; then
+            echo "built=true" >> "$GITHUB_OUTPUT"
+            echo "Images for ${DEPLOY_SHA} already exist; skipping the build."
+          else
+            echo "built=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Extract metadata (API)
+        if: ${{ steps.existing.outputs.built != 'true' }}
         id: meta-api
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ${{ env.IMAGE_API }}
           tags: |
             type=raw,value=${{ github.event.workflow_run.head_sha }}
-            type=raw,value=latest
 
       - name: Extract metadata (Migrator)
+        if: ${{ steps.existing.outputs.built != 'true' }}
         id: meta-migrator
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
           images: ${{ env.IMAGE_MIGRATOR }}
           tags: |
             type=raw,value=${{ github.event.workflow_run.head_sha }}
-            type=raw,value=latest
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       - name: Build and push API image
+        if: ${{ steps.existing.outputs.built != 'true' }}
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: src/screendrafts.api
@@ -86,6 +109,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build and push Migrator image
+        if: ${{ steps.existing.outputs.built != 'true' }}
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: src/screendrafts.api
@@ -103,6 +127,36 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
+      # Config files travel with the deploy, so the server never drifts from the
+      # repo. Server-only files (.env, secrets/, keycloak/) are never touched.
+      # Tailscale already authenticates the host, so accept its key on first use.
+      - name: Sync config files to the server
+        env:
+          VPS_HOST: ${{ secrets.VPS_TAILSCALE_IP }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          DEPLOY_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+          key="$(mktemp)"
+          printf '%s\n' "${VPS_SSH_KEY}" > "${key}"
+          chmod 600 "${key}"
+          opts=(-i "${key}" -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile="$(mktemp)")
+          dest="${VPS_USER}@${VPS_HOST}"
+
+          scp "${opts[@]}" docker-compose.production.yml "${dest}:/opt/screendrafts/docker-compose.production.yml"
+          scp "${opts[@]}" infrastructure/caddy/Caddyfile "${dest}:/opt/screendrafts/infrastructure/caddy/Caddyfile"
+          scp "${opts[@]}" infrastructure/backup/backup.sh "${dest}:/opt/screendrafts/infrastructure/backup/backup.sh"
+
+          # TEST only: hostnames and the mail sink. PROD has no overrides file.
+          if [ "${DEPLOY_BRANCH}" = "test" ]; then
+            ssh "${opts[@]}" "${dest}" "mkdir -p /opt/screendrafts/infrastructure/test"
+            scp "${opts[@]}" infrastructure/test/overrides.env "${dest}:/opt/screendrafts/overrides.env"
+            scp "${opts[@]}" infrastructure/test/restore-test.sh infrastructure/test/scrub.sql \
+              "${dest}:/opt/screendrafts/infrastructure/test/"
+          fi
+          rm -f "${key}"
+
       - name: Deploy to VPS
         uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1
         env:
@@ -118,7 +172,24 @@ jobs:
             set -e
             cd /opt/screendrafts
             echo "$GHCR_TOKEN" | docker login ghcr.io -u hmsiegel --password-stdin
+            # Persist the tag so a later manual `docker compose` command keeps
+            # this version instead of falling back to `latest`. Needs write
+            # access to .env for the CI account (chmod 660, group = CI user).
+            tmp=$(mktemp)
+            grep -v '^IMAGE_TAG=' .env > "$tmp" || true
+            echo "IMAGE_TAG=${IMAGE_TAG}" >> "$tmp"
+            cat "$tmp" > .env
+            rm -f "$tmp"
             export IMAGE_TAG
             docker compose -f docker-compose.production.yml pull
             docker compose -f docker-compose.production.yml up -d --remove-orphans
+            # A bind-mounted Caddyfile can change without recreating the container.
+            docker compose -f docker-compose.production.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile
             docker image prune -f
+
+      # `latest` now means "what production runs". TEST builds never move it.
+      - name: Move the latest tag (production only)
+        if: ${{ github.event.workflow_run.head_branch == 'main' }}
+        run: |
+          docker buildx imagetools create -t "${IMAGE_API}:latest" "${IMAGE_API}:${DEPLOY_SHA}"
+          docker buildx imagetools create -t "${IMAGE_MIGRATOR}:latest" "${IMAGE_MIGRATOR}:${DEPLOY_SHA}"

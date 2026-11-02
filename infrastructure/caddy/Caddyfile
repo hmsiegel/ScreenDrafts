@@ -43,13 +43,13 @@
 			2405:b500::/32 \
 			2405:8100::/32 \
 			2a06:98c0::/29 \
-			2c0f:f248::/32 \
+			2c0f:f248::/32
 			client_ip_headers CF-Connecting-IP
 	}
 }
 
 # API
-api.screen-drafts.com {
+{$API_HOST:api.screen-drafts.com} {
 	reverse_proxy screendrafts.web:8080 {
 		# Overwrite with the verified visitor IP (trusted Cloudflare ranges only)
 		header_up X-Forwarded-For {client_ip}
@@ -58,7 +58,7 @@ api.screen-drafts.com {
 }
 
 # Keycloak
-auth.screen-drafts.com {
+{$AUTH_HOST:auth.screen-drafts.com} {
 	# Keycloak management surfaces (admin console + REST, master realm login/account):
 	# home IP only. Everything else (screendrafts realm login, Google broker, static
 	# resources) stays public. The API reaches the admin REST API over the internal
