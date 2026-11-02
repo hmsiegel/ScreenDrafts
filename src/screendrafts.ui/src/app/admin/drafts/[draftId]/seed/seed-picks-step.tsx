@@ -147,6 +147,7 @@ export function SeedPicksStep({
   const landedCount = picks.filter(
     (p) => p.status === "landed" || p.status === "vetoOverridden"
   ).length;
+  const boardFull = totalPicks != null && landedCount >= totalPicks;
 
   // A commissioner-overridden film is barred from this draft part
   // entirely, not just from the slot it was removed from — the slot
@@ -257,15 +258,6 @@ export function SeedPicksStep({
       setTotalPicks(positions.reduce((sum, p) => sum + p.picks.length, 0));
     })();
   }, [accessToken, draft.draftPartPublicId]);
-
-  // If re-entering this step finds the board already full from a prior
-  // session, advance immediately rather than showing a full board with
-  // nothing left to do.
-  useEffect(() => {
-    if (!hydrated || totalPicks == null) return;
-    if (landedCount >= totalPicks) onAllPositionsFilled();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hydrated, totalPicks]);
 
   async function handlePickMovie(movie: ResolvedMovie) {
     if (barredTmdbIds.has(movie.tmdbId)) {
@@ -415,14 +407,7 @@ export function SeedPicksStep({
         actedByPublicId,
       });
 
-      const nextPicks = await refreshFromServer();
-
-      const newLandedCount = nextPicks.filter(
-        (p) => p.status === "landed" || p.status === "vetoOverridden"
-      ).length;
-      if (totalPicks != null && newLandedCount >= totalPicks) {
-        onAllPositionsFilled();
-      }
+      await refreshFromServer();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to record pick.");
     } finally {
@@ -481,12 +466,8 @@ export function SeedPicksStep({
         participantIdValue: overrider.participantPublicId,
         participantKind: overrider.participantKindValue.value,
       });
-      const nextPicks = await refreshFromServer();
+      await refreshFromServer();
       setPendingAction(null);
-      const newLandedCount = nextPicks.filter(
-        (p) => p.status === "landed" || p.status === "vetoOverridden"
-      ).length;
-      if (totalPicks != null && newLandedCount >= totalPicks) onAllPositionsFilled();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to apply veto override.");
     } finally {
@@ -607,6 +588,23 @@ export function SeedPicksStep({
               </div>
             );
           })}
+        </div>
+      )}
+
+      {boardFull && (
+        <div className="bg-white border border-sd-ink/10 rounded p-4 space-y-3">
+          <p className="text-sm text-sd-ink/70">
+            Board full. Veto or override the last pick above if needed. Completing
+            scores predictions once and can&apos;t be undone.
+          </p>
+          <button
+            type="button"
+            onClick={onAllPositionsFilled}
+            disabled={submitting}
+            className={BTN_PRIMARY}
+          >
+            Continue to Complete →
+          </button>
         </div>
       )}
 
@@ -786,172 +784,174 @@ export function SeedPicksStep({
       )}
 
       {/* Next pick form */}
-      <div className="bg-white border border-sd-ink/10 rounded-sm p-6 space-y-4">
-        <div>
-          <label className={LABEL}>Movie</label>
-          {selectedMovie ? (
-            <div className="flex items-center justify-between border border-sd-ink/20 rounded-sm px-3 py-2">
-              <span className="text-sm text-sd-ink">
-                {selectedMovie.title} {selectedMovie.year ? `(${selectedMovie.year})` : ""}
-              </span>
-              <button
-                type="button"
-                onClick={() => setSelectedMovie(null)}
-                className="text-sd-ink/40 hover:text-sd-red text-sm"
-              >
-                Change
-              </button>
-            </div>
-          ) : (
-            <>
-              <MediaPicker
-                accessToken={accessToken}
-                onSelect={handleMediaSelect}
-                disabled={importing}
-                fixedSeriesTmdbId={draft.restrictedTvSeriesTmdbId ?? undefined}
-              />
-              {importing && <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Importing…</p>}
+      {!boardFull && (
+        <div className="bg-white border border-sd-ink/10 rounded-sm p-6 space-y-4">
+          <div>
+            <label className={LABEL}>Movie</label>
+            {selectedMovie ? (
+              <div className="flex items-center justify-between border border-sd-ink/20 rounded-sm px-3 py-2">
+                <span className="text-sm text-sd-ink">
+                  {selectedMovie.title} {selectedMovie.year ? `(${selectedMovie.year})` : ""}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedMovie(null)}
+                  className="text-sd-ink/40 hover:text-sd-red text-sm"
+                >
+                  Change
+                </button>
+              </div>
+            ) : (
+              <>
+                <MediaPicker
+                  accessToken={accessToken}
+                  onSelect={handleMediaSelect}
+                  disabled={importing}
+                  fixedSeriesTmdbId={draft.restrictedTvSeriesTmdbId ?? undefined}
+                />
+                {importing && <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Importing…</p>}
 
-              {/* Manual TMDb-ID fallback — movie-only. There's no episode
+                {/* Manual TMDb-ID fallback — movie-only. There's no episode
                   equivalent: TMDb has no title search over episodes, so the
                   browse-a-season flow above is already the "can't find it"
                   answer for TV. Kept unconditionally visible (previously
                   gated on the now-removed free-text query) rather than tied
                   to which MediaPicker mode is active, since MediaPicker
                   doesn't expose that upward. */}
-              {manualEntryOpen ? (
-                <div className="flex items-center gap-2 mt-2">
-                  <input
-                    type="number"
-                    placeholder="TMDb ID"
-                    className={`${INPUT} max-w-[140px]`}
-                    value={manualTmdbId}
-                    onChange={(e) => setManualTmdbId(e.target.value)}
-                  />
+                {manualEntryOpen ? (
+                  <div className="flex items-center gap-2 mt-2">
+                    <input
+                      type="number"
+                      placeholder="TMDb ID"
+                      className={`${INPUT} max-w-[140px]`}
+                      value={manualTmdbId}
+                      onChange={(e) => setManualTmdbId(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleManualTmdbSubmit}
+                      disabled={importing}
+                      className="text-[11px] font-mono text-sd-blue uppercase tracking-wide hover:underline disabled:opacity-40"
+                    >
+                      Add
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setManualEntryOpen(false);
+                        setManualTmdbId("");
+                      }}
+                      className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
                   <button
                     type="button"
-                    onClick={handleManualTmdbSubmit}
-                    disabled={importing}
-                    className="text-[11px] font-mono text-sd-blue uppercase tracking-wide hover:underline disabled:opacity-40"
+                    onClick={() => setManualEntryOpen(true)}
+                    className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline mt-2"
                   >
-                    Add
+                    Movie not showing up? Enter TMDb ID directly →
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setManualEntryOpen(false);
-                      setManualTmdbId("");
-                    }}
-                    className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              ) : (
+                )}
+              </>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={LABEL}>Board Slot</label>
+              <input
+                type="number"
+                min={1}
+                className={INPUT}
+                value={position}
+                onChange={(e) => {
+                  setTouchedFor(nextPlayOrder);
+                  setPosition(e.target.value === "" ? "" : parseInt(e.target.value, 10));
+                }}
+              />
+            </div>
+            <div>
+              <label className={LABEL}>Played By</label>
+              <select
+                className={INPUT}
+                value={participantIdValue}
+                onChange={(e) => {
+                  setTouchedFor(nextPlayOrder);
+                  setParticipantIdValue(e.target.value);
+                }}
+              >
+                {participants.map((p) => (
+                  <option key={p.participantIdValue} value={p.participantIdValue}>
+                    {p.displayName ?? p.participantIdValue}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {suggestedSlot != null && (
+            <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
+              {suggestedParticipant
+                ? `Board order: slot ${suggestedSlot} → ${suggestedParticipant.displayName ?? suggestedParticipant.participantIdValue}`
+                : `Board order: slot ${suggestedSlot} has no assigned drafter — choose one`}
+              {isTouched && (
                 <button
                   type="button"
-                  onClick={() => setManualEntryOpen(true)}
-                  className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-wide hover:underline mt-2"
+                  onClick={() => setTouchedFor(null)}
+                  className="ml-3 normal-case tracking-normal text-sd-blue hover:underline"
                 >
-                  Movie not showing up? Enter TMDb ID directly →
+                  Reset to board order
                 </button>
               )}
-            </>
+            </p>
           )}
-        </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={LABEL}>Board Slot</label>
-            <input
-              type="number"
-              min={1}
-              className={INPUT}
-              value={position}
-              onChange={(e) => {
-                setTouchedFor(nextPlayOrder);
-                setPosition(e.target.value === "" ? "" : parseInt(e.target.value, 10));
-              }}
-            />
-          </div>
-          <div>
-            <label className={LABEL}>Played By</label>
-            <select
-              className={INPUT}
-              value={participantIdValue}
-              onChange={(e) => {
-                setTouchedFor(nextPlayOrder);
-                setParticipantIdValue(e.target.value);
-              }}
-            >
-              {participants.map((p) => (
-                <option key={p.participantIdValue} value={p.participantIdValue}>
-                  {p.displayName ?? p.participantIdValue}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {suggestedSlot != null && (
-          <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
-            {suggestedParticipant
-              ? `Board order: slot ${suggestedSlot} → ${suggestedParticipant.displayName ?? suggestedParticipant.participantIdValue}`
-              : `Board order: slot ${suggestedSlot} has no assigned drafter — choose one`}
-            {isTouched && (
-              <button
-                type="button"
-                onClick={() => setTouchedFor(null)}
-                className="ml-3 normal-case tracking-normal text-sd-blue hover:underline"
+          {isHostless ? (
+            <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
+              Hostless draft — reveal recipient is assigned automatically at play time.
+            </p>
+          ) : (
+            <div>
+              <label className={LABEL}>Revealed By (Host)</label>
+              <select
+                className={INPUT}
+                value={revealedByHostId}
+                onChange={(e) => setRevealedByHostId(e.target.value)}
               >
-                Reset to board order
-              </button>
-            )}
-          </p>
-        )}
+                {allHosts.map((h) => (
+                  <option key={h.hostPublicId} value={h.hostPublicId}>
+                    {h.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-        {isHostless ? (
-          <p className="text-[11px] font-mono text-sd-ink/40 uppercase tracking-widest">
-            Hostless draft — reveal recipient is assigned automatically at play time.
-          </p>
-        ) : (
-          <div>
-            <label className={LABEL}>Revealed By (Host)</label>
-            <select
-              className={INPUT}
-              value={revealedByHostId}
-              onChange={(e) => setRevealedByHostId(e.target.value)}
-            >
-              {allHosts.map((h) => (
-                <option key={h.hostPublicId} value={h.hostPublicId}>
-                  {h.displayName}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+          {error && (
+            <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
+              {error}
+            </div>
+          )}
 
-        {error && (
-          <div className="border border-red-300 bg-red-50 text-red-800 text-sm px-4 py-3 rounded-sm">
-            {error}
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={handleSubmitPick}
-          disabled={
-            !selectedMovie ||
-            position === "" ||
-            !participantIdValue ||
-            (!isHostless && !revealedByHostId) ||
-            submitting
-          }
-          className={BTN_PRIMARY}
-        >
-          {submitting ? "Recording…" : "Record Pick"}
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={handleSubmitPick}
+            disabled={
+              !selectedMovie ||
+              position === "" ||
+              !participantIdValue ||
+              (!isHostless && !revealedByHostId) ||
+              submitting
+            }
+            className={BTN_PRIMARY}
+          >
+            {submitting ? "Recording…" : "Record Pick"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -968,9 +968,8 @@ function VetoPips({ label, remaining, min }: { label: string; remaining: number;
       {Array.from({ length: count }).map((_, i) => (
         <span
           key={i}
-          className={`inline-block w-2.5 h-2.5 rounded-full border ${
-            i < remaining ? "bg-sd-red border-sd-red" : "bg-transparent border-sd-ink/30"
-          }`}
+          className={`inline-block w-2.5 h-2.5 rounded-full border ${i < remaining ? "bg-sd-red border-sd-red" : "bg-transparent border-sd-ink/30"
+            }`}
         />
       ))}
     </div>
