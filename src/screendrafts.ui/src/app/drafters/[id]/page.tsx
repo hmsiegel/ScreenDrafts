@@ -19,6 +19,7 @@ import ProfileAvatar from "@/components/features/participants/profile-avatar";
 import { cdnUrl } from "@/lib/cdn";
 import { parseISO } from "date-fns/parseISO";
 import { socialUrl } from "@/lib/social-links";
+import BackToTop from "@/components/ui/back-to-top";
 
 // DraftBrief.releaseDates is typed Date[] but arrives over JSON as bare "yyyy-MM-dd"
 // strings. new Date() reads those as UTC midnight, which lands on the previous day —
@@ -76,6 +77,14 @@ export default async function DrafterProfilePage({ params, searchParams }: Props
     vetosByDraft.get(key)!.push(v);
   }
 
+  // Vetoes this drafter overrode. The API sends them beside the veto history.
+  const overridesByDraft = new Map<string, VetoOverrideItem[]>();
+  for (const o of (profile.vetoOverrideHistory ?? []) as VetoOverrideItem[]) {
+    const key = o.draft.draftPublicId;
+    if (!overridesByDraft.has(key)) overridesByDraft.set(key, []);
+    overridesByDraft.get(key)!.push(o);
+  }
+
   const picksByDraft = new Map<string, DraftHistoryItem>();
   for (const h of profile.draftHistory ?? []) {
     picksByDraft.set(h.draft.draftPublicId, h);
@@ -83,8 +92,24 @@ export default async function DrafterProfilePage({ params, searchParams }: Props
 
   const orderedDraftIds = [
     ...(profile.draftHistory ?? []).map((h) => h.draft.draftPublicId),
-    ...Array.from(vetosByDraft.keys()).filter((did) => !picksByDraft.has(did)),
+    ...Array.from(
+      new Set([...vetosByDraft.keys(), ...overridesByDraft.keys()])
+    ).filter((did) => !picksByDraft.has(did)),
   ];
+
+  // Parts of one draft can air months apart, so the list and the history run in
+  // release-date order, part by part. The sort is stable: parts with the same date,
+  // or no date, keep draft order and then part order.
+  const segments = orderedDraftIds
+    .flatMap((draftId) =>
+      buildSegments(
+        draftId,
+        picksByDraft.get(draftId),
+        vetosByDraft.get(draftId) ?? [],
+        overridesByDraft.get(draftId) ?? []
+      )
+    )
+    .sort((a, b) => releaseTime(a.releaseDate) - releaseTime(b.releaseDate));
 
   return (
     <div className="min-h-screen bg-light-blue">
@@ -155,24 +180,92 @@ export default async function DrafterProfilePage({ params, searchParams }: Props
 
             {orderedDraftIds.length > 0 && (
               <>
-                <TableOfContents
-                  draftIds={orderedDraftIds}
-                  picksByDraft={picksByDraft}
-                  vetosByDraft={vetosByDraft}
-                />
-                <DraftHistorySection
-                  draftIds={orderedDraftIds}
-                  picksByDraft={picksByDraft}
-                  vetosByDraft={vetosByDraft}
-                />
+                <TableOfContents draftCount={orderedDraftIds.length} segments={segments} />
+                <DraftHistorySection segments={segments} />
               </>
             )}
           </div>
         </div>
       </div>
 
+      <BackToTop />
     </div>
   );
+}
+
+// ── History segments ──────────────────────────────────────────────────────────
+// A draft shows as one block per part. play_order restarts in every part, so each
+// block sorts on its own. A draft with a single part keeps its plain block; a part
+// label appears when the draft has several parts, or when this is a later part.
+
+function releaseTime(raw: Date | string | undefined): number {
+  return raw ? toLocalDate(raw).getTime() : Number.POSITIVE_INFINITY;
+}
+
+// A veto this drafter overrode (API field vetoOverrideHistory; not in the generated dto yet).
+type VetoOverrideItem = {
+  draft: DraftBrief;
+  targetPickPublicId: string;
+  position?: number;
+  releaseDate?: Date | string;
+  partIndex?: number;
+  subDraftIndex?: number;
+  playOrder?: number;
+  moviePublicId: string;
+  movieTitle: string;
+  pickPlayedByPublicId?: string | null;
+  pickPlayedByDisplayName?: string | null;
+  vetoedByPublicId?: string | null;
+  vetoedByDisplayName?: string | null;
+};
+
+type HistorySegment = {
+  anchorId: string;
+  draft: DraftBrief;
+  partLabel: string | null;
+  releaseDate: Date | string | undefined;
+  picks: PickItem[];
+  vetoesIssued: VetoHistoryItem[];
+  overridesIssued: VetoOverrideItem[];
+};
+
+function buildSegments(
+  draftId: string,
+  item: DraftHistoryItem | undefined,
+  vetoes: VetoHistoryItem[],
+  overrides: VetoOverrideItem[]
+): HistorySegment[] {
+  const draft = item?.draft ?? vetoes[0]?.draft ?? overrides[0]?.draft;
+  if (!draft) return [];
+
+  const picks = item?.picks ?? [];
+  const partIndexes = Array.from(
+    new Set([
+      ...picks.map((p) => p.partIndex ?? 1),
+      ...vetoes.map((v) => v.partIndex ?? 1),
+      ...overrides.map((o) => o.partIndex ?? 1),
+    ])
+  ).sort((a, b) => a - b);
+  const labelled = partIndexes.length > 1 || (partIndexes[0] ?? 1) > 1;
+
+  return partIndexes.map((partIndex) => {
+    const partPicks = picks.filter((p) => (p.partIndex ?? 1) === partIndex);
+    const partVetoes = vetoes.filter((v) => (v.partIndex ?? 1) === partIndex);
+    const partOverrides = overrides.filter((o) => (o.partIndex ?? 1) === partIndex);
+    return {
+      anchorId: labelled ? `draft-${draftId}-part-${partIndex}` : `draft-${draftId}`,
+      draft,
+      partLabel: labelled ? `PART ${partIndex}` : null,
+      releaseDate:
+        partPicks.find((p) => p.releaseDate)?.releaseDate ??
+        partVetoes.find((v) => v.releaseDate)?.releaseDate ??
+        partOverrides.find((o) => o.releaseDate)?.releaseDate ??
+        draft.releaseDates?.[0],
+      picks: partPicks,
+      vetoesIssued: partVetoes,
+      overridesIssued: partOverrides,
+    };
+  });
 }
 
 // ── Channel toggle ────────────────────────────────────────────────────────────
@@ -350,7 +443,7 @@ function DrafterStatsCard({ stats }: { stats: DrafterStatsResponse }) {
             value={stats.hasRolloverVeto ? "YES" : "NO"}
             highlight={stats.hasRolloverVeto}
           />
-          {(stats.vetoOverridesUsed ?? 0) > 0 && (
+          {((stats.vetoOverridesUsed ?? 0) > 0 || stats.hasRolloverVetoOverride) && (
             <StatRow
               label="ROLLOVER VETO OVERRIDE"
               value={stats.hasRolloverVetoOverride ? "YES" : "NO"}
@@ -422,38 +515,37 @@ function StatRow({
 // ── Table of contents ─────────────────────────────────────────────────────────
 
 function TableOfContents({
-  draftIds,
-  picksByDraft,
-  vetosByDraft,
+  draftCount,
+  segments,
 }: {
-  draftIds: string[];
-  picksByDraft: Map<string, DraftHistoryItem>;
-  vetosByDraft: Map<string, VetoHistoryItem[]>;
+  draftCount: number;
+  segments: HistorySegment[];
 }) {
   return (
     <div className="bg-white border-2 border-sd-ink p-5 sm:p-6">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-4">
         DRAFT HISTORY
         <span className="text-sd-ink/40 ml-2 font-normal text-[12px]">
-          ({draftIds.length})
+          ({draftCount})
         </span>
       </h2>
       <div className="columns-1 sm:columns-2 md:columns-1 lg:columns-2 gap-6">
-        {draftIds.map((draftId) => {
-          const item = picksByDraft.get(draftId);
-          const vetoes = vetosByDraft.get(draftId) ?? [];
-          const draft = item?.draft ?? vetoes[0]?.draft;
-          if (!draft) return null;
-          const releaseDate = draft.releaseDates?.[0];
+        {segments.map((segment) => {
+          const { draft, releaseDate } = segment;
 
           return (
             <a
-              key={draftId}
-              href={`#draft-${draftId}`}
+              key={segment.anchorId}
+              href={`#${segment.anchorId}`}
               className="flex items-baseline justify-between gap-2 py-2 border-b border-sd-ink/5 hover:border-sd-red group transition-colors break-inside-avoid"
             >
               <span className="font-oswald text-[14px] text-sd-ink group-hover:text-sd-blue transition-colors leading-tight">
                 {draft.draftTitle}
+                {segment.partLabel && (
+                  <span className="font-mono text-[10px] tracking-widest text-[#5a6075] ml-2">
+                    {segment.partLabel}
+                  </span>
+                )}
               </span>
               <span className="font-mono text-[10px] tracking-widest text-[#5a6075] shrink-0">
                 {releaseDate ? toLocalDate(releaseDate).getFullYear() : "TBD"}
@@ -468,68 +560,60 @@ function TableOfContents({
 
 // ── Draft history ─────────────────────────────────────────────────────────────
 
-function DraftHistorySection({
-  draftIds,
-  picksByDraft,
-  vetosByDraft,
-}: {
-  draftIds: string[];
-  picksByDraft: Map<string, DraftHistoryItem>;
-  vetosByDraft: Map<string, VetoHistoryItem[]>;
-}) {
+function DraftHistorySection({ segments }: { segments: HistorySegment[] }) {
   return (
     <div className="flex flex-col gap-6">
-      {draftIds.map((draftId) => {
-        const item = picksByDraft.get(draftId);
-        const vetoes = vetosByDraft.get(draftId) ?? [];
-        const draft = item?.draft ?? vetoes[0]?.draft;
-        if (!draft) return null;
-
-        return (
-          <DraftBlock
-            key={draftId}
-            draft={draft}
-            picks={item?.picks ?? []}
-            vetoesIssued={vetoes}
-          />
-        );
-      })}
+      {segments.map((segment) => (
+        <DraftBlock key={segment.anchorId} segment={segment} />
+      ))}
     </div>
   );
 }
 
-type PickActivity = { kind: "pick"; playOrder: number; pick: PickItem };
-type VetoActivity = { kind: "veto"; playOrder: number; veto: VetoHistoryItem };
-type Activity = PickActivity | VetoActivity;
+// play_order restarts in every part (and sub-draft), so the sort key is
+// part, then sub-draft, then play order.
+type ActivityOrder = { partIndex: number; subDraftIndex: number; playOrder: number };
+type PickActivity = ActivityOrder & { kind: "pick"; pick: PickItem };
+type VetoActivity = ActivityOrder & { kind: "veto"; veto: VetoHistoryItem };
+type OverrideActivity = ActivityOrder & { kind: "override"; override: VetoOverrideItem };
+type Activity = PickActivity | VetoActivity | OverrideActivity;
 
-function DraftBlock({
-  draft,
-  picks,
-  vetoesIssued,
-}: {
-  draft: DraftBrief;
-  picks: PickItem[];
-  vetoesIssued: VetoHistoryItem[];
-}) {
-  const releaseDate = draft.releaseDates?.[0];
+function DraftBlock({ segment }: { segment: HistorySegment }) {
+  const { draft, picks, vetoesIssued, overridesIssued, releaseDate, partLabel } = segment;
   const finalPicks = picks.filter((p) => !p.wasVetoed || p.wasVetoOverridden);
 
   const activity: Activity[] = [
     ...picks.map((p) => ({
       kind: "pick" as const,
+      partIndex: p.partIndex ?? 0,
+      subDraftIndex: p.subDraftIndex ?? 0,
       playOrder: p.playOrder ?? 0,
       pick: p,
     })),
     ...vetoesIssued.map((v) => ({
       kind: "veto" as const,
+      partIndex: v.partIndex ?? 0,
+      subDraftIndex: v.subDraftIndex ?? 0,
       playOrder: v.playOrder ?? 0,
       veto: v,
     })),
-  ].sort((a, b) => a.playOrder - b.playOrder);
+    ...overridesIssued.map((o) => ({
+      kind: "override" as const,
+      partIndex: o.partIndex ?? 0,
+      subDraftIndex: o.subDraftIndex ?? 0,
+      playOrder: o.playOrder ?? 0,
+      override: o,
+    })),
+  ].sort(
+    (a, b) =>
+      a.partIndex - b.partIndex ||
+      a.subDraftIndex - b.subDraftIndex ||
+      a.playOrder - b.playOrder
+  );
 
   return (
     <div
-      id={`draft-${draft.draftPublicId}`}
+      id={segment.anchorId}
       className="bg-white border-2 border-sd-ink scroll-mt-6"
     >
       {/* Header */}
@@ -539,6 +623,11 @@ function DraftBlock({
           className="font-oswald font-bold text-[19px] sm:text-[22px] text-white hover:text-sd-red transition-colors leading-tight wrap-anywhere"
         >
           {draft.draftTitle}
+          {partLabel && (
+            <span className="font-mono text-[12px] tracking-widest text-white/60 ml-3">
+              {partLabel}
+            </span>
+          )}
         </Link>
         <div className="flex items-center gap-4 sm:gap-6 shrink-0">
           <span className="font-mono text-[12px] tracking-widest text-white/80">
@@ -561,13 +650,18 @@ function DraftBlock({
         {activity.map((a, i) =>
           a.kind === "pick" ? (
             <PickRow
-              key={`pick-${a.pick.playOrder}-${a.pick.moviePublicId}-${i}`}
+              key={`pick-${a.partIndex}-${a.subDraftIndex}-${a.pick.playOrder}-${a.pick.moviePublicId}-${i}`}
               pick={a.pick}
             />
-          ) : (
+          ) : a.kind === "veto" ? (
             <VetoIssuedRow
               key={`veto-${a.veto.targetPickPublicId}`}
               veto={a.veto}
+            />
+          ) : (
+            <OverrideIssuedRow
+              key={`override-${a.override.targetPickPublicId}-${i}`}
+              override={a.override}
             />
           )
         )}
@@ -716,6 +810,52 @@ function VetoIssuedRow({ veto }: { veto: VetoHistoryItem }) {
             )}
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function OverrideIssuedRow({ override }: { override: VetoOverrideItem }) {
+  const vetoer = (override.vetoedByDisplayName ?? "Unknown").toUpperCase();
+  const player = (override.pickPlayedByDisplayName ?? "Unknown").toUpperCase();
+  return (
+    <div className="px-4 sm:px-6 py-4 flex items-center gap-3 sm:gap-4 bg-sd-blue/5">
+      <div className="w-9 h-9 shrink-0 flex items-center justify-center border-2 border-sd-blue font-oswald font-bold text-[15px] text-sd-blue">
+        <span>{override.position}</span>
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <div className="font-mono text-[11px] tracking-widest text-sd-blue font-bold leading-snug">
+          ↩ OVERRODE{" "}
+          {override.vetoedByPublicId ? (
+            <Link
+              href={`/drafters/${override.vetoedByPublicId}`}
+              className="font-normal hover:underline"
+            >
+              {vetoer}
+            </Link>
+          ) : (
+            <span className="font-normal">{vetoer}</span>
+          )}
+          &apos;S VETO OF{" "}
+          <Link
+            href={`/media/${override.moviePublicId}`}
+            className="text-sd-ink font-normal hover:text-sd-blue transition-colors"
+          >
+            {override.movieTitle}
+          </Link>
+          {" "}PLAYED BY{" "}
+          {override.pickPlayedByPublicId ? (
+            <Link
+              href={`/drafters/${override.pickPlayedByPublicId}`}
+              className="font-normal hover:underline"
+            >
+              {player}
+            </Link>
+          ) : (
+            <span className="font-normal">{player}</span>
+          )}
+        </div>
       </div>
     </div>
   );

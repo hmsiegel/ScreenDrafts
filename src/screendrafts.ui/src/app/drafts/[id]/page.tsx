@@ -7,6 +7,7 @@ import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { GetDraftPartResponse, GetDraftPickResponse, TriviaResultResponse } from "@/lib/dto";
 import DraftSidebar from "@/components/features/drafts/drafts-sidebar";
+import BackToTop from "@/components/ui/back-to-top";
 import { DraftPick } from "@/components/features/drafts/draft-pick";
 import { SpeedDraftLayout } from "@/components/features/drafts/speed-draft-layout";
 import { DraftPartPredictionData, PredictionsSection } from "@/components/features/drafts/predictions-section";
@@ -326,6 +327,7 @@ export default async function DraftDetailPage({ params }: Props) {
         </div>
       </div>
 
+      <BackToTop />
     </div>
   );
 }

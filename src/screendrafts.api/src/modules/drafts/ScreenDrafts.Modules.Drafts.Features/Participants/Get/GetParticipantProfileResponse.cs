@@ -27,4 +27,7 @@ internal sealed record GetParticipantProfileResponse
 
   public IReadOnlyList<DraftHistoryItem> DraftHistory { get; init; } = [];
   public IReadOnlyList<VetoHistoryItem> VetoHistory { get; init; } = [];
+
+  /// <summary>Vetoes this drafter overrode (the history of veto overrides used).</summary>
+  public IReadOnlyList<VetoOverrideHistoryItem> VetoOverrideHistory { get; init; } = [];
 }
