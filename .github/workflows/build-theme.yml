@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - test
     paths:
       - 'src/screendrafts-keycloak-theme/**'
       - '.github/workflows/build-theme.yml'

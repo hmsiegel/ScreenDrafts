@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - test
     paths:
       - 'src/screendrafts.ui/**'
   pull_request:
