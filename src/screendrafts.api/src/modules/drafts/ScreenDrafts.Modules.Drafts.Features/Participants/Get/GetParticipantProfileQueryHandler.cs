@@ -78,21 +78,19 @@ internal sealed class GetParticipantProfileQueryHandler(
     {
       if (person.DrafterInternalId.HasValue)
       {
-        const string drafterPatreonSql = """
-          SELECT EXISTS (
-            SELECT 1
-            FROM drafts.draft_part_participants dpp
-            JOIN drafts.draft_releases dr ON dr.part_id = dpp.draft_part_id
-            WHERE dpp.participant_id_value = @DrafterId
-              AND dpp.participant_kind_value = 0
-              AND dr.release_channel = @PatreonChannel
-          )
+        const string drafterPatreonSql = $"""
+          {DrafterParticipationSql.WithSlots}
+          SELECT EXISTS (SELECT 1 FROM drafter_slots)
           """;
 
         hasPatreonDrafts = await connection.ExecuteScalarAsync<bool>(
           new CommandDefinition(
             drafterPatreonSql,
-            new { DrafterId = person.DrafterInternalId.Value, PatreonChannel },
+            new
+            {
+              DrafterId = person.DrafterInternalId.Value,
+              AllowedChannels = new[] { PatreonChannel },
+            },
             cancellationToken: cancellationToken
           )
         );
@@ -131,6 +129,7 @@ internal sealed class GetParticipantProfileQueryHandler(
     DrafterStatsResponse? drafterStats = null;
     List<DraftHistoryItem> draftHistory = [];
     List<VetoHistoryItem> vetoHistory = [];
+    List<VetoOverrideHistoryItem> vetoOverrideHistory = [];
 
     if (person.DrafterInternalId.HasValue)
     {
@@ -138,21 +137,15 @@ internal sealed class GetParticipantProfileQueryHandler(
       var drafterArgs = new { DrafterId = drafterId, AllowedChannels = allowedChannels };
 
       // 2. Aggregated drafter stats — scoped to allowed channels
+      // Solo and team participation both count toward the individual.
       const string statsSql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT
-          COUNT(DISTINCT dp.draft_id)                  AS {nameof(StatsRow.TotalDrafts)},
-          COALESCE(SUM(dpp.vetoes_used), 0)            AS {nameof(StatsRow.VetoesUsed)},
-          COALESCE(SUM(dpp.veto_overrides_used), 0)    AS {nameof(StatsRow.VetoOverridesUsed)},
-          COALESCE(SUM(dpp.commissioner_overrides), 0) AS {nameof(StatsRow.CommissionerOverrides)}
-        FROM drafts.draft_part_participants dpp
-        JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
-        WHERE dpp.participant_id_value = @DrafterId
-          AND dpp.participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr
-            WHERE dr.part_id = dpp.draft_part_id
-              AND dr.release_channel = ANY(@AllowedChannels)
-          )
+          COUNT(DISTINCT s.draft_id)                  AS {nameof(StatsRow.TotalDrafts)},
+          COALESCE(SUM(s.vetoes_used), 0)             AS {nameof(StatsRow.VetoesUsed)},
+          COALESCE(SUM(s.veto_overrides_used), 0)     AS {nameof(StatsRow.VetoOverridesUsed)},
+          COALESCE(SUM(s.commissioner_overrides), 0)  AS {nameof(StatsRow.CommissionerOverrides)}
+        FROM drafter_slots s
         """;
 
       var stats = await connection.QuerySingleAsync<StatsRow>(
@@ -161,17 +154,12 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 3. Times vetoed
       const string timesVetoedSql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT COUNT(*) AS {nameof(CountRow.Count)}
         FROM drafts.vetoes v
         JOIN drafts.picks pk ON pk.id = v.target_pick_id
-        WHERE pk.played_by_participant_id_value = @DrafterId
-          AND pk.played_by_participant_kind_value = 0
+        WHERE {DrafterParticipationSql.OwnPicks}
           AND v.is_overridden = false
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr
-            WHERE dr.part_id = pk.draft_part_id
-              AND dr.release_channel = ANY(@AllowedChannels)
-          )
         """;
 
       var timesVetoed = await connection.QuerySingleAsync<CountRow>(
@@ -180,18 +168,11 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 4. Times this drafter's vetoes were overridden
       const string timesVetoOverriddenSql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT COUNT(*) AS {nameof(CountRow.Count)}
         FROM drafts.veto_overrides vo
         JOIN drafts.vetoes v ON v.id = vo.veto_id
-        JOIN drafts.draft_part_participants dpp ON dpp.id = v.issued_by_participant_id
-        JOIN drafts.picks pk ON pk.id = v.target_pick_id
-        WHERE dpp.participant_id_value = @DrafterId
-          AND dpp.participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr
-            WHERE dr.part_id = pk.draft_part_id
-              AND dr.release_channel = ANY(@AllowedChannels)
-          )
+        WHERE v.issued_by_participant_id IN (SELECT dpp_id FROM drafter_slots)
         """;
 
       var timesVetoOverridden = await connection.QuerySingleAsync<CountRow>(
@@ -204,19 +185,14 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 5. Films drafted
       const string filmsDraftedSql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT COUNT(*) AS {nameof(CountRow.Count)}
         FROM drafts.picks pk
         LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
         LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-        WHERE pk.played_by_participant_id_value = @DrafterId
-          AND pk.played_by_participant_kind_value = 0
+        WHERE {DrafterParticipationSql.OwnPicks}
           AND co.id IS NULL
           AND (v.id IS NULL OR v.is_overridden = true)
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr
-            WHERE dr.part_id = pk.draft_part_id
-              AND dr.release_channel = ANY(@AllowedChannels)
-          )
         """;
 
       var filmsDrafted = await connection.QuerySingleAsync<CountRow>(
@@ -224,6 +200,10 @@ internal sealed class GetParticipantProfileQueryHandler(
       );
 
       // 6. Rollover vetoes (most recent allowed draft part)
+      // Solo rows only, on purpose: vetoes and overrides awarded in team drafts typically
+      // do not roll over, so team participation never feeds this query.
+      // Global-scope series only: a part from a None- or Series-scope series (Best Picture,
+      // Legends, ...) never rolls out into the next draft. Same rule as SetDraftPartStatus.
       const string rolloverSql = $"""
         SELECT
           CASE WHEN (dpp.starting_vetoes + dpp.vetoes_rolling_in + dpp.awarded_vetoes - dpp.vetoes_used) >= 1
@@ -232,10 +212,13 @@ internal sealed class GetParticipantProfileQueryHandler(
                THEN 1 ELSE 0 END AS {nameof(RolloverRow.RolloverVetoOverride)}
         FROM drafts.draft_part_participants dpp
         JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
+        JOIN drafts.drafts dft ON dft.id = dp.draft_id
+        LEFT JOIN drafts.series sr ON sr.id = dft.series_id
         LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
           AND dr.release_channel = ANY(@AllowedChannels)
         WHERE dpp.participant_id_value = @DrafterId
           AND dpp.participant_kind_value = 0
+          AND (sr.id IS NULL OR sr.continuity_scope = 2) -- 2 = ContinuityScope.Global
           AND EXISTS (
             SELECT 1 FROM drafts.draft_releases dr2
             WHERE dr2.part_id = dpp.draft_part_id
@@ -251,23 +234,16 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 7. First draft
       const string firstDraftSql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT
-          d.public_id          AS {nameof(DraftBriefRow.DraftPublicId)},
-          d.title              AS {nameof(DraftBriefRow.DraftTitle)},
+          dft.public_id        AS {nameof(DraftBriefRow.DraftPublicId)},
+          dft.title            AS {nameof(DraftBriefRow.DraftTitle)},
           MIN(dr.release_date) AS {nameof(DraftBriefRow.ReleaseDate)}
-        FROM drafts.draft_part_participants dpp
-        JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
-        JOIN drafts.drafts d ON d.id = dp.draft_id
-        LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
+        FROM drafter_slots s
+        JOIN drafts.drafts dft ON dft.id = s.draft_id
+        LEFT JOIN drafts.draft_releases dr ON dr.part_id = s.draft_part_id
           AND dr.release_channel = ANY(@AllowedChannels)
-        WHERE dpp.participant_id_value = @DrafterId
-          AND dpp.participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr2
-            WHERE dr2.part_id = dpp.draft_part_id
-              AND dr2.release_channel = ANY(@AllowedChannels)
-          )
-        GROUP BY d.id, d.public_id, d.title
+        GROUP BY dft.id, dft.public_id, dft.title
         ORDER BY MIN(dr.release_date) ASC
         LIMIT 1
         """;
@@ -278,23 +254,16 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 8. Most recent draft
       const string mostRecentDraftSql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT
-          d.public_id          AS {nameof(DraftBriefRow.DraftPublicId)},
-          d.title              AS {nameof(DraftBriefRow.DraftTitle)},
+          dft.public_id        AS {nameof(DraftBriefRow.DraftPublicId)},
+          dft.title            AS {nameof(DraftBriefRow.DraftTitle)},
           MIN(dr.release_date) AS {nameof(DraftBriefRow.ReleaseDate)}
-        FROM drafts.draft_part_participants dpp
-        JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
-        JOIN drafts.drafts d ON d.id = dp.draft_id
-        LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
+        FROM drafter_slots s
+        JOIN drafts.drafts dft ON dft.id = s.draft_id
+        LEFT JOIN drafts.draft_releases dr ON dr.part_id = s.draft_part_id
           AND dr.release_channel = ANY(@AllowedChannels)
-        WHERE dpp.participant_id_value = @DrafterId
-          AND dpp.participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr2
-            WHERE dr2.part_id = dpp.draft_part_id
-              AND dr2.release_channel = ANY(@AllowedChannels)
-          )
-        GROUP BY d.id, d.public_id, d.title
+        GROUP BY dft.id, dft.public_id, dft.title
         ORDER BY MAX(dr.release_date) DESC
         LIMIT 1
         """;
@@ -305,11 +274,14 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 9. Pick history
       const string pickHistorySql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT
           d.public_id                              AS {nameof(PickHistoryRow.DraftPublicId)},
           d.title                                  AS {nameof(PickHistoryRow.DraftTitle)},
           MIN(dr.release_date)                     AS {nameof(PickHistoryRow.ReleaseDate)},
           pk.position                              AS {nameof(PickHistoryRow.Position)},
+          dp.part_index                            AS {nameof(PickHistoryRow.PartIndex)},
+          COALESCE(sd."index", 0)                  AS {nameof(PickHistoryRow.SubDraftIndex)},
           pk.play_order                            AS {nameof(PickHistoryRow.PlayOrder)},
           m.imdb_id                                AS {nameof(PickHistoryRow.MoviePublicId)},
           m.movie_title                            AS {nameof(PickHistoryRow.MovieTitle)},
@@ -320,7 +292,9 @@ internal sealed class GetParticipantProfileQueryHandler(
           PickHistoryRow.WasCommissionerOverridden
         )},
           vdr.public_id                            AS {nameof(PickHistoryRow.VetoedByPublicId)},
-          vp.display_name                          AS {nameof(PickHistoryRow.VetoedByDisplayName)},
+          COALESCE(
+            CASE WHEN veto_dpp.participant_kind_value = 2 THEN 'Patreon Members' END,
+            vp.display_name)                       AS {nameof(PickHistoryRow.VetoedByDisplayName)},
           vodr.public_id                           AS {nameof(
           PickHistoryRow.VetoOverriddenByPublicId
         )},
@@ -332,6 +306,7 @@ internal sealed class GetParticipantProfileQueryHandler(
         JOIN drafts.drafts d ON d.id = dp.draft_id
         LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
           AND dr.release_channel = ANY(@AllowedChannels)
+        LEFT JOIN drafts.sub_drafts sd ON sd.id = pk.sub_draft_id
         JOIN drafts.movies m ON m.id = pk.movie_id
         LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
         LEFT JOIN drafts.draft_part_participants veto_dpp ON veto_dpp.id = v.issued_by_participant_id
@@ -342,22 +317,17 @@ internal sealed class GetParticipantProfileQueryHandler(
         LEFT JOIN drafts.drafters vodr ON vodr.id = override_dpp.participant_id_value
         LEFT JOIN drafts.people vop ON vop.id = vodr.person_id
         LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-        WHERE pk.played_by_participant_id_value = @DrafterId
-          AND pk.played_by_participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr2
-            WHERE dr2.part_id = pk.draft_part_id
-              AND dr2.release_channel = ANY(@AllowedChannels)
-          )
+        WHERE {DrafterParticipationSql.OwnPicks}
         GROUP BY
           d.id, d.public_id, d.title,
+          dp.part_index, sd."index",
           pk.id, pk.position, pk.play_order, pk.movie_version_name,
           m.imdb_id, m.movie_title,
           v.id, v.is_overridden,
-          vdr.public_id, vp.display_name,
+          vdr.public_id, vp.display_name, veto_dpp.participant_kind_value,
           vo.id, vodr.public_id, vop.display_name,
           co.id
-        ORDER BY MIN(dr.release_date) ASC, pk.play_order ASC
+        ORDER BY MIN(dr.release_date) ASC, dp.part_index ASC, COALESCE(sd."index", 0) ASC, pk.play_order ASC
         """;
 
       var pickRows = (
@@ -368,12 +338,15 @@ internal sealed class GetParticipantProfileQueryHandler(
 
       // 10. Veto history
       const string vetoHistorySql = $"""
+        {DrafterParticipationSql.WithSlots}
         SELECT
           d.public_id                              AS {nameof(VetoHistoryRow.DraftPublicId)},
           d.title                                  AS {nameof(VetoHistoryRow.DraftTitle)},
           MIN(dr.release_date)                     AS {nameof(VetoHistoryRow.ReleaseDate)},
           pk.id::text                              AS {nameof(VetoHistoryRow.TargetPickPublicId)},
           pk.position                              AS {nameof(VetoHistoryRow.Position)},
+          dp.part_index                            AS {nameof(VetoHistoryRow.PartIndex)},
+          COALESCE(sd."index", 0)                  AS {nameof(VetoHistoryRow.SubDraftIndex)},
           pk.play_order                            AS {nameof(VetoHistoryRow.PlayOrder)},
           m.imdb_id                                AS {nameof(VetoHistoryRow.MoviePublicId)},
           m.movie_title                            AS {nameof(VetoHistoryRow.MovieTitle)},
@@ -389,12 +362,12 @@ internal sealed class GetParticipantProfileQueryHandler(
           vodr.public_id                           AS {nameof(VetoHistoryRow.OverrideByPublicId)},
           vop.display_name                         AS {nameof(VetoHistoryRow.OverrideByDisplayName)}
         FROM drafts.vetoes v
-        JOIN drafts.draft_part_participants issuer_dpp ON issuer_dpp.id = v.issued_by_participant_id
         JOIN drafts.picks pk ON pk.id = v.target_pick_id
         JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
         JOIN drafts.drafts d ON d.id = dp.draft_id
         LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
           AND dr.release_channel = ANY(@AllowedChannels)
+        LEFT JOIN drafts.sub_drafts sd ON sd.id = pk.sub_draft_id
         JOIN drafts.movies m ON m.id = pk.movie_id
         LEFT JOIN drafts.drafters tdr ON tdr.id = pk.played_by_participant_id_value
         LEFT JOIN drafts.people tp ON tp.id = tdr.person_id
@@ -403,26 +376,76 @@ internal sealed class GetParticipantProfileQueryHandler(
         LEFT JOIN drafts.draft_part_participants override_dpp ON override_dpp.id = vo.issued_by_participant_id
         LEFT JOIN drafts.drafters vodr ON vodr.id = override_dpp.participant_id_value
         LEFT JOIN drafts.people vop ON vop.id = vodr.person_id
-        WHERE issuer_dpp.participant_id_value = @DrafterId
-          AND issuer_dpp.participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr2
-            WHERE dr2.part_id = pk.draft_part_id
-              AND dr2.release_channel = ANY(@AllowedChannels)
-          )
+        WHERE v.issued_by_participant_id IN (SELECT dpp_id FROM drafter_slots)
         GROUP BY
           d.id, d.public_id, d.title,
+          dp.part_index, sd."index",
           pk.id, pk.position, pk.play_order,
           m.imdb_id, m.movie_title,
           tdr.public_id, tp.display_name, tp.first_name, tp.last_name, tt.name,
           v.is_overridden,
           vodr.public_id, vop.display_name
-        ORDER BY MIN(dr.release_date) ASC, pk.play_order ASC
+        ORDER BY MIN(dr.release_date) ASC, dp.part_index ASC, COALESCE(sd."index", 0) ASC, pk.play_order ASC
         """;
 
       var vetoRows = (
         await connection.QueryAsync<VetoHistoryRow>(
           new CommandDefinition(vetoHistorySql, drafterArgs, cancellationToken: cancellationToken)
+        )
+      ).ToList();
+
+      // 11. Veto overrides this drafter used: the veto they overrode, on which pick
+      const string vetoOverrideHistorySql = $"""
+        {DrafterParticipationSql.WithSlots}
+        SELECT
+          d.public_id                              AS {nameof(VetoOverrideHistoryRow.DraftPublicId)},
+          d.title                                  AS {nameof(VetoOverrideHistoryRow.DraftTitle)},
+          MIN(dr.release_date)                     AS {nameof(VetoOverrideHistoryRow.ReleaseDate)},
+          pk.id::text                              AS {nameof(VetoOverrideHistoryRow.TargetPickPublicId)},
+          pk.position                              AS {nameof(VetoOverrideHistoryRow.Position)},
+          dp.part_index                            AS {nameof(VetoOverrideHistoryRow.PartIndex)},
+          COALESCE(sd."index", 0)                  AS {nameof(VetoOverrideHistoryRow.SubDraftIndex)},
+          pk.play_order                            AS {nameof(VetoOverrideHistoryRow.PlayOrder)},
+          m.imdb_id                                AS {nameof(VetoOverrideHistoryRow.MoviePublicId)},
+          m.movie_title                            AS {nameof(VetoOverrideHistoryRow.MovieTitle)},
+          tdr.public_id                            AS {nameof(VetoOverrideHistoryRow.PickPlayedByPublicId)},
+          COALESCE(NULLIF(tp.display_name, ''),
+                 NULLIF(TRIM(CONCAT_WS(' ', tp.first_name, tp.last_name)), ''),
+                 tt.name)                          AS {nameof(VetoOverrideHistoryRow.PickPlayedByDisplayName)},
+          vdr.public_id                            AS {nameof(VetoOverrideHistoryRow.VetoedByPublicId)},
+          COALESCE(
+            CASE WHEN veto_dpp.participant_kind_value = 2 THEN 'Patreon Members' END,
+            vp.display_name)                       AS {nameof(VetoOverrideHistoryRow.VetoedByDisplayName)}
+        FROM drafts.veto_overrides vo
+        JOIN drafts.vetoes v ON v.id = vo.veto_id
+        JOIN drafts.picks pk ON pk.id = v.target_pick_id
+        JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
+        JOIN drafts.drafts d ON d.id = dp.draft_id
+        LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
+          AND dr.release_channel = ANY(@AllowedChannels)
+        LEFT JOIN drafts.sub_drafts sd ON sd.id = pk.sub_draft_id
+        JOIN drafts.movies m ON m.id = pk.movie_id
+        LEFT JOIN drafts.drafters tdr ON tdr.id = pk.played_by_participant_id_value
+        LEFT JOIN drafts.people tp ON tp.id = tdr.person_id
+        LEFT JOIN drafts.drafter_teams tt ON tt.id = pk.played_by_participant_id_value AND pk.played_by_participant_kind_value = 1
+        LEFT JOIN drafts.draft_part_participants veto_dpp ON veto_dpp.id = v.issued_by_participant_id
+        LEFT JOIN drafts.drafters vdr ON vdr.id = veto_dpp.participant_id_value
+        LEFT JOIN drafts.people vp ON vp.id = vdr.person_id
+        WHERE vo.issued_by_participant_id IN (SELECT dpp_id FROM drafter_slots)
+        GROUP BY
+          d.id, d.public_id, d.title,
+          dp.part_index, sd."index",
+          pk.id, pk.position, pk.play_order,
+          m.imdb_id, m.movie_title,
+          tdr.public_id, tp.display_name, tp.first_name, tp.last_name, tt.name,
+          vdr.public_id, vp.display_name, veto_dpp.participant_kind_value,
+          vo.id
+        ORDER BY MIN(dr.release_date) ASC, dp.part_index ASC, COALESCE(sd."index", 0) ASC, pk.play_order ASC
+        """;
+
+      var vetoOverrideRows = (
+        await connection.QueryAsync<VetoOverrideHistoryRow>(
+          new CommandDefinition(vetoOverrideHistorySql, drafterArgs, cancellationToken: cancellationToken)
         )
       ).ToList();
 
@@ -458,6 +481,9 @@ internal sealed class GetParticipantProfileQueryHandler(
             Picks = g.Select(r => new PickItem
               {
                 Position = r.Position,
+                ReleaseDate = r.ReleaseDate,
+                PartIndex = r.PartIndex,
+                SubDraftIndex = r.SubDraftIndex,
                 PlayOrder = r.PlayOrder,
                 MoviePublicId = r.MoviePublicId,
                 MovieTitle = r.MovieTitle,
@@ -486,6 +512,9 @@ internal sealed class GetParticipantProfileQueryHandler(
           },
           TargetPickPublicId = r.TargetPickPublicId,
           Position = r.Position,
+          ReleaseDate = r.ReleaseDate,
+          PartIndex = r.PartIndex,
+          SubDraftIndex = r.SubDraftIndex,
           PlayOrder = r.PlayOrder,
           MoviePublicId = r.MoviePublicId,
           MovieTitle = r.MovieTitle,
@@ -494,6 +523,30 @@ internal sealed class GetParticipantProfileQueryHandler(
           WasVetoOverridden = r.WasVetoOverridden,
           OverrideByPublicId = r.OverrideByPublicId,
           OverrideByDisplayName = r.OverrideByDisplayName,
+        })
+        .ToList();
+
+      vetoOverrideHistory = vetoOverrideRows
+        .Select(r => new VetoOverrideHistoryItem
+        {
+          Draft = new DraftBrief
+          {
+            DraftPublicId = r.DraftPublicId,
+            DraftTitle = r.DraftTitle,
+            ReleaseDates = r.ReleaseDate.HasValue ? [r.ReleaseDate.Value] : [],
+          },
+          TargetPickPublicId = r.TargetPickPublicId,
+          Position = r.Position,
+          ReleaseDate = r.ReleaseDate,
+          PartIndex = r.PartIndex,
+          SubDraftIndex = r.SubDraftIndex,
+          PlayOrder = r.PlayOrder,
+          MoviePublicId = r.MoviePublicId,
+          MovieTitle = r.MovieTitle,
+          PickPlayedByPublicId = r.PickPlayedByPublicId,
+          PickPlayedByDisplayName = r.PickPlayedByDisplayName,
+          VetoedByPublicId = r.VetoedByPublicId,
+          VetoedByDisplayName = r.VetoedByDisplayName,
         })
         .ToList();
     }
@@ -621,6 +674,7 @@ internal sealed class GetParticipantProfileQueryHandler(
       HostStats = hostStats,
       DraftHistory = draftHistory,
       VetoHistory = vetoHistory,
+      VetoOverrideHistory = vetoOverrideHistory,
     };
 
     return Result.Success(response);
@@ -683,6 +737,8 @@ internal sealed class GetParticipantProfileQueryHandler(
     string DraftTitle,
     DateOnly? ReleaseDate,
     int Position,
+    int PartIndex,
+    int SubDraftIndex,
     int PlayOrder,
     string MoviePublicId,
     string MovieTitle,
@@ -696,12 +752,31 @@ internal sealed class GetParticipantProfileQueryHandler(
     string? VetoOverriddenByDisplayName
   );
 
+  private sealed record VetoOverrideHistoryRow(
+    string DraftPublicId,
+    string DraftTitle,
+    DateOnly? ReleaseDate,
+    string TargetPickPublicId,
+    int Position,
+    int PartIndex,
+    int SubDraftIndex,
+    int PlayOrder,
+    string MoviePublicId,
+    string MovieTitle,
+    string? PickPlayedByPublicId,
+    string? PickPlayedByDisplayName,
+    string? VetoedByPublicId,
+    string? VetoedByDisplayName
+  );
+
   private sealed record VetoHistoryRow(
     string DraftPublicId,
     string DraftTitle,
     DateOnly? ReleaseDate,
     string TargetPickPublicId,
     int Position,
+    int PartIndex,
+    int SubDraftIndex,
     int PlayOrder,
     string MoviePublicId,
     string MovieTitle,

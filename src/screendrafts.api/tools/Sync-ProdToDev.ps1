@@ -23,7 +23,7 @@
 #   2. Drops and recreates the DEV 'screendrafts' database and restores the dump.
 #   3. Runs Sync-ProdToDev.post-restore.sql: re-grants the per-module roles and marks every
 #      unprocessed outbox/inbox message as processed, so DEV never replays PROD's queue.
-#   4. Re-links -AdminEmail to its DEV Keycloak user (users.users.identity_id), so you can log in.
+#   4. Starts DEV Keycloak (keycloak-db + screendrafts.identity) if it isn't answering, then re-links -AdminEmail to its DEV Keycloak user (users.users.identity_id), so you can log in.
 #   4b. Creates each module's login role (from your appsettings.Development.json connection
 #      strings) and makes it own its schema's objects, via Sync-ProdToDev.roles.sql.
 #   5. Runs the DbMigrator (on the host, via dotnet run) so DEV migrations that PROD doesn't have yet are applied.
@@ -55,6 +55,7 @@ param(
     [string]$Realm = "screendrafts",
     [string]$KeycloakAdminUser = "admin",
     [string]$KeycloakAdminPassword = "admin",
+    [int]$KeycloakStartTimeoutSeconds = 180,
     [switch]$SkipRelink,
     [switch]$SkipMigrator,
     [switch]$Force
@@ -190,6 +191,46 @@ if (-not $SkipRestore) {
     Assert-Ok "docker cp (post-restore.sql)"
     docker exec $dev psql -U postgres -d screendrafts -v ON_ERROR_STOP=1 -f /tmp/post-restore.sql
     Assert-Ok "post-restore.sql"
+}
+
+# ── 4c. Make sure DEV Keycloak is running ────────────────────────────────────
+# The re-link below logs in to Keycloak. If it isn't answering, start it with the SAME compose
+# project as the DEV database container, so the existing containers and the keycloak-db-data
+# volume (your Keycloak admin user) are reused, not duplicated under a second project name.
+if (-not $SkipRelink) {
+    Write-Step "Checking DEV Keycloak"
+
+    function Test-Keycloak {
+        try {
+            Invoke-WebRequest -Uri "$KeycloakUrl/realms/master" -UseBasicParsing -TimeoutSec 5 -ErrorAction Stop | Out-Null
+            return $true
+        }
+        catch { return $false }
+    }
+
+    if (-not (Test-Keycloak)) {
+        $composeFile = Join-Path (Get-Location) "docker-compose.yml"
+        if (-not (Test-Path $composeFile)) {
+            throw "Keycloak isn't answering at $KeycloakUrl and there is no docker-compose.yml in $(Get-Location). Run the script from src\screendrafts.api, or start Keycloak yourself."
+        }
+        $labels = docker inspect $dev --format '{{json .Config.Labels}}' | ConvertFrom-Json
+        Assert-Ok "docker inspect (compose project)"
+        $project = $labels.'com.docker.compose.project'
+        if (-not $project) { throw "Couldn't read the compose project name from the DEV database container." }
+
+        Write-Host "Keycloak isn't answering at $KeycloakUrl. Starting keycloak-db and screendrafts.identity (compose project '$project')..."
+        docker compose -p $project -f $composeFile up -d keycloak-db screendrafts.identity
+        Assert-Ok "docker compose up (Keycloak)"
+
+        $deadline = (Get-Date).AddSeconds($KeycloakStartTimeoutSeconds)
+        while (-not (Test-Keycloak)) {
+            if ((Get-Date) -gt $deadline) {
+                throw "Keycloak didn't answer at $KeycloakUrl within $KeycloakStartTimeoutSeconds s. Check: docker logs screendrafts.identity"
+            }
+            Start-Sleep -Seconds 3
+        }
+    }
+    Write-Host "Keycloak is up at $KeycloakUrl"
 }
 
 # ── 5. Re-link the admin account to DEV Keycloak ─────────────────────────────

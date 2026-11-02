@@ -3,6 +3,9 @@
 internal sealed record PickItem
 {
   public int Position { get; init; }
+  public DateOnly? ReleaseDate { get; init; }
+  public int PartIndex { get; init; }
+  public int SubDraftIndex { get; init; }
   public int PlayOrder { get; init; }
   public required string MoviePublicId { get; init; }
   public required string MovieTitle { get; init; }

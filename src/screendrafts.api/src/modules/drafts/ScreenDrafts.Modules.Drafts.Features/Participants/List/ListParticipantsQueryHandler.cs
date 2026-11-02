@@ -170,32 +170,20 @@ internal sealed class ListParticipantsQueryHandler(
       LEFT JOIN drafts.drafters d ON d.person_id = p.id
       LEFT JOIN drafts.hosts h ON h.person_id = p.id
       LEFT JOIN LATERAL (
+        WITH drafter_slots AS ({DrafterParticipationSql.Slots})
         SELECT
-          COUNT(DISTINCT dpp.draft_part_id) AS total_drafts,
-          COALESCE(SUM(dpp.vetoes_used), 0) AS vetoes_used,
+          COUNT(DISTINCT s.draft_part_id) AS total_drafts,
+          COALESCE(SUM(s.vetoes_used), 0) AS vetoes_used,
           (
             SELECT COUNT(*)
             FROM drafts.picks pk
             LEFT JOIN drafts.vetoes v ON v.target_pick_id = pk.id
             LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
-            WHERE pk.played_by_participant_id_value = d.id
-              AND pk.played_by_participant_kind_value = 0
+            WHERE {DrafterParticipationSql.OwnPicks}
               AND co.id IS NULL
               AND (v.id IS NULL OR v.is_overridden = true)
-              AND EXISTS (
-                SELECT 1 FROM drafts.draft_releases dr
-                WHERE dr.part_id = pk.draft_part_id
-                  AND dr.release_channel = ANY(@AllowedChannels)
-              )
           ) AS films_drafted
-        FROM drafts.draft_part_participants dpp
-        WHERE dpp.participant_id_value = d.id
-          AND dpp.participant_kind_value = 0
-          AND EXISTS (
-            SELECT 1 FROM drafts.draft_releases dr
-            WHERE dr.part_id = dpp.draft_part_id
-              AND dr.release_channel = ANY(@AllowedChannels)
-          )
+        FROM drafter_slots s
       ) drafter_stats ON d.id IS NOT NULL
       LEFT JOIN LATERAL (
         SELECT COUNT(DISTINCT dh.draft_part_id) AS drafts_hosted

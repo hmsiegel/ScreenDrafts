@@ -139,7 +139,7 @@ internal sealed class SetDraftPartStatusCommandHandler(
 
     if (continuityScope == ContinuityScope.Series)
     {
-      scopeFilter = "AND d.SeriesId = @SeriesId";
+      scopeFilter = "AND d.series_id = @SeriesId";
       parameters = new
       {
         DrafterIds = drafterIds,
@@ -149,7 +149,12 @@ internal sealed class SetDraftPartStatusCommandHandler(
     }
     else // Global
     {
-      scopeFilter = string.Empty;
+      // Only parts from a Global-scope series may roll vetoes and overrides out into
+      // another series' draft. None-scope series (Best Picture, Legends, Franchise
+      // mini-Super, ...) roll over nowhere, and Series-scope series only within themselves,
+      // so their leftovers must never reach a Global draft. A draft with no series counts
+      // as Global.
+      scopeFilter = $"AND (s.id IS NULL OR s.continuity_scope = {ContinuityScope.Global.Value})";
 
       parameters = new { DrafterIds = drafterIds, CurrentPartIds = part.Id.Value };
     }
@@ -167,6 +172,7 @@ internal sealed class SetDraftPartStatusCommandHandler(
       FROM drafts.draft_part_participants dpp
       INNER JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
       INNER JOIN drafts.drafts d ON d.id = dp.draft_id
+      LEFT JOIN drafts.series s ON s.id = d.series_id
       LEFT JOIN LATERAL (
         SELECT MIN(r.release_date) AS release_date
         FROM drafts.draft_releases r
@@ -184,7 +190,7 @@ internal sealed class SetDraftPartStatusCommandHandler(
 
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    // S2077: sql interpolates scopeFilter, which is one of exactly two hardcoded clauses chosen by the ContinuityScope branch above; all values are bound via Dapper parameters.
+    // S2077: sql interpolates scopeFilter, which is one of exactly two hardcoded clauses chosen by the ContinuityScope branch above (the Global one embeds a constant int); all values are bound via Dapper parameters.
 #pragma warning disable S2077
     var rows = await connection.QueryAsync<RolloverRow>(
       new CommandDefinition(sql, parameters, cancellationToken: cancellationToken)
