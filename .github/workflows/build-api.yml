@@ -10,6 +10,8 @@ on:
     paths:
       - 'src/screendrafts.api/**'
       - 'tools/**'
+      - 'infrastructure/**'
+      - '.github/workflows/build-api.yml'
   pull_request:
     branches:
       - main
@@ -17,6 +19,11 @@ on:
     paths:
       - 'src/screendrafts.api/**'
       - 'tools/**'
+      - 'infrastructure/**'
+      - '.github/workflows/build-api.yml'
+
+# infrastructure/** is listed so config-only changes (compose file, Caddyfile,
+# overrides) still start this workflow, which is what triggers the Deploy workflow.
 
 # Least privilege: this workflow only reads the repo.
 permissions:
