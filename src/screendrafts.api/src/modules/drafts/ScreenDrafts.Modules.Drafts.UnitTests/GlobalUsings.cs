@@ -1,9 +1,7 @@
 ﻿global using System.Collections.ObjectModel;
-
+global using System.Globalization;
 global using Bogus;
-
 global using FluentAssertions;
-
 global using ScreenDrafts.Common.Abstractions.Results;
 global using ScreenDrafts.Common.Application.Services;
 global using ScreenDrafts.Common.Domain;
@@ -11,7 +9,6 @@ global using ScreenDrafts.Common.UnitTests;
 global using ScreenDrafts.Modules.Drafts.Domain.Campaigns;
 global using ScreenDrafts.Modules.Drafts.Domain.Categories;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftBoards;
-global using ScreenDrafts.Modules.Drafts.Domain.DraftPools;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafters.Errors;
@@ -22,6 +19,7 @@ global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Entities;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Enums;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.Errors;
 global using ScreenDrafts.Modules.Drafts.Domain.DraftParts.ValueObjects;
+global using ScreenDrafts.Modules.Drafts.Domain.DraftPools;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.DomainEvents;
 global using ScreenDrafts.Modules.Drafts.Domain.Drafts.Entities;
@@ -46,6 +44,4 @@ global using ScreenDrafts.Modules.Drafts.Domain.SeriesAggregate.Enums;
 global using ScreenDrafts.Modules.Drafts.Features.WikiExport.Common;
 global using ScreenDrafts.Modules.Drafts.UnitTests.Abstractions;
 global using ScreenDrafts.Modules.Drafts.UnitTests.TestUtils;
-
 global using Xunit;
-

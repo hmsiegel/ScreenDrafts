@@ -1,6 +1,4 @@
-using System.Globalization;
-
-namespace ScreenDrafts.Modules.Drafts.UnitTests.WikiExport;
+﻿namespace ScreenDrafts.Modules.Drafts.UnitTests.WikiExport;
 
 public sealed class WikiTextTests
 {
@@ -201,10 +199,7 @@ public sealed class WikiTextTests
 
   [Fact]
   public void Param_ShouldNotTruncateANameLongerThan17Characters() =>
-    WikiText
-      .Param("aVeryLongParameterName", "x")
-      .Should()
-      .Be(" | aVeryLongParameterName = x");
+    WikiText.Param("aVeryLongParameterName", "x").Should().Be(" | aVeryLongParameterName = x");
 
   [Fact]
   public void Param_ShouldPadToExactly17Characters_ForAnExactFitName() =>

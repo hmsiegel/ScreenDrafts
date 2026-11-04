@@ -10,20 +10,28 @@ EXPOSE 8080
 EXPOSE 8081
 
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+# The SDK stage always runs on the build machine's own CPU ($BUILDPLATFORM).
+# dotnet cross-compiles for the target CPU, so the arm64 image needs no emulation here.
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG TARGETARCH
 WORKDIR /src
 COPY . .
-RUN dotnet restore "./src/api/ScreenDrafts.Web/ScreenDrafts.Web.csproj"
-COPY . .
-WORKDIR "/src/src/api/ScreenDrafts.Web"
-RUN dotnet build "./ScreenDrafts.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ScreenDrafts.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN case "$TARGETARCH" in \
+      amd64) RID_ARCH=x64 ;; \
+      arm64) RID_ARCH=arm64 ;; \
+      *) echo "Unsupported TARGETARCH: $TARGETARCH" >&2; exit 1 ;; \
+    esac \
+  && dotnet restore "./src/api/ScreenDrafts.Web/ScreenDrafts.Web.csproj" -a "$RID_ARCH" \
+  && dotnet publish "./src/api/ScreenDrafts.Web/ScreenDrafts.Web.csproj" \
+       -c "$BUILD_CONFIGURATION" \
+       -a "$RID_ARCH" \
+       --no-restore \
+       --no-self-contained \
+       -o /app/publish \
+       /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "ScreenDrafts.Web.dll"]
