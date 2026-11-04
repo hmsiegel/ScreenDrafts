@@ -144,16 +144,25 @@ jobs:
           opts=(-i "${key}" -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile="$(mktemp)")
           dest="${VPS_USER}@${VPS_HOST}"
 
-          scp "${opts[@]}" docker-compose.production.yml "${dest}:/opt/screendrafts/docker-compose.production.yml"
-          scp "${opts[@]}" infrastructure/caddy/Caddyfile "${dest}:/opt/screendrafts/infrastructure/caddy/Caddyfile"
-          scp "${opts[@]}" infrastructure/backup/backup.sh "${dest}:/opt/screendrafts/infrastructure/backup/backup.sh"
+          # send LOCAL REMOTE  — copy one file; skip with a warning if it is not in the repo.
+          send() {
+            if [ -f "$1" ]; then
+              scp "${opts[@]}" "$1" "${dest}:$2"
+            else
+              echo "::warning::$1 is not in the repo; skipped"
+            fi
+          }
+
+          send infrastructure/compose/docker-compose.production.yml /opt/screendrafts/docker-compose.production.yml
+          send infrastructure/caddy/Caddyfile /opt/screendrafts/infrastructure/caddy/Caddyfile
+          send infrastructure/backup/backup.sh /opt/screendrafts/infrastructure/backup/backup.sh
 
           # TEST only: hostnames and the mail sink. PROD has no overrides file.
           if [ "${DEPLOY_BRANCH}" = "test" ]; then
             ssh "${opts[@]}" "${dest}" "mkdir -p /opt/screendrafts/infrastructure/test"
-            scp "${opts[@]}" infrastructure/test/overrides.env "${dest}:/opt/screendrafts/overrides.env"
-            scp "${opts[@]}" infrastructure/test/restore-test.sh infrastructure/test/scrub.sql \
-              "${dest}:/opt/screendrafts/infrastructure/test/"
+            send infrastructure/test/overrides.env /opt/screendrafts/overrides.env
+            send infrastructure/test/restore-test.sh /opt/screendrafts/infrastructure/test/restore-test.sh
+            send infrastructure/test/scrub.sql /opt/screendrafts/infrastructure/test/scrub.sql
           fi
           rm -f "${key}"
 

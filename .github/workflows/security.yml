@@ -9,6 +9,7 @@ on:
   pull_request:
     branches:
       - main
+      - test
   schedule:
     - cron: "17 9 * * 1"   # Mondays 09:17 UTC
   workflow_dispatch:
