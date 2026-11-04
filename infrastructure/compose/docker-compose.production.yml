@@ -155,7 +155,9 @@ services:
       - KEYCLOAK_ADMIN_FILE=/run/secrets/keycloak_admin_user
       - KEYCLOAK_ADMIN_PASSWORD_FILE=/run/secrets/keycloak_admin_password
       - SD_API_URL=http://screendrafts.web:8080
-      - SD_KEYCLOAK_SECRET_FILE=/run/secrets/keycloak_registration_secret
+      # The authenticator reads SD_KEYCLOAK_SECRET; Keycloak has no *_FILE support.
+      # Same value the API receives as KeycloakRegistration__Secret.
+      - SD_KEYCLOAK_SECRET=${KEYCLOAK_REGISTRATION_SECRET}
       - REGISTER_URL=https://${WEB_HOST:-www.screen-drafts.com}/register
     secrets:
       - keycloak_admin_user
