@@ -13,6 +13,7 @@ on:
   pull_request:
     branches:
       - main
+      - test
     paths:
       - 'src/screendrafts.api/**'
       - 'tools/**'
@@ -21,8 +22,8 @@ on:
 permissions:
   contents: read
 
-# A new push to a PR cancels its older run. Runs on main are never cancelled,
-# so every main push reaches the Deploy workflow.
+# A new push to a PR cancels its older run. Runs on main and test are never
+# cancelled, so every push to them reaches the Deploy workflow.
 concurrency:
   group: build-api-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
