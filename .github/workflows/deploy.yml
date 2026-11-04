@@ -62,6 +62,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # The runtime stage of the arm64 image runs `apt-get` on an x64 runner, so
+      # it needs the emulator. The .NET build itself is cross-compiled, not emulated.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+        with:
+          platforms: arm64
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
@@ -103,6 +110,7 @@ jobs:
           context: src/screendrafts.api
           file: src/screendrafts.api/src/api/ScreenDrafts.Web/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta-api.outputs.tags }}
           labels: ${{ steps.meta-api.outputs.labels }}
           cache-from: type=gha
@@ -115,6 +123,7 @@ jobs:
           context: src/screendrafts.api
           file: src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta-migrator.outputs.tags }}
           labels: ${{ steps.meta-migrator.outputs.labels }}
           cache-from: type=gha
