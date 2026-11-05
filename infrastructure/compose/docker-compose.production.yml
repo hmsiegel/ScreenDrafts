@@ -2,7 +2,7 @@ services:
 
   # ── Reverse Proxy ──────────────────────────────────────────────────────────
   caddy:
-    image: caddy:2.11.6
+    image: caddy:2.11.7
     restart: unless-stopped
     environment:
       - ADMIN_IP=${ADMIN_IP}
