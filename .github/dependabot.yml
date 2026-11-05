@@ -8,6 +8,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    target-branch: test
     open-pull-requests-limit: 5
     groups:
       dotnet-minor-patch:
@@ -22,6 +23,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
+    target-branch: test
     open-pull-requests-limit: 5
     groups:
       npm-minor-patch:
@@ -35,6 +37,7 @@ updates:
       - /src/screendrafts.api/tools/ScreenDrafts.Tools.DbMigrator
     schedule:
       interval: monthly
+    target-branch: test
     groups:
       docker-images:
         patterns: ["*"]
@@ -46,6 +49,7 @@ updates:
       - /src/screendrafts.api
     schedule:
       interval: monthly
+    target-branch: test
     groups:
       compose-images:
         patterns: ["*"]
@@ -71,6 +75,7 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    target-branch: test
     groups:
       actions:
         patterns: ["*"]
