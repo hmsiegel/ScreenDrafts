@@ -258,8 +258,11 @@ services:
     environment:
       DOZZLE_NO_ANALYTICS: 'true'
       DOZZLE_HOSTNAME: ${DOZZLE_HOSTNAME:-screendrafts}
+      DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_AUTH_TTL: 24h
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/screendrafts/dozzle/data:/data:ro
     ports:
       - '${DOZZLE_BIND:-127.0.0.1}:9999:8080'
     healthcheck:
