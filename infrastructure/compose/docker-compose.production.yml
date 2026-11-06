@@ -2,7 +2,7 @@ services:
 
   # ── Reverse Proxy ──────────────────────────────────────────────────────────
   caddy:
-    image: caddy:2.11.7
+    image: caddy:2.11.6
     restart: unless-stopped
     environment:
       - ADMIN_IP=${ADMIN_IP}
@@ -140,7 +140,7 @@ services:
 
   # ── Keycloak ───────────────────────────────────────────────────────────────
   screendrafts.identity:
-    image: quay.io/keycloak/keycloak:26.8.1-2
+    image: quay.io/keycloak/keycloak:26.8.0
     restart: unless-stopped
     command: start --import-realm
     environment:
@@ -247,6 +247,35 @@ services:
       - '127.0.0.1:8025:8025'
     networks:
       - screendrafts
+
+  # ── Dozzle (log viewer) ────────────────────────────────────────────────────
+  # Read-only browser view of container logs. Reach it over Tailscale: set
+  # DOZZLE_BIND in .env to this server's Tailscale IP. The default keeps it on
+  # localhost (use an SSH tunnel). Never publish it on a public address.
+  # Needs /opt/screendrafts/dozzle/data/users.yml before it starts (see infrastructure/README.md).
+  screendrafts.dozzle:
+    image: amir20/dozzle:v11.4.1
+    restart: unless-stopped
+    environment:
+      DOZZLE_NO_ANALYTICS: 'true'
+      DOZZLE_HOSTNAME: ${DOZZLE_HOSTNAME:-screendrafts}
+      # Login from /data/users.yml. Each user's `roles` line decides what they
+      # may do; an empty roles line grants everything, including a shell.
+      # Off unless .env sets DOZZLE_ENABLE_ACTIONS=true (TEST only). A user also
+      # needs `roles: actions` in users.yml to see the start/stop/restart menu.
+      DOZZLE_ENABLE_ACTIONS: ${DOZZLE_ENABLE_ACTIONS:-false}
+      DOZZLE_AUTH_PROVIDER: simple
+      DOZZLE_AUTH_TTL: 24h
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/screendrafts/dozzle/data:/data:ro
+    ports:
+      - '${DOZZLE_BIND:-127.0.0.1}:9999:8080'
+    healthcheck:
+      test: ['CMD', '/dozzle', 'healthcheck']
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   # ── PostgreSQL Backup ──────────────────────────────────────────────────────
   screendrafts.backup:
