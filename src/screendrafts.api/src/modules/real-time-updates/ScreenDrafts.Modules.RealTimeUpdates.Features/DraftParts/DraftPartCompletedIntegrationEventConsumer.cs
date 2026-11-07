@@ -169,13 +169,16 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
         r.shoot_the_moon   AS ShootsTheMoon,
         r.points_awarded   AS PointsAwarded,
         e.media_title      AS MediaTitle,
+        e.tmdb_id          AS TmdbId,
         e.order_index      AS OrderIndex,
-        e.is_correct       AS IsCorrect
+        e.is_correct       AS IsCorrect,
+        COALESC(rr.prediction_mode IN (2,3), FALSE) AS IsRanked
       FROM drafts.draft_prediction_sets s
       JOIN drafts.draft_parts dp           ON dp.id = s.draft_part_id
       JOIN drafts.prediction_contestants c ON c.id  = s.contestant_id
       JOIN drafts.prediction_results r     ON r.set_id = s.id
       LEFT JOIN drafts.prediction_entries e ON e.set_id = s.id
+      LEFT JOIN drafts.draft_part_prediction_rules rr ON rr.draft_part_id = dp.id
       WHERE dp.public_id = @DraftPartPublicId
       ORDER BY c.display_name, e.order_index;
       """;
@@ -200,10 +203,18 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
           CorrectCount: first.CorrectCount,
           ShootsTheMoon: first.ShootsTheMoon,
           PointsAwarded: first.PointsAwarded,
-          Entries: g.Where(r => r.MediaTitle is not null)
-            .OrderBy(r => r.OrderIndex)
-            .Select(r => new PredictionEntryRecord(r.MediaTitle!, r.IsCorrect))
-            .ToList()
+          Entries:
+          [
+            .. g.Where(r => r.MediaTitle is not null)
+              .OrderBy(r => r.OrderIndex)
+              .Select(r => new PredictionEntryRecord(
+                r.MediaTitle!,
+                r.TmdbId,
+                r.OrderIndex,
+                r.IsCorrect
+              )),
+          ],
+          IsRanked: first.IsRanked
         );
       })
       .ToList();
@@ -337,10 +348,16 @@ internal sealed record PredictionSummaryRecord(
   int CorrectCount,
   bool ShootsTheMoon,
   int PointsAwarded,
-  IReadOnlyList<PredictionEntryRecord> Entries
+  IReadOnlyList<PredictionEntryRecord> Entries,
+  bool IsRanked
 );
 
-internal sealed record PredictionEntryRecord(string MediaTitle, bool? IsCorrect);
+internal sealed record PredictionEntryRecord(
+  string MediaTitle,
+  int? TmdbId,
+  int? OrderIndex,
+  bool? IsCorrect
+);
 
 internal sealed record StandingRecord(
   string ContestantDisplayName,
@@ -356,8 +373,10 @@ internal sealed record PredictionRow(
   bool ShootsTheMoon,
   int PointsAwarded,
   string? MediaTitle,
+  int? TmdbId,
   int? OrderIndex,
-  bool? IsCorrect
+  bool? IsCorrect,
+  bool IsRanked
 );
 
 internal sealed record StandingRow(string ContestantDisplayName, int Points, int CarryoverPoints);

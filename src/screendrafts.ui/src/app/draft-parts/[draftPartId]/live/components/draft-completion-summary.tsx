@@ -2,6 +2,7 @@
 'use client';
 
 import { useLiveDraft } from '../live-draft-context';
+import { arrangePredictionRows } from '@/lib/prediction-rows';
 import type {
   DraftCompletionSummary,
   PickHonorificSummary,
@@ -121,43 +122,80 @@ function DrafterHonorificRow({
   );
 }
 
-function PredictorColumn({ p }: { p: PredictionSummary }) {
+function PredictionsTable({ predictions }: { predictions: PredictionSummary[] }) {
+  const { ranked, rows } = arrangePredictionRows(
+    predictions.map((p) => ({ name: p.contestantDisplayName, entries: p.entries })),
+    predictions.some((p) => p.isRanked)
+  );
+
   return (
-    <div className="border border-white/10 px-4 py-3">
-      <p className="font-oswald text-sd-paper text-sm tracking-wider uppercase mb-3">
-        {p.contestantDisplayName}
-      </p>
-      <div className="space-y-1.5 mb-3">
-        {p.entries.map((e, i) => (
-          <div key={i} className="flex items-start gap-2">
-            <span
-              className={`font-mono text-xs mt-0.5 shrink-0 ${
-                e.isCorrect ? 'text-light-blue' : 'text-white/20'
-              }`}
-            >
-              {e.isCorrect ? '✓' : '✗'}
-            </span>
-            <span
-              className={`font-mono text-sm leading-tight ${
-                e.isCorrect ? 'text-sd-paper' : 'text-white/30 line-through'
-              }`}
-            >
-              {e.mediaTitle}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-        <span className="font-oswald text-xs text-white/40 uppercase tracking-wider">
-          Total
-        </span>
-        <span className="font-oswald text-yellow-400 text-lg">
-          {p.pointsAwarded} pts
-          {p.shootsTheMoon && (
-            <span className="ml-1.5 text-[10px] text-light-blue align-middle">MOON</span>
-          )}
-        </span>
-      </div>
+    <div className="border border-white/10 px-4 py-3 overflow-x-auto">
+      <table className="w-full table-fixed">
+        <thead>
+          <tr className="border-b border-white/10 align-bottom">
+            {ranked && <th className="w-8" />}
+            {predictions.map((p) => (
+              <th
+                key={p.contestantDisplayName}
+                className="text-left pb-2 pr-4 font-oswald text-sd-paper text-sm tracking-wider uppercase font-normal"
+              >
+                {p.contestantDisplayName}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, r) => (
+            <tr key={r} className="align-top">
+              {ranked && (
+                <td className="py-1 pr-2 font-mono text-xs text-white/40 tabular-nums">{row.rank}.</td>
+              )}
+              {row.cells.map((e, c) => (
+                <td key={predictions[c].contestantDisplayName} className="py-1 pr-4">
+                  {e && (
+                    <div className="flex items-start gap-2">
+                      <span
+                        className={`font-mono text-xs mt-0.5 shrink-0 ${
+                          e.isCorrect ? 'text-light-blue' : 'text-white/20'
+                        }`}
+                      >
+                        {e.isCorrect ? '✓' : '✗'}
+                      </span>
+                      <span
+                        className={`font-mono text-sm leading-tight break-words ${
+                          e.isCorrect ? 'text-sd-paper' : 'text-white/30 line-through'
+                        }`}
+                      >
+                        {e.mediaTitle}
+                      </span>
+                    </div>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr className="border-t border-white/10">
+            {ranked && <td />}
+            {predictions.map((p) => (
+              <td key={p.contestantDisplayName} className="pt-2 pr-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-oswald text-xs text-white/40 uppercase tracking-wider">
+                    Total
+                  </span>
+                  <span className="font-oswald text-yellow-400 text-lg">
+                    {p.pointsAwarded} pts
+                    {p.shootsTheMoon && (
+                      <span className="ml-1.5 text-[10px] text-light-blue align-middle">MOON</span>
+                    )}
+                  </span>
+                </div>
+              </td>
+            ))}
+          </tr>
+        </tfoot>
+      </table>
     </div>
   );
 }
@@ -273,22 +311,13 @@ export function DraftCompletionSummaryModal({ summary }: Props) {
           )}
         </div>
 
-        {/* Row 2 — Predictor results, one column per predictor */}
+        {/* Row 2 — Predictor results, one table column per predictor */}
         {hasPredictions && (
           <section className="mb-8">
             <p className="font-oswald text-xs tracking-[0.25em] text-white/40 uppercase mb-3">
               Commissioner Predictions
             </p>
-            <div
-              className="grid gap-4"
-              style={{
-                gridTemplateColumns: `repeat(${summary.predictions.length}, minmax(0, 1fr))`,
-              }}
-            >
-              {summary.predictions.map((p) => (
-                <PredictorColumn key={p.contestantDisplayName} p={p} />
-              ))}
-            </div>
+            <PredictionsTable predictions={summary.predictions} />
           </section>
         )}
 
