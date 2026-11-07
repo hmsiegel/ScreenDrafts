@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.IntegrationTests.WikiExport;
+﻿namespace ScreenDrafts.Modules.Drafts.IntegrationTests.WikiExport;
 
 /// <summary>
 /// Golden-output tests for the <c>==Predictions==</c> section of an episode page.
@@ -16,13 +16,7 @@ public sealed class ExportDraftsWikiPredictionTests(DraftsIntegrationTestWebAppF
   private static string PredictionsBody(string page) =>
     Between(page, "==Predictions==\n\n", "\n\n==References==")["==Predictions==\n\n".Length..];
 
-  private sealed record Setup(
-    DraftSeed Draft,
-    PartSeed Part,
-    Guid Season,
-    Guid Matt,
-    Guid William
-  );
+  private sealed record Setup(DraftSeed Draft, PartSeed Part, Guid Season, Guid Matt, Guid William);
 
   private async Task<Setup> NewSetupAsync(int? mode)
   {
@@ -111,7 +105,9 @@ public sealed class ExportDraftsWikiPredictionTests(DraftsIntegrationTestWebAppF
   [Theory]
   [InlineData(UnorderedAll)]
   [InlineData(UnorderedTopN)]
-  public async Task Export_ShouldRenderAHitsFirstTableWithPlainTitles_ForUnorderedModesAsync(int mode)
+  public async Task Export_ShouldRenderAHitsFirstTableWithPlainTitles_ForUnorderedModesAsync(
+    int mode
+  )
   {
     var s = await NewSetupAsync(mode);
     await SeedStandardSetsAsync(s);
@@ -128,13 +124,13 @@ public sealed class ExportDraftsWikiPredictionTests(DraftsIntegrationTestWebAppF
           "!William",
           "|-",
           "| bgcolor=\"lightgreen\" |[[Hit Two]]",
-          "| bgcolor=\"lightgreen\" |[[Hit Three]]",
-          "|-",
-          "| bgcolor=\"lightgreen\" |[[Hit One]]",
           "| bgcolor=\"gray\" |[[Miss Two]]",
           "|-",
-          "| bgcolor=\"gray\" |[[Miss One]]",
+          "| bgcolor=\"lightgreen\" |[[Hit One]]",
           "| bgcolor=\"gray\" |",
+          "|-",
+          "| bgcolor=\"gray\" |[[Miss One]]",
+          "| bgcolor=\"lightgreen\" |[[Hit Three]]",
           "|-",
           "| colspan=\"2\" |'''CURRENT STANDINGS'''",
           "|-",
@@ -175,11 +171,17 @@ public sealed class ExportDraftsWikiPredictionTests(DraftsIntegrationTestWebAppF
           "!Matt",
           "!William",
           "|-",
-          "| bgcolor=\"lightgreen\" |5. [[Hit One]]",
+          "| bgcolor=\"gray\" |",
           "| bgcolor=\"lightgreen\" |9. [[Hit Three]]",
           "|-",
-          "| bgcolor=\"lightgreen\" |2. [[Hit Two]]",
+          "| bgcolor=\"lightgreen\" |5. [[Hit One]]",
+          "| bgcolor=\"gray\" |",
+          "|-",
+          "| bgcolor=\"gray\" |",
           "| bgcolor=\"gray\" |3. [[Miss Two]]",
+          "|-",
+          "| bgcolor=\"lightgreen\" |2. [[Hit Two]]",
+          "| bgcolor=\"gray\" |",
           "|-",
           "| bgcolor=\"gray\" |1. [[Miss One]]",
           "| bgcolor=\"gray\" |",
