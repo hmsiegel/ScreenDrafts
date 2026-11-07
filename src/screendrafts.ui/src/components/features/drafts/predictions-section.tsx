@@ -1,3 +1,5 @@
+// components/features/drafts/predictions-section.tsx
+import { arrangePredictionRows } from "@/lib/prediction-rows";
 import type {
   DraftPartPredictionResponse,
   PredictionEntryResponse,
@@ -72,74 +74,100 @@ function StandingsTable({ standings }: { standings: PredictionStandingsResponse 
   );
 }
 
-// ── Single prediction set ────────────────────────────────────────────────────
+// ── Prediction table ─────────────────────────────────────────────────────────
+// One table, one column per contestant. Row order and alignment come from
+// arrangePredictionRows (ranked: highest slot first; unranked: hits on top,
+// shared titles on one row).
 
-function PredictionSet({ set }: { set: DraftPartPredictionResponse }) {
-  const hasResult = set.result != null;
-  const isScored = hasResult && set.entries.some((e) => e.isCorrect != null);
+function PredictionTable({ sets }: { sets: DraftPartPredictionResponse[] }) {
+  const { ranked, rows } = arrangePredictionRows(
+    sets.map((s) => ({ name: s.contestantDisplayName, entries: s.entries })),
+    sets.some((s) => s.isRanked)
+  );
+
+  // A set shows ✓ / strike-through only once it has been scored.
+  const scored = sets.map((s) => s.result != null && s.entries.some((e) => e.isCorrect != null));
+  const anyResult = sets.some((s) => s.result != null);
 
   return (
-    <div className="border border-sd-ink/10 bg-sd-paper p-3 space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="font-['Oswald'] text-sm font-semibold text-sd-ink">
-          {set.contestantDisplayName}
-        </span>
-        <div className="flex items-center gap-2">
-          {hasResult && (
-            <span className="font-['JetBrains_Mono'] text-xs font-bold text-sd-red">
-              +{set.result!.pointsAwarded}pts
-            </span>
-          )}
-          {!set.isLocked && (
-            <span className="font-['JetBrains_Mono'] text-[9px] uppercase tracking-widest text-sd-dim border border-sd-dim/30 px-1 py-0.5">
-              open
-            </span>
-          )}
-        </div>
-      </div>
-
-      {set.entries.length > 0 && (
-        <ul className="space-y-0.5">
-          {set.entries.map((entry: PredictionEntryResponse, idx) => {
-            const correct = isScored && entry.isCorrect === true;
-            const wrong = isScored && entry.isCorrect === false;
-
-            return (
-              <li
-                key={`${set.publicId}-${entry.mediaPublicId ?? idx}`}
-                className="flex items-baseline gap-2 font-['JetBrains_Mono'] text-xs"
-              >
-                {entry.orderIndex != null && (
-                  <span className="text-sd-dim tabular-nums w-4 shrink-0">
-                    {entry.orderIndex}.
+    <div className="border border-sd-ink/10 bg-sd-paper p-3 overflow-x-auto">
+      <table className="w-full table-fixed text-xs font-['JetBrains_Mono']">
+        <thead>
+          <tr className="border-b border-sd-ink/10 align-bottom">
+            {ranked && <th className="w-6" />}
+            {sets.map((set) => (
+              <th key={set.publicId} className="text-left py-1 pr-3 font-normal">
+                <span className="font-['Oswald'] text-sm font-semibold text-sd-ink">
+                  {set.contestantDisplayName}
+                </span>
+                {set.result != null && (
+                  <span className="ml-2 text-xs font-bold text-sd-red">
+                    +{set.result.pointsAwarded}pts
                   </span>
                 )}
-                <span
-                  className={
-                    correct ? "text-sd-ink font-medium" :
-                      wrong ? "text-sd-dim line-through" :
-                        "text-sd-ink"
-                  }
-                >
-                  {entry.mediaTitle}
-                </span>
-                {correct && (
-                  <span className="ml-auto text-[10px] text-green-600 shrink-0">✓</span>
+                {!set.isLocked && (
+                  <span className="ml-2 text-[9px] uppercase tracking-widest text-sd-dim border border-sd-dim/30 px-1 py-0.5">
+                    open
+                  </span>
                 )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, r) => (
+            <tr key={r} className="align-baseline">
+              {ranked && (
+                <td className="py-0.5 pr-1 text-sd-dim tabular-nums">{row.rank}.</td>
+              )}
+              {row.cells.map((entry: PredictionEntryResponse | null, c) => {
+                const correct = scored[c] && entry?.isCorrect === true;
+                const wrong = scored[c] && entry?.isCorrect === false;
 
-      {hasResult && (
-        <div className="pt-1 border-t border-sd-ink/10 font-['JetBrains_Mono'] text-[10px] text-sd-dim flex items-center gap-3">
-          <span>{set.result!.correctCount}/{set.entries.length} correct</span>
-          {set.result!.shootsTheMoon && (
-            <span className="text-sd-red font-semibold">🌙 Shoots the Moon</span>
-          )}
-        </div>
-      )}
+                return (
+                  <td key={sets[c].publicId} className="py-0.5 pr-3 break-words">
+                    {entry && (
+                      <span
+                        className={
+                          correct
+                            ? "text-sd-ink font-medium"
+                            : wrong
+                              ? "text-sd-dim line-through"
+                              : "text-sd-ink"
+                        }
+                      >
+                        {entry.mediaTitle}
+                        {correct && <span className="ml-1.5 text-[10px] text-green-600">✓</span>}
+                      </span>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+        {anyResult && (
+          <tfoot>
+            <tr className="border-t border-sd-ink/10 text-[10px] text-sd-dim">
+              {ranked && <td />}
+              {sets.map((set) => (
+                <td key={set.publicId} className="pt-1.5 pr-3">
+                  {set.result != null && (
+                    <>
+                      <span>
+                        {set.result.correctCount}/{set.entries.length} correct
+                      </span>
+                      {set.result.shootsTheMoon && (
+                        <span className="ml-3 text-sd-red font-semibold">🌙 Shoots the Moon</span>
+                      )}
+                    </>
+                  )}
+                </td>
+              ))}
+            </tr>
+          </tfoot>
+        )}
+      </table>
     </div>
   );
 }
@@ -161,11 +189,7 @@ function PartPredictions({ partLabel, predictions, standings }: PartPredictionsP
         </h3>
       )}
       {predictions.length > 0 && (
-        <div className="space-y-2">
-          {predictions.map((set) => (
-            <PredictionSet key={set.publicId} set={set} />
-          ))}
-        </div>
+        <PredictionTable sets={predictions} />
       )}
       {standings && <StandingsTable standings={standings} />}
     </div>

@@ -276,6 +276,7 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
       SELECT
         e.set_id        AS SetId,
         e.media_title   AS Title,
+        e.tmdb_id       AS TmdbId,
         e.is_correct    AS IsCorrect,
         e.order_index   AS OrderIndex
       FROM drafts.prediction_entries e
@@ -636,12 +637,19 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
         ? mode == PredictionMode.OrderedTopN.Value || mode == PredictionMode.OrderedAll.Value
         : columns.Any(c => c.Any(e => e.OrderIndex.HasValue));
 
-      if (ordered)
-      {
-        columns = columns
-          .Select(c => c.OrderByDescending(e => e.OrderIndex ?? int.MinValue).ToList())
-          .ToList();
-      }
+      // Row order and alignment follow the wiki rules in PredictionRowArranger.
+      var arranged = PredictionRowArranger.Arrange(
+        [
+          .. sets.Select(
+            (s, i) =>
+              new ArrangeSet(
+                s.ContestantName,
+                [.. columns[i].Select(e => new ArrangeEntry(e.Title, e.TmdbId, e.OrderIndex, e.IsCorrect))]
+              )
+          ),
+        ],
+        ordered
+      );
 
       string body;
 
@@ -659,17 +667,14 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
           sb.Append('!').Append(WikiText.FirstToken(set.ContestantName)).Append('\n');
         }
 
-        var rowCount = columns.Max(c => c.Count);
-
-        for (var row = 0; row < rowCount; row++)
+        foreach (var row in arranged.Rows)
         {
           sb.Append("|-\n");
 
-          foreach (var column in columns)
+          foreach (var entry in row.Cells)
           {
-            if (row < column.Count)
+            if (entry is not null)
             {
-              var entry = column[row];
               var color = entry.IsCorrect == true ? "lightgreen" : "gray";
               var number =
                 ordered && entry.OrderIndex is { } position ? $"{position}. " : string.Empty;
@@ -828,6 +833,7 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
   private sealed record PredictionEntryRow(
     Guid SetId,
     string Title,
+    int? TmdbId,
     bool? IsCorrect,
     int? OrderIndex
   );
