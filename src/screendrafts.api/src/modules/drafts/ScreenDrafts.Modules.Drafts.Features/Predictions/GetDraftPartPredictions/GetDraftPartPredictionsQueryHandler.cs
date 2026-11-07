@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace ScreenDrafts.Modules.Drafts.Features.Predictions.GetDraftPartPredictions;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.Predictions.GetDraftPartPredictions;
 
 internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory connectionFactory)
   : IQueryHandler<GetDraftPartPredictionsQuery, IReadOnlyList<DraftPartPredictionResponse>>
@@ -32,13 +30,15 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
         r.shoot_the_moon       AS ShootsTheMoon,
         r.points_awarded       AS PointsAwarded,
         r.scored_at_utc        AS ScoredAtUtc,
-        sa.surrogates          AS SurrogatesJson
+        sa.surrogates          AS SurrogatesJson,
+        COALESCE (rr.prediction_mode IN (@OrderedTopN, @OrderedAll), FALSE) AS IsRanked
       FROM drafts.draft_prediction_sets s
       JOIN drafts.draft_parts            dp ON dp.id         = s.draft_part_id
       JOIN drafts.prediction_contestants c  ON c.id          = s.contestant_id
       LEFT JOIN drafts.prediction_entries e  ON e.set_id     = s.id
       LEFT JOIN drafts.movies            mv ON mv.tmdb_id    = e.tmdb_id
       LEFT JOIN drafts.prediction_results r  ON r.set_id     = s.id
+      LEFT JOIN drafts.draft_part_prediction_rules rr ON rr.draft_part_id = dp.id
       LEFT JOIN LATERAL (
         SELECT json_agg(json_build_object(
           'SurrogateSetPublicId', ss.public_id,
@@ -58,7 +58,12 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
       await connection.QueryAsync<SetRow>(
         new CommandDefinition(
           commandText: sql,
-          parameters: new { request.DraftPartId },
+          parameters: new
+          {
+            request.DraftPartId,
+            OrderedTopN = PredictionMode.OrderedTopN.Value,
+            OrderedAll = PredictionMode.OrderedAll.Value,
+          },
           cancellationToken: cancellationToken
         )
       )
@@ -117,6 +122,7 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
           Entries = entries,
           Result = result,
           Surrogates = surrogates,
+          IsRanked = first.IsRanked,
         };
       })
       .ToList();
@@ -141,7 +147,8 @@ internal sealed class GetDraftPartPredictionsQueryHandler(IDbConnectionFactory c
     bool? ShootsTheMoon,
     int? PointsAwarded,
     DateTime? ScoredAtUtc,
-    string? SurrogatesJson
+    string? SurrogatesJson,
+    bool IsRanked
   );
 
   private sealed record SurrogateJsonRow(

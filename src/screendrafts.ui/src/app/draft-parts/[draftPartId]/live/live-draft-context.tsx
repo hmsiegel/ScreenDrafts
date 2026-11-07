@@ -188,6 +188,8 @@ export interface DrafterHonorificSummary {
 
 export interface PredictionEntry {
   mediaTitle: string;
+  tmdbId: number | null;
+  orderIndex: number | null;
   isCorrect: boolean | null;
 }
 
@@ -197,6 +199,7 @@ export interface PredictionSummary {
   shootsTheMoon: boolean;
   pointsAwarded: number;
   entries: PredictionEntry[];
+  isRanked: boolean;
 }
 
 export interface SeasonStanding {
