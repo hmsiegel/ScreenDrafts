@@ -1308,7 +1308,7 @@ export async function setDraftPartRelease(
 export async function setDraftEpisodeNumber(
   accessToken: string,
   draftPublicId: string,
-  episodeNumber: number,
+  episodeNumber: number | null,
   releaseChannel = 0
 ): Promise<void> {
   const res = await fetch(

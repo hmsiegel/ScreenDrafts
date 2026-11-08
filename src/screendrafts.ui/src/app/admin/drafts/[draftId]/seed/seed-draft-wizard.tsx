@@ -69,6 +69,14 @@ function deriveInitialStepIndex(detail: AdminDraftDetail, part: PartSummary, ste
   const indexOf = (key: StepKey) => steps.findIndex((s) => s.key === key);
 
   if (detail.episodeNumber == null) return indexOf("episode"); // episode
+
+  // Patreon drafts may have no episode number, so only force the episode
+  // step while the part has not started
+
+  if (detail.episodeNumber == null && part.status.name === "Created"){
+    return indexOf("episode");
+  }
+
   if (part.status.name === "InProgress") {
     // trivia/speed self-hydrates and is skippable/resumable, so landing here
     // is a fast click-through if it's already done, but won't silently skip

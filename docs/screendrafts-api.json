@@ -10060,7 +10060,12 @@
             "format": "int32"
           },
           "mediaType": {
-            "$ref": "#/components/schemas/MediaType"
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           },
           "tvSeriesTmdbId": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -12043,7 +12048,8 @@
           "sourceKind",
           "isLocked",
           "entries",
-          "surrogates"
+          "surrogates",
+          "isRanked"
         ],
         "type": "object",
         "properties": {
@@ -12094,6 +12100,9 @@
             "items": {
               "$ref": "#/components/schemas/SurrogateAssignmentResponse"
             }
+          },
+          "isRanked": {
+            "type": "boolean"
           }
         }
       },
@@ -15907,6 +15916,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/VetoHistoryItem"
+            }
+          },
+          "vetoOverrideHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VetoOverrideHistoryItem"
             }
           }
         }
@@ -20036,6 +20051,29 @@
             ],
             "format": "int32"
           },
+          "releaseDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subDraftIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "playOrder": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -22781,6 +22819,7 @@
           "episodeNumber": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
+              "null",
               "integer",
               "string"
             ],
@@ -24203,6 +24242,29 @@
             ],
             "format": "int32"
           },
+          "releaseDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subDraftIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "playOrder": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -24233,6 +24295,92 @@
             ]
           },
           "overrideByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "VetoOverrideHistoryItem": {
+        "required": [
+          "draft",
+          "targetPickPublicId",
+          "moviePublicId",
+          "movieTitle"
+        ],
+        "type": "object",
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/DraftBrief"
+          },
+          "targetPickPublicId": {
+            "type": "string"
+          },
+          "position": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "releaseDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "partIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "subDraftIndex": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "playOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "moviePublicId": {
+            "type": "string"
+          },
+          "movieTitle": {
+            "type": "string"
+          },
+          "pickPlayedByPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "pickPlayedByDisplayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vetoedByPublicId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "vetoedByDisplayName": {
             "type": [
               "null",
               "string"
