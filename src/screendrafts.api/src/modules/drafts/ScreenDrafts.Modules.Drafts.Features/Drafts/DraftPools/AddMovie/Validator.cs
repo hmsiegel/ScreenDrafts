@@ -7,9 +7,14 @@ internal sealed class Validator : AbstractValidator<AddMovieToDraftPoolRequest>
     RuleFor(x => x.PublicId)
       .NotEmpty()
       .WithMessage("PublicId is required.")
-      .Must(publicId => PublicIdGuards.IsValidWithPrefix(publicId, PublicIdPrefixes.DraftPool))
+      .Must(publicId => PublicIdGuards.IsValidWithPrefix(publicId, PublicIdPrefixes.Draft))
       .WithMessage("PublicId is invalid.");
+
     RuleFor(x => x.TmdbId).GreaterThan(0).WithMessage("TmdbId must be greater than 0.");
+
+    RuleFor(x => x.MediaType)
+      .Must(value => MediaType.TryFromValue(value, out _))
+      .WithMessage("MediaType is invalid.");
 
     RuleFor(x => x.TvSeriesTmdbId)
       .NotNull()
