@@ -14036,7 +14036,7 @@ export interface AddMovieToDraftBoardRequest {
 export interface AddMovieToDraftPoolRequest {
     publicId?: string;
     tmdbId?: number;
-    mediaType: MediaType;
+    mediaType: number;
     tvSeriesTmdbId?: number | undefined;
     seasonNumber?: number | undefined;
     episodeNumber?: number | undefined;
@@ -14730,6 +14730,7 @@ export interface DraftPartPredictionResponse {
     entries: PredictionEntryResponse[];
     result?: PredictionResultResponse | undefined;
     surrogates: SurrogateAssignmentResponse[];
+    isRanked: boolean;
 
     [key: string]: any;
 }
@@ -15848,6 +15849,7 @@ export interface GetParticipantProfileResponse {
     hostStats?: HostStatsResponse | undefined;
     draftHistory?: DraftHistoryItem[];
     vetoHistory?: VetoHistoryItem[];
+    vetoOverrideHistory?: VetoOverrideHistoryItem[];
 
     [key: string]: any;
 }
@@ -17030,6 +17032,9 @@ export interface PersonResponse {
 
 export interface PickItem {
     position?: number;
+    releaseDate?: Date | undefined;
+    partIndex?: number;
+    subDraftIndex?: number;
     playOrder?: number;
     moviePublicId: string;
     movieTitle: string;
@@ -17918,7 +17923,7 @@ export interface SetDraftScheduleRequest {
 export interface SetEpisodeNumberRequest {
     publicId?: string;
     releaseChannel?: number;
-    episodeNumber?: number;
+    episodeNumber?: number | undefined;
 
     [key: string]: any;
 }
@@ -18381,6 +18386,9 @@ export interface VetoHistoryItem {
     draft: DraftBrief;
     targetPickPublicId: string;
     position?: number;
+    releaseDate?: Date | undefined;
+    partIndex?: number;
+    subDraftIndex?: number;
     playOrder?: number;
     moviePublicId: string;
     movieTitle: string;
@@ -18389,6 +18397,24 @@ export interface VetoHistoryItem {
     wasVetoOverridden?: boolean;
     overrideByPublicId?: string | undefined;
     overrideByDisplayName?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface VetoOverrideHistoryItem {
+    draft: DraftBrief;
+    targetPickPublicId: string;
+    position?: number;
+    releaseDate?: Date | undefined;
+    partIndex?: number;
+    subDraftIndex?: number;
+    playOrder?: number;
+    moviePublicId: string;
+    movieTitle: string;
+    pickPlayedByPublicId?: string | undefined;
+    pickPlayedByDisplayName?: string | undefined;
+    vetoedByPublicId?: string | undefined;
+    vetoedByDisplayName?: string | undefined;
 
     [key: string]: any;
 }

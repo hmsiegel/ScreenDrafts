@@ -22,7 +22,7 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<AddMovieToDraftPoolRequest
     {
       PublicId = req.PublicId,
       TmdbId = req.TmdbId,
-      MediaType = req.MediaType,
+      MediaType = MediaType.FromValue(req.MediaType),
       TvSeriesTmdbId = req.TvSeriesTmdbId,
       SeasonNumber = req.SeasonNumber,
       EpisodeNumber = req.EpisodeNumber,

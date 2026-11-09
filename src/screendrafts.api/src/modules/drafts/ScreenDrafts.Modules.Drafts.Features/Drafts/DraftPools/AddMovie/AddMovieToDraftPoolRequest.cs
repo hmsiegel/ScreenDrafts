@@ -6,7 +6,7 @@ internal sealed record AddMovieToDraftPoolRequest
   public string PublicId { get; init; } = default!;
 
   public int TmdbId { get; init; }
-  public required MediaType MediaType { get; init; }
+  public required int MediaType { get; init; }
   public int? TvSeriesTmdbId { get; init; }
   public int? SeasonNumber { get; init; }
   public int? EpisodeNumber { get; init; }
