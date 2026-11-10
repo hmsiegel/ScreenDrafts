@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
+namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
 
 internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFactory)
   : IQueryHandler<ListMediaQuery, ListMediaResponse>
@@ -8,13 +8,32 @@ internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFac
     CancellationToken cancellationToken
   )
   {
+    // Role only matters alongside a person. A malformed key or unknown role fails loudly
+    // rather than silently widening the filter.
+    PersonKey? personKey = null;
+    IReadOnlyList<MediaCreditRoles.CreditSource> creditSources = [];
+    if (!string.IsNullOrWhiteSpace(request.PersonKey))
+    {
+      if (!PersonKey.TryParse(request.PersonKey, out var parsedKey))
+      {
+        return Result.Failure<ListMediaResponse>(MediaErrors.InvalidPersonKey);
+      }
+
+      if (!MediaCreditRoles.TryResolve(request.Role, out creditSources))
+      {
+        return Result.Failure<ListMediaResponse>(MediaErrors.InvalidCreditRole);
+      }
+
+      personKey = parsedKey;
+    }
+
     await using var connection = await dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
     var page = request.Page < 1 ? 1 : request.Page;
     var pageSize = request.PageSize is < 1 or > 100 ? 24 : request.PageSize;
     var offset = (page - 1) * pageSize;
 
-    var (whereClause, parameters) = BuildWhere(request);
+    var (whereClause, parameters) = BuildWhere(request, creditSources, personKey);
     var orderClause = BuildOrder(request.Sort);
 
     var countSql = $"""
@@ -75,7 +94,11 @@ internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFac
     );
   }
 
-  private static (string Clause, DynamicParameters Params) BuildWhere(ListMediaQuery request)
+  private static (string Clause, DynamicParameters Params) BuildWhere(
+    ListMediaQuery request,
+    IReadOnlyList<MediaCreditRoles.CreditSource> creditSources,
+    PersonKey? personKey
+  )
   {
     var conditions = new List<string>();
     var p = new DynamicParameters();
@@ -96,6 +119,35 @@ internal sealed class ListMediaQueryHandler(IDbConnectionFactory dbConnectionFac
     {
       conditions.Add("m.year LIKE @Year");
       p.Add("Year", $"{request.Year.Trim()}%");
+    }
+
+    if (personKey is { } key && creditSources.Count > 0)
+    {
+      // One EXISTS per credit table, OR-ed together. Table and column names come from
+      // MediaCreditRoles' fixed list; the person identity is a bound parameter. A person
+      // is matched by TMDb ID when they have one, otherwise by IMDb ID -- about four in
+      // five people predate the TMDb import and have tmdb_id = 0.
+      var exists = creditSources.Select(
+        (s, i) =>
+        {
+          var match = key.TmdbId.HasValue
+            ? $"p{i}.tmdb_id = @PersonTmdbId"
+            : $"p{i}.imdb_id = @PersonImdbId";
+
+          return $"EXISTS (SELECT 1 FROM {s.Table} c{i} JOIN movies.people p{i} ON p{i}.id = c{i}.{s.PersonColumn} WHERE c{i}.media_id = m.id AND {match})";
+        }
+      );
+
+      conditions.Add($"({string.Join(" OR ", exists)})");
+
+      if (key.TmdbId.HasValue)
+      {
+        p.Add("PersonTmdbId", key.TmdbId.Value);
+      }
+      else
+      {
+        p.Add("PersonImdbId", key.ImdbId);
+      }
     }
 
     var clause = conditions.Count > 0 ? "WHERE " + string.Join(" AND ", conditions) : string.Empty;

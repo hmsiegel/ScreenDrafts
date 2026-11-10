@@ -8151,6 +8151,47 @@
         ]
       }
     },
+    "/media/people": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "Media.SearchPeople",
+        "requestBody": {
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchMediaPeopleRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchMediaPeopleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchMediaPeopleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/media/search-games": {
       "get": {
         "tags": [
@@ -8223,6 +8264,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request"
           }
         },
         "security": [
@@ -17735,6 +17779,21 @@
               "null",
               "string"
             ]
+          },
+          "personTmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "role": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -18314,6 +18373,41 @@
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "MediaPersonResponse": {
+        "required": [
+          "tmdbId",
+          "name",
+          "titleCount"
+        ],
+        "type": "object",
+        "properties": {
+          "tmdbId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "imdbId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "titleCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
               "integer",
               "string"
             ],
@@ -22046,6 +22140,45 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ImdbPersonSearchResult"
+            }
+          }
+        }
+      },
+      "SearchMediaPeopleRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "role": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "limit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "SearchMediaPeopleResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaPersonResponse"
             }
           }
         }

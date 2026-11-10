@@ -41,6 +41,16 @@ public static class MediaErrors
     "The search query is required."
   );
 
+  public static readonly SDError InvalidCreditRole = SDError.Failure(
+    "Media.InvalidCreditRole",
+    "The credit role must be one of: any, actor, director, writer, producer."
+  );
+
+  public static readonly SDError InvalidPersonKey = SDError.Failure(
+    "Media.InvalidPersonKey",
+    "The person key must look like t:123 or i:nm0000123."
+  );
+
   public static readonly SDError IgdbIdRequiredForVideoGames = SDError.Failure(
     "Media.IgdbIdRequiredForVideoGames",
     "The IGDB ID is required for video games."

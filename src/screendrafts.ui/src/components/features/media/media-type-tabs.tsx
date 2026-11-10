@@ -15,9 +15,20 @@ interface MediaTypeTabsProps {
   sort: string;
   q?: string;
   year?: string;
+  personKey?: string;
+  personName?: string;
+  role?: string;
 }
 
-export default function MediaTypeTabs({ mediaType, sort, q, year }: MediaTypeTabsProps) {
+export default function MediaTypeTabs({
+  mediaType,
+  sort,
+  q,
+  year,
+  personKey,
+  personName,
+  role,
+}: MediaTypeTabsProps) {
   const router = useRouter();
 
   function handleTab(value: string) {
@@ -25,6 +36,11 @@ export default function MediaTypeTabs({ mediaType, sort, q, year }: MediaTypeTab
     if (value) qs.set("mediaType", value);
     if (q) qs.set("q", q);
     if (year) qs.set("year", year);
+    if (personKey) {
+      qs.set("personKey", personKey);
+      qs.set("personName", personName ?? "");
+      qs.set("role", role ?? "any");
+    }
     router.push(`?${qs.toString()}`);
   }
 

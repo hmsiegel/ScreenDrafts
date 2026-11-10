@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
+namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
 
 internal sealed class Endpoint : ScreenDraftsEndpoint<ListMediaRequest, ListMediaResponse>
 {
@@ -9,7 +9,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListMediaRequest, ListMedi
     {
       x.WithTags(MoviesOpenApi.Tags.Media)
         .WithName(MoviesOpenApi.Names.Media_ListMedia)
-        .Produces<ListMediaResponse>(StatusCodes.Status200OK);
+        .Produces<ListMediaResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest);
     });
     AllowAnonymous();
   }
@@ -24,6 +25,8 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ListMediaRequest, ListMedi
       MediaType = req.MediaType,
       Year = req.Year,
       Sort = req.Sort,
+      PersonKey = req.PersonKey,
+      Role = req.Role,
     };
 
     var result = await Sender.Send(query, ct);

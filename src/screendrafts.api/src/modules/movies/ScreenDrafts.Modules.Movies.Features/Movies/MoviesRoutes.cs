@@ -14,4 +14,5 @@ internal static class MoviesRoutes
   internal const string MediaByIgdbIds = Base + "/by-igdb-ids";
   internal const string YouTubeMediaSearch = Base + "/search-youtube";
   internal const string PersonFilmographyMedia = Base + "/person-filmography";
+  internal const string MediaPeople = Base + "/people";
 }

@@ -971,6 +971,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    media_SearchPeople(body: SearchMediaPeopleRequest): Promise<SearchMediaPeopleResponse>;
+
+    /**
+     * @return OK
+     */
     media_SearchGames(body: SearchGamesMediaRequest): Promise<SearchGamesMediaResponse>;
 
     /**
@@ -11169,6 +11174,51 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    media_SearchPeople(body: SearchMediaPeopleRequest, signal?: AbortSignal): Promise<SearchMediaPeopleResponse> {
+        let url_ = this.baseUrl + "/media/people";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_SearchPeople(_response);
+        });
+    }
+
+    protected processMedia_SearchPeople(response: Response): Promise<SearchMediaPeopleResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as SearchMediaPeopleResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchMediaPeopleResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     media_SearchGames(body: SearchGamesMediaRequest, signal?: AbortSignal): Promise<SearchGamesMediaResponse> {
         let url_ = this.baseUrl + "/media/search-games";
         url_ = url_.replace(/[?&]$/, "");
@@ -11243,6 +11293,10 @@ export class Client implements IClient {
             let result200: any = null;
             result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListMediaResponse;
             return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
@@ -16450,6 +16504,8 @@ export interface ListMediaRequest {
     mediaType?: number | undefined;
     year?: string | undefined;
     sort?: string | undefined;
+    personTmdbId?: number | undefined;
+    role?: string | undefined;
 
     [key: string]: any;
 }
@@ -16624,6 +16680,15 @@ export interface MediaListItemResponse {
     image?: string | undefined;
     imdbId?: string | undefined;
     tmdbId?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface MediaPersonResponse {
+    tmdbId: number;
+    name: string;
+    imdbId?: string | undefined;
+    titleCount: number;
 
     [key: string]: any;
 }
@@ -17657,6 +17722,20 @@ export interface SearchImdbPeopleRequest {
 
 export interface SearchImdbPeopleResponse {
     results?: ImdbPersonSearchResult[];
+
+    [key: string]: any;
+}
+
+export interface SearchMediaPeopleRequest {
+    query?: string | undefined;
+    role?: string | undefined;
+    limit?: number;
+
+    [key: string]: any;
+}
+
+export interface SearchMediaPeopleResponse {
+    items: MediaPersonResponse[];
 
     [key: string]: any;
 }
