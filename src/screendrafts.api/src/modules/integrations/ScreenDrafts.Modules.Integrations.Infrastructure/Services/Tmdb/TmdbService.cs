@@ -423,31 +423,61 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     };
   }
 
+  // TmdbService is a transient typed client, so the cache is static to span requests.
+  // Only completed lookups are stored (a null value means TMDb has no IMDb id for that
+  // person); a failed call throws before reaching the cache and is retried next time.
+  private static readonly System.Collections.Concurrent.ConcurrentDictionary<
+    int,
+    string?
+  > PersonImdbIdCache = new();
+
   private async Task<Dictionary<int, string>> FetchPersonImdbIdsAsync(
     IReadOnlyList<int> personIds,
     CancellationToken cancellationToken
   )
   {
     var result = new Dictionary<int, string>();
+    var uncached = new List<int>();
 
-    foreach (var batch in personIds.Chunk(20))
+    foreach (var id in personIds)
     {
-      var tasks = batch.Select(async id =>
+      if (PersonImdbIdCache.TryGetValue(id, out var cachedImdbId))
       {
-        var imdbId = await GetPersonImdbIdAsync(id, cancellationToken);
-        return (Id: id, ImdbId: imdbId);
-      });
+        if (cachedImdbId is not null)
+        {
+          result[id] = cachedImdbId;
+        }
+      }
+      else
+      {
+        uncached.Add(id);
+      }
+    }
+
+    var batches = uncached.Chunk(20).ToList();
+    for (var b = 0; b < batches.Count; b++)
+    {
+      var tasks = batches[b]
+        .Select(async id =>
+        {
+          var imdbId = await GetPersonImdbIdAsync(id, cancellationToken);
+          return (Id: id, ImdbId: imdbId);
+        });
 
       var results = await Task.WhenAll(tasks);
       foreach (var (id, imdbId) in results)
       {
+        PersonImdbIdCache[id] = imdbId;
         if (imdbId is not null)
         {
           result[id] = imdbId;
         }
       }
 
-      await Task.Delay(500, cancellationToken); // TMDb rate limits to 40 requests per 10 seconds, so delay between batches
+      if (b < batches.Count - 1)
+      {
+        await Task.Delay(500, cancellationToken); // TMDb rate limits to 40 requests per 10 seconds, so delay between batches
+      }
     }
 
     return result;

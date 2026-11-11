@@ -78,17 +78,29 @@ internal sealed class MediaPeopleAttacher(
 
     if (actors is not null)
     {
+      // List position is TMDb billing order: the Integrations module maps the cast
+      // in TMDb's order and nothing between there and here reorders it.
+      var billingOrder = 0;
       foreach (var a in actors)
       {
         var person = await GetOrCreatePersonAsync(a.Name, a.ImdbId, a.TmdbId);
-        if (
-          person is not null
-          && addedActors.Add(person.Id.Value)
-          && media.MediaActors.All(ma => ma.ActorId != person.Id)
-        )
+        if (person is null || !addedActors.Add(person.Id.Value))
         {
-          _mediaRepository.AddMediaActor(media, person);
+          continue;
         }
+
+        var existing = media.MediaActors.FirstOrDefault(ma => ma.ActorId == person.Id);
+        if (existing is null)
+        {
+          _mediaRepository.AddMediaActor(media, person, billingOrder);
+        }
+        else if (existing.BillingOrder != billingOrder)
+        {
+          // Resync backfills (or corrects) billing order on rows imported before the column existed.
+          existing.SetBillingOrder(billingOrder);
+        }
+
+        billingOrder++;
       }
     }
 
@@ -127,9 +139,18 @@ internal sealed class MediaPeopleAttacher(
     if (productionCompanies is not null)
     {
       var companiesCache = new Dictionary<int, ProductionCompany>();
+      var addedCompanies = new HashSet<int>();
 
       foreach (var company in productionCompanies)
       {
+        // TMDb can list the same company twice on one title. RelationshipExistsAsync only
+        // sees saved rows, so without this the second Add collides with the first in the
+        // change tracker.
+        if (!addedCompanies.Add(company.TmdbId))
+        {
+          continue;
+        }
+
         if (!companiesCache.TryGetValue(company.TmdbId, out var productionCompany))
         {
           productionCompany = await _productionCompanyRepository.FindByTmdbIdAsync(

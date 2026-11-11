@@ -44,6 +44,16 @@ public sealed record MediaResponse
 
   public void AddActor(ActorResponse actor) => _actors.Add(actor);
 
+  public void SortActorsByBilling()
+  {
+    var sorted = _actors
+      .OrderBy(a => a.BillingOrder ?? int.MaxValue)
+      .ThenBy(a => a.Name, StringComparer.OrdinalIgnoreCase)
+      .ToList();
+    _actors.Clear();
+    _actors.AddRange(sorted);
+  }
+
   public void AddDirector(DirectorResponse director) => _directors.Add(director);
 
   public void AddWriter(WriterResponse writer) => _writers.Add(writer);

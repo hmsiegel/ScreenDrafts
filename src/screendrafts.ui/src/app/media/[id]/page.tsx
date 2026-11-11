@@ -171,7 +171,7 @@ export default async function MediaDetailPage({ params }: Props) {
 
             {directors.length > 0 && <CreditsCard title="DIRECTED BY" credits={directors} kind="person" />}
             {writers.length > 0 && <CreditsCard title="WRITTEN BY" credits={writers} kind="person" />}
-            {actors.length > 0 && <CreditsCard title="CAST" credits={actors.slice(0, 5)} kind="person" />}
+            {actors.length > 0 && <CreditsCard title="CAST" credits={actors} kind="person" visibleCount={CAST_VISIBLE} />}
             {companies.length > 0 && <CreditsCard title="PRODUCTION" credits={companies} kind="company" />}
           </div>
 
@@ -297,6 +297,9 @@ function StatsCard({
   );
 }
 
+// Cast arrives in TMDb billing order; show the top billed, fold the rest.
+const CAST_VISIBLE = 8;
+
 // ── Credits card ──────────────────────────────────────────────────────────────
 
 interface CreditEntry {
@@ -344,38 +347,63 @@ function creditHref(
   return null;
 }
 
+function CreditLink({
+  credit,
+  kind,
+}: {
+  credit: CreditEntry;
+  kind: "person" | "company";
+}) {
+  const href = creditHref(kind, credit.tmdbId, credit.imdbId);
+  const className = "font-oswald text-[15px] text-sd-ink leading-tight";
+  return href ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${className} hover:text-sd-blue transition-colors`}
+    >
+      {credit.name}
+    </a>
+  ) : (
+    <span className={className}>{credit.name}</span>
+  );
+}
+
 function CreditsCard({
   title,
   credits,
   kind,
+  visibleCount,
 }: {
   title: string;
   credits: CreditEntry[];
   kind: "person" | "company";
+  visibleCount?: number;
 }) {
+  const limit = visibleCount ?? credits.length;
+  const shown = credits.slice(0, limit);
+  const rest = credits.slice(limit);
   return (
     <div className="order-2 lg:order-0 bg-white border-2 border-sd-ink p-5">
       <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-3">{title}</h2>
       <div className="flex flex-col gap-1.5">
-        {credits.map((credit, i) => {
-          const href = creditHref(kind, credit.tmdbId, credit.imdbId);
-          return href ? (
-            <a
-              key={i}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-oswald text-[15px] text-sd-ink leading-tight hover:text-sd-blue transition-colors"
-            >
-              {credit.name}
-            </a>
-          ) : (
-            <span key={i} className="font-oswald text-[15px] text-sd-ink leading-tight">
-              {credit.name}
-            </span>
-          );
-        })}
+        {shown.map((credit, i) => (
+          <CreditLink key={i} credit={credit} kind={kind} />
+        ))}
       </div>
+      {rest.length > 0 && (
+        <details className="group mt-1.5">
+          <summary className="cursor-pointer list-none font-mono text-[11px] text-sd-ink/50 hover:text-sd-blue select-none group-open:hidden">
+            + {rest.length} more
+          </summary>
+          <div className="flex flex-col gap-1.5">
+            {rest.map((credit, i) => (
+              <CreditLink key={i} credit={credit} kind={kind} />
+            ))}
+          </div>
+        </details>
+      )}
     </div>
   );
 }

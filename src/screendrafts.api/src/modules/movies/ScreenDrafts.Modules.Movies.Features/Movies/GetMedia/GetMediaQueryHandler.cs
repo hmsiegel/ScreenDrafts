@@ -47,6 +47,7 @@ internal sealed class GetMediaQueryHandler(
         a.imdb_id                                           AS {nameof(ActorResponse.ImdbId)},
         a.tmdb_id                                           AS {nameof(ActorResponse.TmdbId)},
         a.name                                              AS {nameof(ActorResponse.Name)},
+        ma.billing_order                                    AS {nameof(ActorResponse.BillingOrder)},
         d.id                                                AS {nameof(DirectorResponse.Id)},
         d.imdb_id                                           AS {nameof(DirectorResponse.ImdbId)},
         d.tmdb_id                                           AS {nameof(DirectorResponse.TmdbId)},
@@ -170,6 +171,8 @@ internal sealed class GetMediaQueryHandler(
     );
 
     var result = mediaDictionary.Values.FirstOrDefault();
+
+    result?.SortActorsByBilling();
 
     if (result is null)
     {
