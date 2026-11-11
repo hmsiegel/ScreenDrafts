@@ -343,6 +343,33 @@ internal sealed class TmdbService(HttpClient httpClient, IOptions<TmdbSettings> 
     };
   }
 
+  public async Task<TmdbPersonProfile?> GetPersonProfileAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    try
+    {
+      var person = await _httpClient.GetFromJsonAsync<TmdbPersonResultApiResponse>(
+        $"person/{tmdbPersonId}",
+        cancellationToken
+      );
+
+      return person is null
+        ? null
+        : new TmdbPersonProfile
+        {
+          TmdbId = person.Id,
+          Name = person.Name,
+          PhotoUrl = BuildPosterUrl(person.ProfilePath)?.ToString(),
+        };
+    }
+    catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+    {
+      return null;
+    }
+  }
+
   public async Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
     int tmdbPersonId,
     CancellationToken cancellationToken = default

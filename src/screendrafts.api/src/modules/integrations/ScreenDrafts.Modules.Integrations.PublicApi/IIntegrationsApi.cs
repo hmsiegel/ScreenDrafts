@@ -27,6 +27,16 @@ public interface IIntegrationsApi
     CancellationToken cancellationToken = default
   );
 
+  /// <summary>
+  /// A person's name and photo from TMDb. Looks up by TMDb ID when it is above zero, otherwise
+  /// by IMDb ID (people imported before TMDb IDs were stored have only the latter).
+  /// </summary>
+  Task<Result<PersonProfileApiResponse>> GetPersonProfileAsync(
+    int tmdbId,
+    string? imdbId,
+    CancellationToken cancellationToken = default
+  );
+
   Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
     PodcastPlatform platform,
     DateOnly releasedOnOrAfter,

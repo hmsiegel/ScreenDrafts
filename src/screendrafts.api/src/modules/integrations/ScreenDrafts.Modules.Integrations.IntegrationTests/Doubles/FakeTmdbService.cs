@@ -103,6 +103,11 @@ public sealed class FakeTmdbService : ITmdbService
     CancellationToken cancellationToken = default
   ) => Task.FromResult<TmdbPersonProfile?>(null);
 
+  public Task<TmdbPersonProfile?> GetPersonProfileAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult<TmdbPersonProfile?>(null);
+
   public Task<IReadOnlyList<TmdbPersonCredit>> GetPersonCombinedCreditsAsync(
     int tmdbPersonId,
     CancellationToken cancellationToken = default

@@ -330,20 +330,17 @@ function dedupeCredits(
   return result;
 }
 
-// TMDb when available, IMDb as fallback when only an IMDb id is present.
-// People and companies use different URL segments on both sites.
-function creditHref(
-  kind: "person" | "company",
-  tmdbId: number | undefined,
-  imdbId: string | undefined
-): string | null {
-  if (tmdbId && tmdbId > 0) {
-    return `https://www.themoviedb.org/${kind}/${tmdbId}`;
-  }
-  if (imdbId) {
-    const imdbSegment = kind === "person" ? "name" : "company";
-    return `https://www.imdb.com/${imdbSegment}/${imdbId}/`;
-  }
+// People link to their cast/crew page: the TMDb id when there is one, otherwise the IMDb id.
+function personPath(tmdbId: number | undefined, imdbId: string | undefined): string | null {
+  if (tmdbId && tmdbId > 0) return `/cast-crew/${tmdbId}`;
+  if (imdbId) return `/cast-crew/${imdbId}`;
+  return null;
+}
+
+// Companies have no page of their own, so they link out: TMDb when available, IMDb otherwise.
+function companyHref(tmdbId: number | undefined, imdbId: string | undefined): string | null {
+  if (tmdbId && tmdbId > 0) return `https://www.themoviedb.org/company/${tmdbId}`;
+  if (imdbId) return `https://www.imdb.com/company/${imdbId}/`;
   return null;
 }
 
@@ -354,15 +351,23 @@ function CreditLink({
   credit: CreditEntry;
   kind: "person" | "company";
 }) {
-  const href = creditHref(kind, credit.tmdbId, credit.imdbId);
   const className = "font-oswald text-[15px] text-sd-ink leading-tight";
+  const hover = "hover:text-sd-blue transition-colors";
+
+  if (kind === "person") {
+    const path = personPath(credit.tmdbId, credit.imdbId);
+    return path ? (
+      <Link href={path} className={`${className} ${hover}`}>
+        {credit.name}
+      </Link>
+    ) : (
+      <span className={className}>{credit.name}</span>
+    );
+  }
+
+  const href = companyHref(credit.tmdbId, credit.imdbId);
   return href ? (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`${className} hover:text-sd-blue transition-colors`}
-    >
+    <a href={href} target="_blank" rel="noopener noreferrer" className={`${className} ${hover}`}>
       {credit.name}
     </a>
   ) : (

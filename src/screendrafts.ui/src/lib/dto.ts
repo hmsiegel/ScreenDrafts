@@ -991,6 +991,11 @@ export interface IClient {
     /**
      * @return OK
      */
+    media_ListPeople(body: ListMediaPeopleRequest): Promise<ListMediaPeopleResponse>;
+
+    /**
+     * @return OK
+     */
     media_GetPersonFilmography(body: GetPersonFilmographyMediaRequest): Promise<GetPersonFilmographyMediaResponse>;
 
     /**
@@ -1007,6 +1012,11 @@ export interface IClient {
      * @return OK
      */
     media_GetPublicIdByImdbId(body: GetMediaPublicIdByImdbIdRequest): Promise<GetMediaPublicIdByImdbIdResponse>;
+
+    /**
+     * @return OK
+     */
+    media_GetPerson(body: GetMediaPersonRequest): Promise<MediaPersonProfileResponse>;
 
     /**
      * @return OK
@@ -11362,6 +11372,51 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    media_ListPeople(body: ListMediaPeopleRequest, signal?: AbortSignal): Promise<ListMediaPeopleResponse> {
+        let url_ = this.baseUrl + "/media/people/browse";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_ListPeople(_response);
+        });
+    }
+
+    protected processMedia_ListPeople(response: Response): Promise<ListMediaPeopleResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as ListMediaPeopleResponse;
+            return result200;
+            });
+        } else if (status === 400) {
+            return response.text().then((_responseText) => {
+            return throwException("Bad Request", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ListMediaPeopleResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     media_GetPersonFilmography(body: GetPersonFilmographyMediaRequest, signal?: AbortSignal): Promise<GetPersonFilmographyMediaResponse> {
         let url_ = this.baseUrl + "/media/person-filmography";
         url_ = url_.replace(/[?&]$/, "");
@@ -11549,6 +11604,51 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<GetMediaPublicIdByImdbIdResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetPerson(body: GetMediaPersonRequest, signal?: AbortSignal): Promise<MediaPersonProfileResponse> {
+        let url_ = this.baseUrl + "/media/people/{id}";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "GET",
+            signal,
+            headers: {
+                "Content-Type": "*/*",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetPerson(_response);
+        });
+    }
+
+    protected processMedia_GetPerson(response: Response): Promise<MediaPersonProfileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MediaPersonProfileResponse;
+            return result200;
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+            return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MediaPersonProfileResponse>(null as any);
     }
 
     /**
@@ -13968,6 +14068,7 @@ export interface ActorResponse {
     imdbId?: string;
     tmdbId?: number;
     name?: string;
+    billingOrder?: number | undefined;
 
     [key: string]: any;
 }
@@ -15769,6 +15870,12 @@ export interface GetMediaByTmdbIdsResponse {
     [key: string]: any;
 }
 
+export interface GetMediaPersonRequest {
+    id?: string;
+
+    [key: string]: any;
+}
+
 export interface GetMediaPublicIdByImdbIdRequest {
     imdbId?: string;
 
@@ -16497,6 +16604,22 @@ export interface ListLatestDraftsResponse {
     [key: string]: any;
 }
 
+export interface ListMediaPeopleRequest {
+    page?: number;
+    pageSize?: number;
+    search?: string | undefined;
+    role?: string | undefined;
+    sort?: string | undefined;
+
+    [key: string]: any;
+}
+
+export interface ListMediaPeopleResponse {
+    result: PagedResultOfMediaPersonListItemResponse;
+
+    [key: string]: any;
+}
+
 export interface ListMediaRequest {
     page?: number;
     pageSize?: number;
@@ -16504,7 +16627,7 @@ export interface ListMediaRequest {
     mediaType?: number | undefined;
     year?: string | undefined;
     sort?: string | undefined;
-    personTmdbId?: number | undefined;
+    personKey?: string | undefined;
     role?: string | undefined;
 
     [key: string]: any;
@@ -16684,10 +16807,48 @@ export interface MediaListItemResponse {
     [key: string]: any;
 }
 
-export interface MediaPersonResponse {
-    tmdbId: number;
+export interface MediaPersonCreditGroupResponse {
+    role?: string;
+    credits?: MediaPersonCreditResponse[];
+
+    [key: string]: any;
+}
+
+export interface MediaPersonCreditResponse {
+    mediaPublicId?: string;
+    title?: string;
+    year?: string | undefined;
+    posterUrl?: string | undefined;
+    mediaType?: MediaType;
+    billingOrder?: number | undefined;
+
+    [key: string]: any;
+}
+
+export interface MediaPersonListItemResponse {
+    id: string;
     name: string;
+    titleCount: number;
+    roles: string[];
+
+    [key: string]: any;
+}
+
+export interface MediaPersonProfileResponse {
+    id?: string;
+    name?: string;
+    tmdbId?: number;
     imdbId?: string | undefined;
+    photoUrl?: string | undefined;
+    titleCount?: number;
+    groups?: MediaPersonCreditGroupResponse[];
+
+    [key: string]: any;
+}
+
+export interface MediaPersonResponse {
+    personKey: string;
+    name: string;
     titleCount: number;
 
     [key: string]: any;
@@ -16900,6 +17061,18 @@ export interface PagedResultOfListSpotlightDraftsResponse {
 
 export interface PagedResultOfMediaListItemResponse {
     items: MediaListItemResponse[];
+    totalCount: number;
+    page: number;
+    pageSize: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    [key: string]: any;
+}
+
+export interface PagedResultOfMediaPersonListItemResponse {
+    items: MediaPersonListItemResponse[];
     totalCount: number;
     page: number;
     pageSize: number;

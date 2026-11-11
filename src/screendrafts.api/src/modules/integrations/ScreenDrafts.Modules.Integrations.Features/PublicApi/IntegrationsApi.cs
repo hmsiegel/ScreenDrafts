@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Features.PublicApi;
+﻿using ScreenDrafts.Modules.Integrations.Features.People.GetPersonProfile;
+
+namespace ScreenDrafts.Modules.Integrations.Features.PublicApi;
 
 internal class IntegrationsApi(ISender sender) : IIntegrationsApi
 {
@@ -138,6 +140,32 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
         PersonName = result.Value.PersonName,
         PersonPhotoPath = result.Value.PersonPhotoUrl,
         Credits = mapped,
+      }
+    );
+  }
+
+  public async Task<Result<PersonProfileApiResponse>> GetPersonProfileAsync(
+    int tmdbId,
+    string? imdbId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var result = await _sender.Send(
+      new GetPersonProfileCommand { TmdbId = tmdbId, ImdbId = imdbId },
+      cancellationToken
+    );
+
+    if (result.IsFailure)
+    {
+      return Result.Failure<PersonProfileApiResponse>(result.Errors);
+    }
+
+    return Result.Success(
+      new PersonProfileApiResponse
+      {
+        TmdbId = result.Value.TmdbId,
+        Name = result.Value.Name,
+        PhotoPath = result.Value.PhotoUrl,
       }
     );
   }

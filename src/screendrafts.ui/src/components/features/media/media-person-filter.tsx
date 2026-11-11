@@ -3,6 +3,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { env } from "@/lib/env";
 // New after NSwag regen (GET /media/people).
@@ -210,6 +211,15 @@ export default function MediaPersonFilter({
       {hasPerson ? (
         <div className="flex items-center gap-2 self-start border border-sd-ink bg-sd-paper px-3 py-1.5">
           <span className="font-oswald text-[14px] leading-tight text-sd-ink">{personName}</span>
+          {personKey && (
+            <Link
+              // "t:31644" -> "31644", "i:nm0000229" -> "nm0000229"
+              href={`/cast-crew/${personKey.slice(2)}`}
+              className="font-mono text-[10px] tracking-widest text-sd-blue transition-colors hover:text-sd-ink"
+            >
+              PROFILE
+            </Link>
+          )}
           <button
             type="button"
             onClick={() => navigate()}

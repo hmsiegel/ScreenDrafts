@@ -143,6 +143,15 @@ public interface ITmdbService
   );
 
   /// <summary>
+  /// A person's name and photo by TMDb person ID — GET /person/{id}. Null if TMDb has no such
+  /// person. The by-IMDb-ID counterpart is FindPersonByImdbIdAsync.
+  /// </summary>
+  Task<TmdbPersonProfile?> GetPersonProfileAsync(
+    int tmdbPersonId,
+    CancellationToken cancellationToken = default
+  );
+
+  /// <summary>
   /// Full filmography (movies + TV, every credit type — cast and crew) via
   /// GET /person/{id}/combined_credits. Not filtered by role; the caller
   /// decides what to do with CreditRole.
