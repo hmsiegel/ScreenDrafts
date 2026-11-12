@@ -43,6 +43,11 @@ public sealed class FakeIntegrationsApi : IIntegrationsApi
     CancellationToken cancellationToken = default
   ) => Task.FromResult(Result.Success(new PersonProfileApiResponse()));
 
+  public Task<Result<OnlineMediaCreditsApiResponse>> GetOnlineMediaCreditsAsync(
+    OnlineMediaCreditsApiRequest request,
+    CancellationToken cancellationToken = default
+  ) => Task.FromResult(Result.Success(new OnlineMediaCreditsApiResponse()));
+
   public Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
     PodcastPlatform platform,
     DateOnly releasedOnOrAfter,

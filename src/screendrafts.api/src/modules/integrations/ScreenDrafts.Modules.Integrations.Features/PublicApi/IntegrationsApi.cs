@@ -170,6 +170,45 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
     );
   }
 
+  public async Task<Result<OnlineMediaCreditsApiResponse>> GetOnlineMediaCreditsAsync(
+    OnlineMediaCreditsApiRequest request,
+    CancellationToken cancellationToken = default
+  )
+  {
+    ArgumentNullException.ThrowIfNull(request);
+
+    var result = await _sender.Send(
+      new GetOnlineMediaCommand
+      {
+        MediaType = MediaType.FromValue(request.MediaType),
+        TmdbId = request.TmdbId,
+        ImdbId = request.ImdbId,
+        TvSeriesTmdbId = request.TvSeriesTmdbId,
+        SeasonNumber = request.SeasonNumber,
+        EpisodeNumber = request.EpisodeNumber,
+      },
+      cancellationToken
+    );
+
+    if (result.IsFailure)
+    {
+      return Result.Failure<OnlineMediaCreditsApiResponse>(result.Errors);
+    }
+
+    var media = result.Value;
+
+    return Result.Success(
+      new OnlineMediaCreditsApiResponse
+      {
+        Directors = [.. media.Directors.Select(d => new OnlineCreditApiResult { Name = d.Name, ImdbId = d.ImdbId, TmdbId = d.TmdbId })],
+        Actors = [.. media.Actors.Select(a => new OnlineCreditApiResult { Name = a.Name, ImdbId = a.ImdbId, TmdbId = a.TmdbId })],
+        Writers = [.. media.Writers.Select(w => new OnlineCreditApiResult { Name = w.Name, ImdbId = w.ImdbId, TmdbId = w.TmdbId })],
+        Producers = [.. media.Producers.Select(p => new OnlineCreditApiResult { Name = p.Name, ImdbId = p.ImdbId, TmdbId = p.TmdbId })],
+        ProductionCompanies = [.. media.ProductionCompanies.Select(c => new OnlineCreditApiResult { Name = c.Name, ImdbId = c.ImdbId, TmdbId = c.TmdbId })],
+      }
+    );
+  }
+
   public async Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
     PodcastPlatform platform,
     DateOnly releasedOnOrAfter,

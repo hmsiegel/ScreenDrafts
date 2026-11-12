@@ -37,6 +37,15 @@ public interface IIntegrationsApi
     CancellationToken cancellationToken = default
   );
 
+  /// <summary>
+  /// Fetches a title's directors, cast, writers, producers and production companies from TMDb.
+  /// Feeds the people resync, which re-attaches them to a title already in the Vault.
+  /// </summary>
+  Task<Result<OnlineMediaCreditsApiResponse>> GetOnlineMediaCreditsAsync(
+    OnlineMediaCreditsApiRequest request,
+    CancellationToken cancellationToken = default
+  );
+
   Task<Result<ListPodcastEpisodesApiResponse>> ListPodcastEpisodesAsync(
     PodcastPlatform platform,
     DateOnly releasedOnOrAfter,
