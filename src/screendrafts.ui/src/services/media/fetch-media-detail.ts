@@ -31,3 +31,16 @@ export async function fetchMediaDetail(publicId: string): Promise<MediaResponse>
 
   return response.json() as Promise<MediaResponse>;
 }
+
+export async function fetchMediaDetailPublic(publicId: string): Promise<MediaResponse | null> {
+  const response = await fetch(`${apiBase}/media/${encodeURIComponent(publicId)}`, {
+    method: "GET",
+    next: { revalidate: 86400, tags: ["media", `media-${publicId}`] },
+  });
+
+  if (response.status === 404 || response.status === 400) return null;
+  if (!response.ok) {
+    throw new Error(`fetchMediaDetailPublic failed: ${response.status} ${response.statusText}`);
+  }
+  return (await response.json()) as MediaResponse;
+}

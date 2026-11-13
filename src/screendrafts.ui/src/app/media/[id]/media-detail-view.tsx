@@ -1,0 +1,481 @@
+// app/media/[id]/media-detail-page.tsx
+import YouTubeEmbed from "@/components/features/media/youtube-embed";
+import { MediaResponse, MediaType, MediaAppearanceResponse, MediaStatsResponse, MediaHonorificResponse } from "@/lib/dto";
+import Link from "next/link";
+import { artifactUrl } from "@/lib/cdn";
+
+export const IMDB_ID_PATTERN = /^tt\d{7,10}$/;
+
+function mediaTypeLabel(mediaType: MediaType | undefined): string {
+  if (!mediaType) return "";
+  const labels: Record<number, string> = {
+    0: "Movie", 1: "TV Show", 2: "TV Episode", 3: "Video Game", 4: "Music Video",
+  };
+  return labels[mediaType.value] ?? mediaType.name ?? "";
+}
+
+function posterInitials(title: string): string {
+  return title.split(" ").slice(0, 2).map((w) => w[0]?.toUpperCase() ?? "").join("");
+}
+
+// ── Honorific display ─────────────────────────────────────────────────────────
+
+const APPEARANCE_HONORIFIC_LABELS: Record<number, { label: string; color: string }> = {
+  1: { label: "MARQUEE OF FAME", color: "bg-sd-blue text-white" },
+  2: { label: "HAT TRICK", color: "bg-sd-red text-white" },
+  3: { label: "GRAND SLAM", color: "bg-sd-red text-white" },
+  4: { label: "HIGH FIVE", color: "bg-sd-ink text-white" },
+};
+
+function HonorificBadges({ honorific }: { honorific: MediaHonorificResponse }) {
+  const badges: { label: string; color: string }[] = [];
+
+  const app = APPEARANCE_HONORIFIC_LABELS[honorific.appearanceHonorificValue];
+  if (app) badges.push(app);
+  if (honorific.isUnifiedNo1) badges.push({ label: "UNIFIED NO. 1", color: "bg-sd-blue text-white" });
+  if (honorific.isTheCycle) badges.push({ label: "THE CYCLE", color: "bg-sd-ink text-white" });
+
+  if (badges.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {badges.map((b) => (
+        <span key={b.label} className={`font-mono text-[9px] tracking-widest px-2 py-1 rounded-xs ${b.color}`}>
+          {b.label}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+export default function MediaDetailPage({ media }: { media: MediaResponse }) {
+
+  const directors = dedupeCredits(media.directors);
+  const actors = dedupeCredits(media.actors);
+  const writers = dedupeCredits(media.writers);
+  const companies = dedupeCredits(media.productionCompanies);
+  const genres = [...new Set(media.genres?.map((g) => g.name).filter(Boolean) as string[] ?? [])];
+
+  const appearances = (media.mediaAppearances ?? []) as MediaAppearanceResponse[];
+  const stats = media.stats as MediaStatsResponse | undefined;
+  const honorific = media.honorific as MediaHonorificResponse | undefined;
+
+  return (
+    <div className="min-h-screen bg-light-blue">
+      {/* Hero */}
+      <div className="relative bg-sd-ink overflow-hidden min-h-60 lg:min-h-90">
+        {media.image && (
+          <img
+            src={media.image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-25"
+          />
+        )}
+        <div className="relative page-x py-10 lg:py-16">
+          <p className="font-mono text-[11px] tracking-widest text-light-blue mb-3">
+            <Link href="/media" className="hover:text-white transition-colors">/ MEDIA</Link>
+            <span className="text-white/40"> / </span>
+            <span>{(media.title ?? "").toUpperCase()}</span>
+          </p>
+
+          <h1 className="font-oswald font-bold text-[40px] sm:text-[52px] lg:text-[64px] leading-[0.95] text-white mb-4 wrap-anywhere">
+            {(media.title ?? "").toUpperCase()}
+          </h1>
+
+          <div className="flex items-center gap-3 flex-wrap mb-4">
+            {media.mediaType && (
+              <span className="font-mono text-[9px] tracking-widest bg-white/20 text-white px-2 py-1 rounded-xs">
+                {mediaTypeLabel(media.mediaType)}
+              </span>
+            )}
+            {media.year && (
+              <span className="font-mono text-[12px] text-white/70">{media.year}</span>
+            )}
+            {genres.map((g, i) => (
+              <span key={i} className="font-mono text-[9px] tracking-widest border border-white/30 text-white/60 px-2 py-1 rounded-xs">
+                {g}
+              </span>
+            ))}
+          </div>
+
+          {honorific && <HonorificBadges honorific={honorific} />}
+        </div>
+      </div>
+
+      {/* Red accent bar */}
+      <div className="h-1 bg-sd-red" />
+
+      {/* Content */}
+      <div className="page-x py-6 lg:py-10 max-w-350 mx-auto">
+        {/* One column below lg, 300px sidebar + appearances from lg.
+            Below lg the sidebar wrapper dissolves (`contents`) so its cards become grid
+            items and can be reordered: poster, stats, appearances, then trailer and credits.
+            Otherwise phones scroll past four credit cards before reaching the appearances. */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-10">
+
+          {/* ── Sidebar ── */}
+          <div className="contents lg:flex lg:flex-col lg:gap-6">
+            <PosterCard media={media} />
+
+            {/* Stats summary */}
+            {stats && stats.timesPlayed > 0 && (
+              <StatsCard stats={stats} honorific={honorific} />
+            )}
+
+            {/* Trailer */}
+            {media.youTubeTrailer && (
+              <div className="order-2 lg:order-0 bg-white border-2 border-sd-ink overflow-hidden">
+                <div className="bg-sd-ink px-5 py-3">
+                  <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red">TRAILER</h2>
+                </div>
+                <YouTubeEmbed url={media.youTubeTrailer} title={`${media.title ?? ""} Trailer`} />
+              </div>
+            )}
+
+            {directors.length > 0 && <CreditsCard title="DIRECTED BY" credits={directors} kind="person" />}
+            {writers.length > 0 && <CreditsCard title="WRITTEN BY" credits={writers} kind="person" />}
+            {actors.length > 0 && <CreditsCard title="CAST" credits={actors} kind="person" visibleCount={CAST_VISIBLE} />}
+            {companies.length > 0 && <CreditsCard title="PRODUCTION" credits={companies} kind="company" />}
+          </div>
+
+          {/* ── Main column ── */}
+          <div className="order-1 lg:order-0 flex flex-col gap-8 min-w-0">
+            <AppearancesSection appearances={appearances} />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ── Poster card ───────────────────────────────────────────────────────────────
+
+function PosterCard({ media }: { media: MediaResponse }) {
+  return (
+    // Below lg the poster sits beside the plot instead of filling the column — full width
+    // on a phone it would be ~500px tall.
+    <div className="bg-white border-2 border-sd-ink overflow-hidden flex items-start lg:block">
+      <div className="relative w-28 sm:w-44 lg:w-full shrink-0 bg-sd-ink overflow-hidden" style={{ aspectRatio: "2 / 3" }}>
+        {media.image ? (
+          <img src={media.image} alt={media.title ?? ""} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center font-oswald font-bold text-[32px] lg:text-[48px] text-white/30 select-none">
+            {posterInitials(media.title ?? "")}
+          </div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0 p-4 sm:p-5 flex flex-col gap-4">
+        {media.plot && (
+          <p className="font-serif text-[15px] italic leading-relaxed text-sd-ink/75">{media.plot}</p>
+        )}
+        {media.imdbId && (
+          <a
+            href={`https://www.imdb.com/title/${media.imdbId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[10px] tracking-widest text-sd-blue hover:text-sd-red transition-colors"
+          >
+            VIEW ON IMDb →
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Honorific banner filenames ────────────────────────────────────────────────
+
+const APPEARANCE_HONORIFIC_BANNERS: Record<number, string> = {
+  1: artifactUrl("Marquee_of_Fame_Banner.webp"),
+  2: artifactUrl("Hat_Trick_Banner.webp"),
+  3: artifactUrl("Grand_Slam_Banner.webp"),
+  4: artifactUrl("High_Five_Banner.webp"),
+};
+
+const POSITION_HONORIFIC_BANNERS: Record<string, string> = {
+  unifiedNo1: artifactUrl("Unified_No._1_Banner.webp"),
+  theCycle: artifactUrl("The_Cycle_Banner.webp"),
+};
+
+// ── Stats card ────────────────────────────────────────────────────────────────
+
+function StatsCard({
+  stats,
+  honorific,
+}: {
+  stats: MediaStatsResponse;
+  honorific?: MediaHonorificResponse;
+}) {
+  const cells = [
+    { label: "PLAYED", value: stats.timesPlayed },
+    { label: "LANDED", value: stats.landedOnBoard },
+    { label: "VETOED", value: stats.timesVetoed },
+    { label: "SAVED", value: stats.timesSaved },
+  ];
+
+  const appearanceBanner = honorific
+    ? APPEARANCE_HONORIFIC_BANNERS[honorific.appearanceHonorificValue]
+    : undefined;
+
+  const positionBanners: string[] = [];
+  if (honorific?.isUnifiedNo1) positionBanners.push(POSITION_HONORIFIC_BANNERS.unifiedNo1);
+  if (honorific?.isTheCycle) positionBanners.push(POSITION_HONORIFIC_BANNERS.theCycle);
+
+  const hasBanners = appearanceBanner || positionBanners.length > 0;
+
+  return (
+    <div className="bg-white border-2 border-sd-ink overflow-hidden">
+      <div className="bg-sd-ink px-5 py-3">
+        <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red">STATS</h2>
+      </div>
+      <div className="grid grid-cols-2 divide-x divide-y divide-sd-ink/10">
+        {cells.map(({ label, value }) => (
+          <div key={label} className="p-4 flex flex-col gap-1">
+            <span className="font-oswald font-bold text-[28px] text-sd-red leading-none">{value}</span>
+            <span className="font-mono text-[9px] tracking-widest text-sd-ink/50">{label}</span>
+          </div>
+        ))}
+      </div>
+      {hasBanners && (
+        <div className="flex flex-col">
+          {appearanceBanner && (
+            <img
+              src={appearanceBanner}
+              alt={honorific?.appearanceHonorificName ?? ""}
+              className="w-full object-contain"
+            />
+          )}
+          {positionBanners.map((src) => (
+            <img
+              key={src}
+              src={src}
+              alt={src.includes("Unified") ? "Unified No. 1" : "The Cycle"}
+              className="w-full object-contain"
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Cast arrives in TMDb billing order; show the top billed, fold the rest.
+const CAST_VISIBLE = 8;
+
+// ── Credits card ──────────────────────────────────────────────────────────────
+
+interface CreditEntry {
+  name: string;
+  tmdbId?: number;
+  imdbId?: string;
+}
+
+// Dedupes by tmdbId when present (the reliable identity), falling back to
+// imdbId, then name, for entries missing a tmdbId.
+function dedupeCredits(
+  items: { name?: string; tmdbId?: number; imdbId?: string }[] | undefined
+): CreditEntry[] {
+  const seen = new Set<string>();
+  const result: CreditEntry[] = [];
+  for (const item of items ?? []) {
+    if (!item.name) continue;
+    const key =
+      item.tmdbId && item.tmdbId > 0
+        ? `t:${item.tmdbId}`
+        : item.imdbId
+          ? `i:${item.imdbId}`
+          : `n:${item.name}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push({ name: item.name, tmdbId: item.tmdbId, imdbId: item.imdbId });
+  }
+  return result;
+}
+
+// People link to their cast/crew page: the TMDb id when there is one, otherwise the IMDb id.
+function personPath(tmdbId: number | undefined, imdbId: string | undefined): string | null {
+  if (tmdbId && tmdbId > 0) return `/cast-crew/${tmdbId}`;
+  if (imdbId) return `/cast-crew/${imdbId}`;
+  return null;
+}
+
+// Companies have no page of their own, so they link out: TMDb when available, IMDb otherwise.
+function companyHref(tmdbId: number | undefined, imdbId: string | undefined): string | null {
+  if (tmdbId && tmdbId > 0) return `https://www.themoviedb.org/company/${tmdbId}`;
+  if (imdbId) return `https://www.imdb.com/company/${imdbId}/`;
+  return null;
+}
+
+function CreditLink({
+  credit,
+  kind,
+}: {
+  credit: CreditEntry;
+  kind: "person" | "company";
+}) {
+  const className = "font-oswald text-[15px] text-sd-ink leading-tight";
+  const hover = "hover:text-sd-blue transition-colors";
+
+  if (kind === "person") {
+    const path = personPath(credit.tmdbId, credit.imdbId);
+    return path ? (
+      <Link href={path} className={`${className} ${hover}`}>
+        {credit.name}
+      </Link>
+    ) : (
+      <span className={className}>{credit.name}</span>
+    );
+  }
+
+  const href = companyHref(credit.tmdbId, credit.imdbId);
+  return href ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" className={`${className} ${hover}`}>
+      {credit.name}
+    </a>
+  ) : (
+    <span className={className}>{credit.name}</span>
+  );
+}
+
+function CreditsCard({
+  title,
+  credits,
+  kind,
+  visibleCount,
+}: {
+  title: string;
+  credits: CreditEntry[];
+  kind: "person" | "company";
+  visibleCount?: number;
+}) {
+  const limit = visibleCount ?? credits.length;
+  const shown = credits.slice(0, limit);
+  const rest = credits.slice(limit);
+  return (
+    <div className="order-2 lg:order-0 bg-white border-2 border-sd-ink p-5">
+      <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red mb-3">{title}</h2>
+      <div className="flex flex-col gap-1.5">
+        {shown.map((credit, i) => (
+          <CreditLink key={i} credit={credit} kind={kind} />
+        ))}
+      </div>
+      {rest.length > 0 && (
+        <details className="group mt-1.5">
+          <summary className="cursor-pointer list-none font-mono text-[11px] text-sd-ink/50 hover:text-sd-blue select-none group-open:hidden">
+            + {rest.length} more
+          </summary>
+          <div className="flex flex-col gap-1.5">
+            {rest.map((credit, i) => (
+              <CreditLink key={i} credit={credit} kind={kind} />
+            ))}
+          </div>
+        </details>
+      )}
+    </div>
+  );
+}
+
+// ── Draft appearances ─────────────────────────────────────────────────────────
+
+function AppearancesSection({ appearances }: { appearances: MediaAppearanceResponse[] }) {
+  return (
+    <div className="bg-white border-2 border-sd-ink">
+      <div className="bg-sd-ink px-4 py-4 sm:px-6 sm:py-5 flex items-center gap-3">
+        <span className="block w-1 h-4 bg-sd-red shrink-0" />
+        <h2 className="font-oswald font-bold text-[13px] tracking-widest text-sd-red">
+          DRAFT APPEARANCES
+        </h2>
+        <span className="text-white/40 font-mono text-[12px]">({appearances.filter((a) => (!a.wasVetoed || a.wasVetoOverridden) && !a.wasCommissionerOverride).length})</span>
+      </div>
+
+      {appearances.length === 0 ? (
+        <div className="px-6 py-10 text-center font-mono text-[11px] text-sd-ink/40">
+          This title has not appeared on a ScreenDrafts board yet.
+        </div>
+      ) : (
+        <div className="divide-y divide-sd-ink/5">
+          {appearances.map((a, i) => (
+            <AppearanceRow key={`${a.draftPublicId}-${i}`} appearance={a} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AppearanceRow({ appearance }: { appearance: MediaAppearanceResponse }) {
+  const {
+    draftPublicId, draftTitle, episodeNumber,
+    pickedByDisplayName, pickedByPersonPublicId,
+    position, wasVetoed, wasVetoOverridden, wasCommissionerOverride,
+    vetoedByDisplayName, vetoOverrideByDisplayName, isPatreon,
+  } = appearance;
+
+  // Landed = not vetoed, OR veto was overridden. Commissioner override = did not land.
+  const landed = (!wasVetoed || wasVetoOverridden) && !wasCommissionerOverride;
+
+  return (
+    <div className="px-4 sm:px-6 py-4 flex items-start gap-3 sm:gap-4">
+      {/* Position badge */}
+      <div className={`w-9 h-9 shrink-0 flex items-center justify-center border-2 font-oswald font-bold text-[15px] ${landed ? "border-sd-red text-sd-red" : "border-sd-ink/20 text-sd-ink/30"
+        }`}>
+        {position}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        {/* Draft title */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link
+            href={`/drafts/${draftPublicId}`}
+            className={`font-oswald font-bold text-[18px] leading-tight hover:text-sd-blue transition-colors ${landed ? "text-sd-ink" : "text-sd-ink/40 line-through"}`}
+          >
+            {draftTitle}
+          </Link>
+          {isPatreon && (
+            <span className="font-mono text-[9px] tracking-widest bg-sd-blue/10 text-sd-blue px-2 py-0.5 rounded-xs">
+              PATREON
+            </span>
+          )}
+        </div>
+
+        {/* Meta row */}
+        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+          {pickedByPersonPublicId ? (
+            <Link href={`/drafters/${pickedByPersonPublicId}`} className={`font-mono text-[11px] tracking-widest hover:text-sd-ink transition-colors ${landed ? "text-[#5a6075]" : "text-sd-ink/30 line-through"}`}>
+              PICKED BY {pickedByDisplayName.toUpperCase()}
+            </Link>
+          ) : (
+            <span className={`font-mono text-[11px] tracking-widest ${landed ? "text-[#5a6075]" : "text-sd-ink/30 line-through"}`}>
+              PICKED BY {pickedByDisplayName.toUpperCase()}
+            </span>
+          )}
+
+          {episodeNumber !== null && episodeNumber !== undefined && (
+            <span className="font-mono text-[11px] tracking-widest text-[#5a6075]">EP. {episodeNumber}</span>
+          )}
+
+          {wasVetoed && !wasVetoOverridden && !wasCommissionerOverride && (
+            <span className="font-mono text-[12px] tracking-widest text-sd-red font-bold">
+              ✕ VETOED{vetoedByDisplayName ? ` BY ${vetoedByDisplayName.toUpperCase()}` : ""}
+            </span>
+          )}
+
+          {wasVetoOverridden && (
+            <span className="font-mono text-[12px] tracking-widest text-sd-blue">
+              ↩ OVERRIDE{vetoOverrideByDisplayName ? ` BY ${vetoOverrideByDisplayName.toUpperCase()}` : ""}
+            </span>
+          )}
+
+          {wasCommissionerOverride && (
+            <span className="font-mono text-[12px] tracking-widest text-sd-blue">
+              ★ COMMISSIONER OVERRIDE
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

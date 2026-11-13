@@ -1,7 +1,9 @@
 // components/layout/header/site-header.tsx
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { useSession } from "next-auth/react";
 import SignInButton from "./sign-in-button";
 import AvatarDropdown from "./avatar-dropdown";
 import AdminDropdown from "./admin-dropdown";
@@ -23,8 +25,8 @@ const GUEST_ROLE = "Guest";
 //   lg–xl:       full desktop nav, tagline hidden (it alone is ~450px wide and
 //                pushes the nav past 1024).
 //   >= xl:       tagline returns.
-export default async function SiteHeader({ activePath }: { activePath?: string } = {}) {
-  const session = await auth();
+export default function SiteHeader({ activePath }: { activePath?: string } = {}) {
+  const { data: session } = useSession();
   const isAdmin = session?.roles?.some(r => ADMIN_ROLES.includes(r)) ?? false;
   const isDrafter = session?.roles?.includes("Drafter") ?? false;
   const isGuest = session?.roles?.includes(GUEST_ROLE) ?? false;
@@ -89,7 +91,7 @@ export default async function SiteHeader({ activePath }: { activePath?: string }
             <SignInButton />
             <Link
               href="/register"
-              className="bg-sd-red text-white px-[18px] py-2.5 rounded-sm font-oswald font-medium text-sm tracking-[0.14em] hover:bg-red-700 transition-colors"
+              className="bg-sd-red text-white px-4.5 py-2.5 rounded-sm font-oswald font-medium text-sm tracking-[0.14em] hover:bg-red-700 transition-colors"
             >
               REGISTER
             </Link>
