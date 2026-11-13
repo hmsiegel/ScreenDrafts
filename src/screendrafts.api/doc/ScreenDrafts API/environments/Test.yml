@@ -1,0 +1,7 @@
+name: Test
+variables:
+  - name: baseUrl
+    value: https://api-test.screen-drafts.com
+  - secret: true
+    name: token
+    description: ""
