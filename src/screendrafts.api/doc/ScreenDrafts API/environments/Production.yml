@@ -1,0 +1,10 @@
+name: Production
+variables:
+  - name: username
+    value: hmsiegel@gmail.com
+    description: ""
+  - name: baseURl
+    value: https://api.screen-drafts.com
+    description: ""
+  - secret: true
+    name: token
