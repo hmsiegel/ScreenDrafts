@@ -31,6 +31,15 @@ public sealed class Person : AggregateRoot<PersonId, Guid>
     return new Person(imdbId: imdbId, name: name, tmdbId: tmdbId, id: id);
   }
 
+  /// <summary>
+  /// Backfills the TMDb id on a person imported before TMDb ids were stored. The IMDb id
+  /// stays as it was: it is how the person was first matched.
+  /// </summary>
+  public void SetTmdbId(int tmdbId)
+  {
+    TmdbId = Guard.Against.NegativeOrZero(tmdbId);
+  }
+
   public void AddMediaActor(MediaActor mediaActor)
   {
     _mediaActors.Add(mediaActor);

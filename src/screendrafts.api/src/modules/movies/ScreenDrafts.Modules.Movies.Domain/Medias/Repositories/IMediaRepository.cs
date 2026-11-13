@@ -20,7 +20,7 @@ public interface IMediaRepository : IRepository
     CancellationToken cancellationToken = default
   );
   Task<Media?> FindByIgdbIdAsync(int igdbId, CancellationToken cancellationToken = default);
-  void AddMediaActor(Media media, Person actor);
+  void AddMediaActor(Media media, Person actor, int? billingOrder = null);
   void AddMediaDirector(Media media, Person director);
   void AddMediaWriter(Media media, Person writer);
   void AddMediaProducer(Media media, Person producer);

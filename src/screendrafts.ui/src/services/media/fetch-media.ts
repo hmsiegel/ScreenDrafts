@@ -20,6 +20,8 @@ export async function fetchMedia(
     mediaType?: number;
     year?: string;
     sort?: string;
+    personKey?: string;
+    role?: string;
   } = {},
   accessToken?: string
 ): Promise<PagedResultOfMediaListItemResponse> {

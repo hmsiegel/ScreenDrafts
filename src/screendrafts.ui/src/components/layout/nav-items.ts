@@ -13,6 +13,7 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { label: "DRAFTS", href: "/drafts" },
   { label: "DRAFTERS", href: "/drafters" },
   { label: "FILMS", href: "/media" },
+  { label: "CAST & CREW", href: "/cast-crew" },
   { label: "PREDICTIONS", href: "/predictions" },
   { label: "STATS", href: "/stats" },
 ];

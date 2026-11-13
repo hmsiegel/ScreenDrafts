@@ -31,6 +31,20 @@ internal sealed class MediaPeopleAttacher(
     var addedWriters = new HashSet<Guid>();
     var addedProducers = new HashSet<Guid>();
 
+    // People already matched during this call; the same-title fallback below never reuses them.
+    var matchedPeople = new HashSet<Guid>();
+
+    // Legacy people (tmdb_id = 0, IMDb id set) already credited on this title. Loaded on the
+    // first lookup that misses, and not at all for a title with no credits yet (a new import).
+    List<Person>? legacyOnTitle = null;
+
+    bool TitleHasCredits() =>
+      media.MediaActors.Count
+        + media.MediaDirectors.Count
+        + media.MediaWriters.Count
+        + media.MediaProducers.Count
+      > 0;
+
     async Task<Person?> GetOrCreatePersonAsync(string name, string? imdbId, int tmdbId)
     {
       if (peopleCache.TryGetValue(tmdbId, out var cached))
@@ -43,7 +57,43 @@ internal sealed class MediaPeopleAttacher(
         ? await _personRepository.FindByImdbIdAsync(imdbId, cancellationToken)
         : null;
 
+      if (person is not null && person.TmdbId == 0 && tmdbId > 0)
+      {
+        // Matched an IMDb-first person: record the TMDb id so the person has one from now on.
+        // Skipped when another row already holds that TMDb id; that is a duplicate to merge,
+        // not something to paper over here.
+        var holder = await _personRepository.FindByTmdbAsync(tmdbId, cancellationToken);
+        if (holder is null)
+        {
+          person.SetTmdbId(tmdbId);
+        }
+      }
+
       person ??= await _personRepository.FindByTmdbAsync(tmdbId, cancellationToken);
+
+      if (person is null && TitleHasCredits())
+      {
+        // Neither id matched. TMDb may know a legacy person under a different IMDb id (or none),
+        // so reuse the one legacy person on this title with the same name. Two legacy people
+        // with that name, or none, means create a new person as before.
+        legacyOnTitle ??= [.. await _personRepository.GetLegacyPeopleOnMediaAsync(media.Id.Value, cancellationToken)];
+
+        var sameName = legacyOnTitle
+          .Where(p =>
+            !matchedPeople.Contains(p.Id.Value)
+            && string.Equals(p.Name.Trim(), name.Trim(), StringComparison.OrdinalIgnoreCase)
+          )
+          .ToList();
+
+        if (sameName.Count == 1)
+        {
+          person = sameName[0];
+          if (tmdbId > 0)
+          {
+            person.SetTmdbId(tmdbId);
+          }
+        }
+      }
 
       if (person is null)
       {
@@ -51,6 +101,7 @@ internal sealed class MediaPeopleAttacher(
         _personRepository.Add(person);
       }
 
+      matchedPeople.Add(person.Id.Value);
       peopleCache[tmdbId] = person;
       return person;
     }
@@ -78,17 +129,29 @@ internal sealed class MediaPeopleAttacher(
 
     if (actors is not null)
     {
+      // List position is TMDb billing order: the Integrations module maps the cast
+      // in TMDb's order and nothing between there and here reorders it.
+      var billingOrder = 0;
       foreach (var a in actors)
       {
         var person = await GetOrCreatePersonAsync(a.Name, a.ImdbId, a.TmdbId);
-        if (
-          person is not null
-          && addedActors.Add(person.Id.Value)
-          && media.MediaActors.All(ma => ma.ActorId != person.Id)
-        )
+        if (person is null || !addedActors.Add(person.Id.Value))
         {
-          _mediaRepository.AddMediaActor(media, person);
+          continue;
         }
+
+        var existing = media.MediaActors.FirstOrDefault(ma => ma.ActorId == person.Id);
+        if (existing is null)
+        {
+          _mediaRepository.AddMediaActor(media, person, billingOrder);
+        }
+        else if (existing.BillingOrder != billingOrder)
+        {
+          // Resync backfills (or corrects) billing order on rows imported before the column existed.
+          existing.SetBillingOrder(billingOrder);
+        }
+
+        billingOrder++;
       }
     }
 
@@ -127,9 +190,18 @@ internal sealed class MediaPeopleAttacher(
     if (productionCompanies is not null)
     {
       var companiesCache = new Dictionary<int, ProductionCompany>();
+      var addedCompanies = new HashSet<int>();
 
       foreach (var company in productionCompanies)
       {
+        // TMDb can list the same company twice on one title. RelationshipExistsAsync only
+        // sees saved rows, so without this the second Add collides with the first in the
+        // change tracker.
+        if (!addedCompanies.Add(company.TmdbId))
+        {
+          continue;
+        }
+
         if (!companiesCache.TryGetValue(company.TmdbId, out var productionCompany))
         {
           productionCompany = await _productionCompanyRepository.FindByTmdbIdAsync(

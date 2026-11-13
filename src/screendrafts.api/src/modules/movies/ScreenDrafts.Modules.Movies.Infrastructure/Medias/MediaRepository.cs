@@ -14,9 +14,9 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
     _context.Media.Update(media);
   }
 
-  public void AddMediaActor(Media media, Person actor)
+  public void AddMediaActor(Media media, Person actor, int? billingOrder = null)
   {
-    _context.MediaActors.Add(MediaActor.Create(media.Id, actor.Id));
+    _context.MediaActors.Add(MediaActor.Create(media.Id, actor.Id, billingOrder));
   }
 
   public void AddMediaDirector(Media media, Person director)
@@ -217,6 +217,7 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .Include(m => m.MediaWriters)
       .Include(m => m.MediaProducers)
       .Include(m => m.MediaProductionCompanies)
+      .AsSplitQuery()
       .SingleOrDefaultAsync(m => m.TmdbId == tmdbId && m.MediaType == mediaType, cancellationToken);
   }
 
@@ -233,6 +234,7 @@ internal sealed class MediaRepository(MoviesDbContext context) : IMediaRepositor
       .Include(m => m.MediaWriters)
       .Include(m => m.MediaProducers)
       .Include(m => m.MediaProductionCompanies)
+      .AsSplitQuery()
       .SingleOrDefaultAsync(
         m =>
           m.TvSeriesTmdbId == tvSeriesTmdbId

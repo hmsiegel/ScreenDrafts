@@ -58,6 +58,10 @@ internal sealed class AuditPostProcessor(
     await using var scope = _serviceScopeFactory.CreateAsyncScope();
     var writeService = scope.ServiceProvider.GetRequiredService<IAuditWriteService>();
 
-    await writeService.WriteHttpLogAsync(log, ct);
+    // `ct` is the request's token: it is cancelled when the client disconnects (a navigation,
+    // a refresh, an aborted fetch), which dropped the audit row and threw here. The row must
+    // be written either way, so give the write a short timeout of its own.
+    using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+    await writeService.WriteHttpLogAsync(log, timeout.Token);
   }
 }

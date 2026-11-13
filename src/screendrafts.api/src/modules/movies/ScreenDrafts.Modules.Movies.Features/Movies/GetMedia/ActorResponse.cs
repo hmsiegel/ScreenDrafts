@@ -4,4 +4,6 @@ public sealed record ActorResponse(Guid Id, string ImdbId, int TmdbId, string Na
 {
   public ActorResponse()
     : this(Guid.Empty, string.Empty, 0, string.Empty) { }
+
+  public int? BillingOrder { get; init; }
 }
