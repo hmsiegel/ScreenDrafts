@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
+namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
 
 internal sealed record ListMediaRequest
 {
@@ -28,4 +28,18 @@ internal sealed record ListMediaRequest
   /// </summary>
   [FromQuery]
   public string? Sort { get; init; }
+
+  /// <summary>
+  /// Person key from GET /media/people: "t:{tmdbId}" or "i:{imdbId}". Limits results to
+  /// titles this person is credited on, in the given Role.
+  /// </summary>
+  [FromQuery]
+  public string? PersonKey { get; init; }
+
+  /// <summary>
+  /// Credit role for PersonTmdbId: any (default), actor, director, writer, producer.
+  /// Ignored when PersonKey is not set.
+  /// </summary>
+  [FromQuery]
+  public string? Role { get; init; }
 }

@@ -87,14 +87,12 @@ export function mediaQuery(qp: QueryRecord) {
   const search = asString(qp.q);
   const mediaType = asNumber(qp.mediaType);
   const year = asString(qp.year);
+  const personKey = asString(qp.personKey);
+  const personName = asString(qp.personName);
+  const role = personKey ? (asString(qp.role) ?? "any") : undefined;
   return {
-    page: pageOf(qp),
-    pageSize,
-    sort,
-    search,
-    mediaType,
-    year,
-    args: { pageSize, sort, search, mediaType, year },
+    page: pageOf(qp), pageSize, sort, search, mediaType, year, personKey, personName, role,
+    args: { pageSize, sort, search, mediaType, year, personKey, role },
   };
 }
 
@@ -112,9 +110,9 @@ export function draftersQuery(qp: QueryRecord) {
   const role =
     honorific ? undefined
       : filter === "commissioners" ? "commissioner"
-      : filter === "gms" ? "gm"
-      : filter === "hosts" ? "host"
-      : undefined;
+        : filter === "gms" ? "gm"
+          : filter === "hosts" ? "host"
+            : undefined;
 
   return {
     page: pageOf(qp),

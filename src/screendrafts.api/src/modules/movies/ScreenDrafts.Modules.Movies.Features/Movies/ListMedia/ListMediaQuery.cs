@@ -1,4 +1,4 @@
-﻿namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
+namespace ScreenDrafts.Modules.Movies.Features.Movies.ListMedia;
 
 internal sealed record ListMediaQuery : IQuery<ListMediaResponse>
 {
@@ -8,4 +8,6 @@ internal sealed record ListMediaQuery : IQuery<ListMediaResponse>
   public int? MediaType { get; init; }
   public string? Year { get; init; }
   public string? Sort { get; init; }
+  public string? PersonKey { get; init; }
+  public string? Role { get; init; }
 }

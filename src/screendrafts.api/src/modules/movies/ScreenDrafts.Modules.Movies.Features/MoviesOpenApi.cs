@@ -22,5 +22,6 @@ internal static class MoviesOpenApi
     public const string Media_SearchGames = "Media.SearchGames";
     public const string Media_SearchYouTube = "Media.SearchYouTube";
     public const string Media_GetPersonFilmography = "Media.GetPersonFilmography";
+    public const string Media_SearchPeople = "Media.SearchPeople";
   }
 }

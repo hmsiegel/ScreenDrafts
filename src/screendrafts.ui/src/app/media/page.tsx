@@ -18,7 +18,7 @@ type SearchParams = Promise<QueryRecord>;
 export default async function MediaPage(props: { searchParams: SearchParams }) {
   const qp = await props.searchParams;
 
-  const { page, sort, search, mediaType, year, args } = mediaQuery(qp);
+  const { page, sort, search, mediaType, year, args, personKey, personName, role } = mediaQuery(qp);
 
   const result = await fetchMedia({ ...args, page });
   const totalPages = result.totalPages ?? 0;
@@ -44,6 +44,9 @@ export default async function MediaPage(props: { searchParams: SearchParams }) {
           sort={sort}
           q={search}
           year={year}
+          personKey={personKey !== undefined ? String(personKey) : undefined}
+          personName={personName}
+          role={role}
         />
       </Suspense>
 

@@ -1,5 +1,4 @@
 ﻿global using FluentValidation;
-
 global using MediatR;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
@@ -8,10 +7,13 @@ global using ScreenDrafts.Common.Application.EventBus;
 global using ScreenDrafts.Common.Application.EventBus.Dispatchers;
 global using ScreenDrafts.Common.Application.Messaging;
 global using ScreenDrafts.Common.Application.Messaging.Dispatchers;
+global using ScreenDrafts.Common.Infrastructure.EventBus;
 global using ScreenDrafts.Modules.Integrations.IntegrationEvents;
 global using ScreenDrafts.Modules.Movies.Features;
 global using ScreenDrafts.Modules.Movies.Features.Behaviors;
 global using ScreenDrafts.Modules.Movies.Features.Inbox;
+global using ScreenDrafts.Modules.Movies.Features.Movies.ResyncMediaPeople;
+global using ScreenDrafts.Modules.Movies.Features.Movies.Shared;
 global using ScreenDrafts.Modules.Movies.Features.Outbox;
 global using ScreenDrafts.Modules.Movies.Features.PublicApi;
 global using ScreenDrafts.Modules.Movies.Infrastructure;

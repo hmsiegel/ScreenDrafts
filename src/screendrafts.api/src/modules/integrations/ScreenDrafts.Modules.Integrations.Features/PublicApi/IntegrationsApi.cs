@@ -1,4 +1,6 @@
-﻿namespace ScreenDrafts.Modules.Integrations.Features.PublicApi;
+﻿using ScreenDrafts.Modules.Integrations.Features.People.GetPersonProfile;
+
+namespace ScreenDrafts.Modules.Integrations.Features.PublicApi;
 
 internal class IntegrationsApi(ISender sender) : IIntegrationsApi
 {
@@ -138,6 +140,71 @@ internal class IntegrationsApi(ISender sender) : IIntegrationsApi
         PersonName = result.Value.PersonName,
         PersonPhotoPath = result.Value.PersonPhotoUrl,
         Credits = mapped,
+      }
+    );
+  }
+
+  public async Task<Result<PersonProfileApiResponse>> GetPersonProfileAsync(
+    int tmdbId,
+    string? imdbId,
+    CancellationToken cancellationToken = default
+  )
+  {
+    var result = await _sender.Send(
+      new GetPersonProfileCommand { TmdbId = tmdbId, ImdbId = imdbId },
+      cancellationToken
+    );
+
+    if (result.IsFailure)
+    {
+      return Result.Failure<PersonProfileApiResponse>(result.Errors);
+    }
+
+    return Result.Success(
+      new PersonProfileApiResponse
+      {
+        TmdbId = result.Value.TmdbId,
+        Name = result.Value.Name,
+        PhotoPath = result.Value.PhotoUrl,
+      }
+    );
+  }
+
+  public async Task<Result<OnlineMediaCreditsApiResponse>> GetOnlineMediaCreditsAsync(
+    OnlineMediaCreditsApiRequest request,
+    CancellationToken cancellationToken = default
+  )
+  {
+    ArgumentNullException.ThrowIfNull(request);
+
+    var result = await _sender.Send(
+      new GetOnlineMediaCommand
+      {
+        MediaType = MediaType.FromValue(request.MediaType),
+        TmdbId = request.TmdbId,
+        ImdbId = request.ImdbId,
+        TvSeriesTmdbId = request.TvSeriesTmdbId,
+        SeasonNumber = request.SeasonNumber,
+        EpisodeNumber = request.EpisodeNumber,
+      },
+      cancellationToken
+    );
+
+    if (result.IsFailure)
+    {
+      return Result.Failure<OnlineMediaCreditsApiResponse>(result.Errors);
+    }
+
+    var media = result.Value;
+
+    return Result.Success(
+      new OnlineMediaCreditsApiResponse
+      {
+        Directors = [.. media.Directors.Select(d => new OnlineCreditApiResult { Name = d.Name, ImdbId = d.ImdbId, TmdbId = d.TmdbId })],
+        Actors = [.. media.Actors.Select(a => new OnlineCreditApiResult { Name = a.Name, ImdbId = a.ImdbId, TmdbId = a.TmdbId })],
+        Writers = [.. media.Writers.Select(w => new OnlineCreditApiResult { Name = w.Name, ImdbId = w.ImdbId, TmdbId = w.TmdbId })],
+        Producers = [.. media.Producers.Select(p => new OnlineCreditApiResult { Name = p.Name, ImdbId = p.ImdbId, TmdbId = p.TmdbId })],
+        ProductionCompanies = [.. media.ProductionCompanies.Select(c => new OnlineCreditApiResult { Name = c.Name, ImdbId = c.ImdbId, TmdbId = c.TmdbId })],
       }
     );
   }
