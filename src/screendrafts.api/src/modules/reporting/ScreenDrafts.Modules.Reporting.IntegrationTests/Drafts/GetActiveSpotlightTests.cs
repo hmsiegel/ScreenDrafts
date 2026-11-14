@@ -49,12 +49,13 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
   public async Task Handle_ShouldReturnCorrectMetadata_WhenActiveSpotlightExistsAsync()
   {
     // Arrange
-    await SeedActiveSpotlightAsync(
+    var draftPublicId = await SeedActiveSpotlightAsync(
       title: "Best Draft Ever",
       episodeNumber: 77,
       totalParts: 2,
       totalPicks: 14
     );
+    await SeedLandedPicksAsync(draftPublicId, count: 14);
 
     // Act
     var result = await Sender.Send(
@@ -145,6 +146,45 @@ public sealed class GetActiveSpotlightTests(ReportingIntegrationTestWebAppFactor
     await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
     return draftPublicId;
+  }
+
+  private async Task SeedLandedPicksAsync(string draftPublicId, int count)
+  {
+    var draftId = Guid.NewGuid();
+    var partPublicId = _faker.Random.AlphaNumeric(10);
+
+    for (var position = 1; position <= count; position++)
+    {
+      DbContext.PickFacts.Add(
+        PickFact.Create(
+          Guid.NewGuid(),
+          draftId,
+          draftPublicId,
+          partPublicId,
+          1,
+          "Title",
+          "Standard",
+          "Series",
+          0,
+          null,
+          position,
+          position,
+          _faker.Random.AlphaNumeric(10),
+          _faker.Lorem.Word(),
+          0,
+          Guid.NewGuid(),
+          null,
+          _faker.Name.FullName(),
+          0,
+          false,
+          false,
+          false,
+          DateTime.UtcNow
+        )
+      );
+    }
+
+    await DbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
   }
 
   private async Task SeedCompletedSummaryAsync(
