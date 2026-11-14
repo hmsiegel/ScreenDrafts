@@ -57,13 +57,22 @@ internal sealed class GetActiveSpotlightQueryHandler(
 
     const string picksSql = """
       SELECT
-        mcp.board_position        AS Position,
-        mcp.movie_public_id       AS MediaPublicId
-      FROM reporting.movie_canonical_picks mcp
-      JOIN reporting.draft_summaries s ON mcp.draft_part_public_id = s.draft_part_public_id
-      WHERE s.draft_public_id = @DraftPublicId
-      ORDER BY mcp.board_position ASC
+        pf.position         AS Position,
+        pf.media_public_id  AS MediaPublicId
+      FROM reporting.pick_facts pf
+      WHERE pf.draft_public_id = @DraftPublicId
+        AND (NOT pf.was_vetoed OR pf.was_veto_overridden)
+        AND NOT pf.was_commissioner_overridden
+      ORDER BY pf.position ASC, pf.play_order ASC
       LIMIT 5
+      """;
+
+    const string landedCountSql = """
+      SELECT COUNT(*)
+      FROM reporting.pick_facts pf
+      WHERE pf.draft_public_id = @DraftPublicId
+        AND (NOT pf.was_vetoed OR pf.was_veto_overridden)
+        AND NOT pf.was_commissioner_overridden
       """;
 
     var pickRows = (
@@ -75,6 +84,14 @@ internal sealed class GetActiveSpotlightQueryHandler(
         )
       )
     ).ToList();
+
+    var landedCount = await connection.ExecuteScalarAsync<int>(
+      new CommandDefinition(
+        commandText: landedCountSql,
+        parameters: new { header.DraftPublicId },
+        cancellationToken: cancellationToken
+      )
+    );
 
     var publicIds = pickRows.Select(r => r.MediaPublicId).ToList();
 
@@ -101,7 +118,7 @@ internal sealed class GetActiveSpotlightQueryHandler(
       SpotlightDescription = header.SpotlightDescription,
       SpotifyUrl = header.SpotifyUrl,
       TopPicks = picks,
-      TotalPicks = header.TotalPicks,
+      TotalPicks = landedCount,
     };
 
     await _cacheService.SetAsync(
