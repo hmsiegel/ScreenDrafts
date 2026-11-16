@@ -15,12 +15,13 @@ internal sealed partial class WeeklySpotlightRotationJob(
 
   private const string SpotlightCacheKey = "reporting:spotlight:active";
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(
+    IJobExecutionContext context,
+    CancellationToken cancellationToken = default
+  )
   {
-    var ct = CancellationToken.None;
-
-    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(ct);
-    await using var transaction = await connection.BeginTransactionAsync(ct);
+    await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
+    await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
     try
     {
@@ -35,7 +36,11 @@ internal sealed partial class WeeklySpotlightRotationJob(
         """;
 
       var current = await connection.QuerySingleOrDefaultAsync<SpotlightRow>(
-        new CommandDefinition(pinneedCheckSql, transaction: transaction, cancellationToken: ct)
+        new CommandDefinition(
+          pinneedCheckSql,
+          transaction: transaction,
+          cancellationToken: cancellationToken
+        )
       );
 
       if (current?.IsPinned is true)
@@ -60,7 +65,11 @@ internal sealed partial class WeeklySpotlightRotationJob(
         """;
 
       var next = await connection.QuerySingleOrDefaultAsync<SpotlightRow>(
-        new CommandDefinition(randomCandidateSql, transaction: transaction, cancellationToken: ct)
+        new CommandDefinition(
+          randomCandidateSql,
+          transaction: transaction,
+          cancellationToken: cancellationToken
+        )
       );
 
       if (next is null)
@@ -84,7 +93,7 @@ internal sealed partial class WeeklySpotlightRotationJob(
             deactivateSql,
             new { current.Id },
             transaction: transaction,
-            cancellationToken: ct
+            cancellationToken: cancellationToken
           )
         );
       }
@@ -102,24 +111,24 @@ internal sealed partial class WeeklySpotlightRotationJob(
           activateSql,
           new { next.Id, ActivatedAtUtc = activatedAtUtc },
           transaction: transaction,
-          cancellationToken: ct
+          cancellationToken: cancellationToken
         )
       );
 
-      await transaction.CommitAsync(ct);
+      await transaction.CommitAsync(cancellationToken);
 
       // 4. Update cache
-      await _cacheService.RemoveAsync(SpotlightCacheKey, ct);
+      await _cacheService.RemoveAsync(SpotlightCacheKey, cancellationToken);
 
       LogRotationCompleted(_logger, current?.Id ?? Guid.Empty, next.Id, activatedAtUtc);
     }
     catch (Exception ex)
     {
-      await transaction.RollbackAsync(ct);
+      await transaction.RollbackAsync(cancellationToken);
 
       LogRotationError(_logger, ex.Message);
 
-      throw new JobExecutionException(ex, refireImmediately: false);
+      throw new JobExecutionException(ex);
     }
   }
 

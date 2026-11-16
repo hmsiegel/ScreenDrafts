@@ -27,12 +27,12 @@ public static class DraftsInfrastructure
     services.AddScoped<ITeamMembershipProvider, TeamMembershipProvider>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Drafts:Outbox"));
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
     services.Configure<InboxOptions>(configuration.GetSection("Drafts:Inbox"));
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     services.Configure<PodcastLinksOptions>(configuration.GetSection("Drafts:PodcastLinks"));
-    services.ConfigureOptions<ConfigureResolvePodcastLinksJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureResolvePodcastLinksJob.Configure);
 
     return services;
   }

@@ -597,7 +597,9 @@ public abstract class GuestDraftsIntegrationTest(GuestDraftsIntegrationTestWebAp
     );
   }
 
-  internal async Task<Result<PagedResult<GuestDraftSummaryResponse>>> SearchDraftsAsync(
+  internal async Task<
+    Result<Common.Presentation.Responses.PagedResult<GuestDraftSummaryResponse>>
+  > SearchDraftsAsync(
     string callerUserPublicId,
     int page = 1,
     int pageSize = 20,

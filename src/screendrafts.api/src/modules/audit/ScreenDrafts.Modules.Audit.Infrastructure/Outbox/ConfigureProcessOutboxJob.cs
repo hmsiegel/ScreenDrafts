@@ -1,20 +1,19 @@
 ﻿namespace ScreenDrafts.Modules.Audit.Infrastructure.Outbox;
 
-internal sealed class ConfigureProcessOutboxJob(IOptions<OutboxOptions> outboxOptions) : IConfigureOptions<QuartzOptions>
+internal static class ConfigureProcessOutboxJob
 {
-  private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
-
-  public void Configure(QuartzOptions options)
+  public static void Configure(IQuartzBuilder quartz)
   {
     var jobName = typeof(ProcessOutboxJob).FullName!;
 
-    options
-      .AddJob<ProcessOutboxJob>(configure => configure.WithIdentity(jobName))
-      .AddTrigger(configure =>
-      configure
-        .ForJob(jobName)
-        .WithSimpleSchedule(schedule => schedule
-          .WithIntervalInSeconds(_outboxOptions.IntervalInSeconds)
-          .RepeatForever()));
+    quartz.AddJob<ProcessOutboxJob>(configure => configure.WithIdentity(jobName));
+    quartz.AddTrigger<ProcessOutboxJob>(
+      (services, trigger) =>
+      {
+        var options = services.GetRequiredService<IOptions<OutboxOptions>>().Value;
+
+        trigger.ForJob(jobName).WithSimpleSchedule(TimeSpan.FromSeconds(options.IntervalInSeconds));
+      }
+    );
   }
 }

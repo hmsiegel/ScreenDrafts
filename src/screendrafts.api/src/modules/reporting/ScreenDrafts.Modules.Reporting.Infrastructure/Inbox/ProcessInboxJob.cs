@@ -18,7 +18,7 @@ internal sealed class ProcessInboxJob(
   private readonly IReportingIntegrationEventDispatcher _integrationEventDispatcher = integrationEventDispatcher;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
   {
     InboxLoggingMessages.BeginningToProcessInboxMessages(_logger, ModuleName);
 
