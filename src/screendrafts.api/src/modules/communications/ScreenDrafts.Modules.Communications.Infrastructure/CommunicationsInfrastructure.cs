@@ -24,11 +24,11 @@ public static class CommunicationsInfrastructure
 
     services.Configure<OutboxOptions>(configuration.GetSection("Communications:Outbox"));
 
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
 
     services.Configure<InboxOptions>(configuration.GetSection("Communications:Inbox"));
 
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
 

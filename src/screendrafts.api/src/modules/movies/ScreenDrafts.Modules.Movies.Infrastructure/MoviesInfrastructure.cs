@@ -17,11 +17,11 @@ public static class MoviesInfrastructure
 
     services.Configure<OutboxOptions>(configuration.GetSection("Movies:Outbox"));
 
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
 
     services.Configure<InboxOptions>(configuration.GetSection("Movies:Inbox"));
 
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     return services;
   }

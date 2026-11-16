@@ -26,9 +26,9 @@ public static class AdministrationInfrastructure
     >();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Administration:Outbox"));
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
     services.Configure<InboxOptions>(configuration.GetSection("Administration:Inbox"));
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     return services;
   }

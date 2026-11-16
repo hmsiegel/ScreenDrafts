@@ -1,21 +1,23 @@
 ﻿namespace ScreenDrafts.Modules.Audit.Infrastructure.Keycloak;
 
-internal sealed class ConfigureKeycloakPollerJob(IOptions<KeycloakPollerOptions> options)
-  : IConfigureOptions<QuartzOptions>
+internal static class ConfigureKeycloakPollerJob
 {
-  private readonly KeycloakPollerOptions _options = options.Value;
-
-  public void Configure(QuartzOptions options)
+  public static void Configure(IQuartzBuilder quartz)
   {
     var jobName = typeof(KeycloakAuthEventPollerJob).FullName!;
 
-    options
-      .AddJob<KeycloakAuthEventPollerJob>(configure =>
-        configure.WithIdentity(jobName))
-      .AddTrigger(configure =>
-        configure.ForJob(jobName)
-          .WithSimpleSchedule(schedule =>
-            schedule.WithIntervalInSeconds(_options.IntervalInSeconds)
-                    .RepeatForever()));
+    quartz.AddJob<KeycloakAuthEventPollerJob>(job => job.WithIdentity(jobName));
+    quartz.AddTrigger<KeycloakAuthEventPollerJob>(
+      (services, trigger) =>
+      {
+        var options = services.GetRequiredService<IOptions<KeycloakPollerOptions>>().Value;
+
+        trigger
+          .ForJob(jobName)
+          .WithSimpleSchedule(x =>
+            x.WithInterval(TimeSpan.FromSeconds(options.IntervalInSeconds)).RepeatForever()
+          );
+      }
+    );
   }
 }

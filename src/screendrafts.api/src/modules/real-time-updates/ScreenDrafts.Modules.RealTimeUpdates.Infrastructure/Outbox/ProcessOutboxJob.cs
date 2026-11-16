@@ -20,7 +20,7 @@ internal sealed class ProcessOutboxJob(
     domainEventDispatcher;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
   {
     OutboxLoggingMessages.BeginningToProcessOutboxMessages(_logger, ModuleName);
 

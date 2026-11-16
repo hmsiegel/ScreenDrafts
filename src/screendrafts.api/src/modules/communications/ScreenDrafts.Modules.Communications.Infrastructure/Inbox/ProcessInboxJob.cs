@@ -20,15 +20,18 @@ internal sealed class ProcessInboxJob(
     integrationEventDispatcher;
   private readonly InboxOptions _inboxOptions = inboxOptions.Value;
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(
+    IJobExecutionContext context,
+    CancellationToken cancellationToken = default
+  )
   {
     InboxLoggingMessages.BeginningToProcessInboxMessages(_logger, ModuleName);
 
     await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(
-      CancellationToken.None
+      cancellationToken
     );
     await using DbTransaction transaction = await connection.BeginTransactionAsync(
-      CancellationToken.None
+      cancellationToken
     );
 
     IReadOnlyList<InboxMessageResponse> inboxMessages = await GetInboxMessagesAsync(
@@ -64,7 +67,7 @@ internal sealed class ProcessInboxJob(
       await UpdateInboxMessageAsync(connection, transaction, inboxMessage, exception);
     }
 
-    await transaction.CommitAsync(CancellationToken.None);
+    await transaction.CommitAsync(cancellationToken);
 
     InboxLoggingMessages.CompletedProcessingInboxMessages(_logger, ModuleName);
   }

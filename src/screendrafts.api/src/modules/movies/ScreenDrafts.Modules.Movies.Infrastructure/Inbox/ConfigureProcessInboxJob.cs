@@ -1,23 +1,24 @@
 ﻿namespace ScreenDrafts.Modules.Movies.Infrastructure.Inbox;
 
-internal sealed class ConfigureProcessInboxJob(IOptions<InboxOptions> inboxOptions)
-  : IConfigureOptions<QuartzOptions>
+internal static class ConfigureProcessInboxJob
 {
-  private readonly InboxOptions _inboxOptions = inboxOptions.Value;
-
-  public void Configure(QuartzOptions options)
+  public static void Configure(IQuartzBuilder quartz)
   {
     var jobName = typeof(ProcessInboxJob).FullName!;
-    var interval = _inboxOptions.IntervalInMilliseconds.HasValue
-      ? TimeSpan.FromMilliseconds(_inboxOptions.IntervalInMilliseconds.Value)
-      : TimeSpan.FromSeconds(_inboxOptions.IntervalInSeconds);
 
-    options
-      .AddJob<ProcessInboxJob>(configure => configure.WithIdentity(jobName))
-      .AddTrigger(configure =>
-        configure
+    quartz.AddJob<ProcessInboxJob>(job => job.WithIdentity(jobName));
+    quartz.AddTrigger(
+      (services, trigger) =>
+      {
+        var options = services.GetRequiredService<IOptions<InboxOptions>>().Value;
+        var interval = options.IntervalInMilliseconds.HasValue
+          ? TimeSpan.FromMilliseconds(options.IntervalInMilliseconds.Value)
+          : TimeSpan.FromSeconds(options.IntervalInSeconds);
+
+        trigger
           .ForJob(jobName)
-          .WithSimpleSchedule(schedule => schedule.WithInterval(interval).RepeatForever())
-      );
+          .WithSimpleSchedule(schedule => schedule.WithInterval(interval).RepeatForever());
+      }
+    );
   }
 }

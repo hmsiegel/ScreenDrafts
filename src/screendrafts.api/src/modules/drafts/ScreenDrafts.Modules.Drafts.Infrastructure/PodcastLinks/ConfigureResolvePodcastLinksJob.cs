@@ -1,26 +1,22 @@
-namespace ScreenDrafts.Modules.Drafts.Infrastructure.PodcastLinks;
+﻿namespace ScreenDrafts.Modules.Drafts.Infrastructure.PodcastLinks;
 
-internal sealed class ConfigureResolvePodcastLinksJob(IOptions<PodcastLinksOptions> podcastLinksOptions)
-  : IConfigureOptions<QuartzOptions>
+internal static class ConfigureResolvePodcastLinksJob
 {
-  private readonly PodcastLinksOptions _options = podcastLinksOptions.Value;
-
-  public void Configure(QuartzOptions options)
+  public static void Configure(IQuartzBuilder quartz)
   {
-    ArgumentNullException.ThrowIfNull(options);
-
     var jobName = typeof(ResolvePodcastLinksJob).FullName!;
 
-    options
-      .AddJob<ResolvePodcastLinksJob>(configure => configure.WithIdentity(jobName))
-      .AddTrigger(configure =>
-        configure
+    quartz.AddJob<ResolvePodcastLinksJob>(job => job.WithIdentity(jobName));
+    quartz.AddTrigger<ResolvePodcastLinksJob>(
+      (services, trigger) =>
+      {
+        var options = services.GetRequiredService<IOptions<PodcastLinksOptions>>().Value;
+        trigger
           .ForJob(jobName)
-          .WithSimpleSchedule(schedule =>
-            schedule
-              .WithInterval(TimeSpan.FromSeconds(_options.IntervalInSeconds))
-              .RepeatForever()
-          )
-      );
+          .WithSimpleSchedule(x =>
+            x.WithInterval(TimeSpan.FromSeconds(options.IntervalInSeconds)).RepeatForever()
+          );
+      }
+    );
   }
 }

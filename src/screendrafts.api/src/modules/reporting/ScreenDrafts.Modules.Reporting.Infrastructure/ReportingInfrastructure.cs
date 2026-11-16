@@ -24,10 +24,10 @@ public static class ReportingInfrastructure
     services.AddMemoryCache();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Reporting:Outbox"));
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
     services.Configure<InboxOptions>(configuration.GetSection("Reporting:Inbox"));
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
-    services.ConfigureOptions<ConfigureWeeklySpotlightRotationJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
+    services.ConfigureAllQuartzSchedulers(ConfigureWeeklySpotlightRotationJob.Configure);
 
     return services;
   }

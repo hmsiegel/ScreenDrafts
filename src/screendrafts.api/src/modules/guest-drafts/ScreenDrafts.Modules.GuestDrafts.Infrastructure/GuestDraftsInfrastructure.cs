@@ -23,9 +23,9 @@ public static class GuestDraftsInfrastructure
     services.AddMemoryCache();
 
     services.Configure<OutboxOptions>(configuration.GetSection("GuestDrafts:Outbox"));
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
     services.Configure<InboxOptions>(configuration.GetSection("GuestDrafts:Inbox"));
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     return services;
   }

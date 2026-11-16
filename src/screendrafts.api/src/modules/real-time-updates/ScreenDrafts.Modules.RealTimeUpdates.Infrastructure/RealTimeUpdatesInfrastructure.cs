@@ -16,11 +16,11 @@ public static class RealTimeUpdatesInfrastructure
 
     services.Configure<OutboxOptions>(configuration.GetSection("RealTimeUpdates:Outbox"));
 
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
 
     services.Configure<InboxOptions>(configuration.GetSection("RealTimeUpdates:Inbox"));
 
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     return services;
   }

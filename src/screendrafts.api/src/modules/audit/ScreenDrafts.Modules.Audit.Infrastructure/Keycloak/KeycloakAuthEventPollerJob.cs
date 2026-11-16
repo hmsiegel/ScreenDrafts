@@ -4,71 +4,93 @@ internal sealed partial class KeycloakAuthEventPollerJob(
   IDbConnectionFactory connectionFactory,
   IAuditWriteService auditWriteService,
   IOptions<KeycloakPollerOptions> pollerOptions,
-  ILogger<KeycloakAuthEventPollerJob> logger) : IJob
+  ILogger<KeycloakAuthEventPollerJob> logger
+) : IJob
 {
   private readonly IDbConnectionFactory _connectionFactory = connectionFactory;
   private readonly IAuditWriteService _auditWriteService = auditWriteService;
   private readonly KeycloakPollerOptions _pollerOptions = pollerOptions.Value;
   private readonly ILogger<KeycloakAuthEventPollerJob> _logger = logger;
 
-  private const string WatermarkQuery =
-    """
-        SELECT last_event_time
-        FROM audit.auth_event_watermark
-        LIMIT 1;
-        """;
+  private const string WatermarkQuery = """
+    SELECT last_event_time
+    FROM audit.auth_event_watermark
+    LIMIT 1;
+    """;
 
-  private const string UpsertWatermark =
-      """
-        INSERT INTO audit.auth_event_watermark (id, last_event_time)
-        VALUES (1, @last_event_time)
-        ON CONFLICT (id) DO UPDATE
-            SET last_event_time = EXCLUDED.last_event_time;
-        """;
+  private const string UpsertWatermark = """
+    INSERT INTO audit.auth_event_watermark (id, last_event_time)
+    VALUES (1, @last_event_time)
+    ON CONFLICT (id) DO UPDATE
+        SET last_event_time = EXCLUDED.last_event_time;
+    """;
 
   [LoggerMessage(
     EventId = 1,
     Level = LogLevel.Warning,
-    Message = "[Audit] Keycloak poller could not obtain admin token.")]
+    Message = "[Audit] Keycloak poller could not obtain admin token."
+  )]
   private static partial void LogUnableToObtainToken(ILogger<KeycloakAuthEventPollerJob> logger);
 
   [LoggerMessage(
     EventId = 2,
     Level = LogLevel.Information,
-    Message = "[Audit] Keycloak poller fetched {Count} new auth events")]
-  private static partial void LogJobFetchedEvents(ILogger<KeycloakAuthEventPollerJob> logger, int count);
+    Message = "[Audit] Keycloak poller fetched {Count} new auth events"
+  )]
+  private static partial void LogJobFetchedEvents(
+    ILogger<KeycloakAuthEventPollerJob> logger,
+    int count
+  );
 
   [LoggerMessage(
     EventId = 3,
     Level = LogLevel.Error,
-    Message = "[Audit] Keycloak poller failed to fetch auth events: {ErrorMessage}")]
-  private static partial void LogJobFetchError(ILogger<KeycloakAuthEventPollerJob> logger, string errorMessage);
+    Message = "[Audit] Keycloak poller failed to fetch auth events: {ErrorMessage}"
+  )]
+  private static partial void LogJobFetchError(
+    ILogger<KeycloakAuthEventPollerJob> logger,
+    string errorMessage
+  );
 
   [LoggerMessage(
     EventId = 4,
     Level = LogLevel.Warning,
-    Message = "[Audit] Keycloak events API returned {StatusCode}")]
-  private static partial void LogEventsApiError(ILogger<KeycloakAuthEventPollerJob> logger, string statusCode);
+    Message = "[Audit] Keycloak events API returned {StatusCode}"
+  )]
+  private static partial void LogEventsApiError(
+    ILogger<KeycloakAuthEventPollerJob> logger,
+    string statusCode
+  );
 
   [LoggerMessage(
     EventId = 5,
     Level = LogLevel.Error,
-    Message = "[Audit] Keycloak poller job failed with exception: {ExceptionMessage}")]
-  private static partial void LogJobException(ILogger<KeycloakAuthEventPollerJob> logger, string exceptionMessage);
+    Message = "[Audit] Keycloak poller job failed with exception: {ExceptionMessage}"
+  )]
+  private static partial void LogJobException(
+    ILogger<KeycloakAuthEventPollerJob> logger,
+    string exceptionMessage
+  );
 
   [LoggerMessage(
     EventId = 6,
     Level = LogLevel.Information,
-    Message = "[Audit] Keycloak poller Execute called")]
-  private static partial void LogKeycloakPollerExecuteCalled(ILogger<KeycloakAuthEventPollerJob> logger);
+    Message = "[Audit] Keycloak poller Execute called"
+  )]
+  private static partial void LogKeycloakPollerExecuteCalled(
+    ILogger<KeycloakAuthEventPollerJob> logger
+  );
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(
+    IJobExecutionContext context,
+    CancellationToken cancellationToken = default
+  )
   {
     LogKeycloakPollerExecuteCalled(_logger);
 
     try
     {
-      var token = await GetAdminTokenAsync(CancellationToken.None);
+      var token = await GetAdminTokenAsync(cancellationToken);
 
       if (string.IsNullOrEmpty(token))
       {
@@ -76,9 +98,9 @@ internal sealed partial class KeycloakAuthEventPollerJob(
         return;
       }
 
-      var watermark = await GetWatermarkAsync(CancellationToken.None);
+      var watermark = await GetWatermarkAsync(cancellationToken);
 
-      var events = await FetchEventsAsync(token, watermark, CancellationToken.None);
+      var events = await FetchEventsAsync(token, watermark, cancellationToken);
 
       if (events.Count == 0)
       {
@@ -99,10 +121,14 @@ internal sealed partial class KeycloakAuthEventPollerJob(
           evt.ClientId,
           evt.IpAddress,
           evt.Details is not null
-            ? System.Text.Json.JsonSerializer.Serialize(evt.Details, Common.Infrastructure.Serialization.SerializerOptions.Instance)
-            : null);
+            ? System.Text.Json.JsonSerializer.Serialize(
+              evt.Details,
+              Common.Infrastructure.Serialization.SerializerOptions.Instance
+            )
+            : null
+        );
 
-        await _auditWriteService.WriteAuthLogAsync(log, CancellationToken.None);
+        await _auditWriteService.WriteAuthLogAsync(log, cancellationToken);
 
         if (latestEventTime is null || evt.OccurredOnUtc > latestEventTime)
         {
@@ -112,7 +138,7 @@ internal sealed partial class KeycloakAuthEventPollerJob(
 
       if (latestEventTime.HasValue)
       {
-        await UpdateWatermarkAsync(latestEventTime.Value, CancellationToken.None);
+        await UpdateWatermarkAsync(latestEventTime.Value, cancellationToken);
       }
     }
     catch (HttpRequestException ex)
@@ -125,11 +151,10 @@ internal sealed partial class KeycloakAuthEventPollerJob(
   {
     using var client = new HttpClient();
 
-    using var body = new FormUrlEncodedContent(
-    [
+    using var body = new FormUrlEncodedContent([
       new KeyValuePair<string, string>("grant_type", "client_credentials"),
       new KeyValuePair<string, string>("client_id", _pollerOptions.ConfidentialClientId),
-      new KeyValuePair<string, string>("client_secret", _pollerOptions.ConfidentialClientSecret)
+      new KeyValuePair<string, string>("client_secret", _pollerOptions.ConfidentialClientSecret),
     ]);
 
     var response = await client.PostAsync(new Uri(_pollerOptions.TokenUrl), body, ct);
@@ -142,8 +167,7 @@ internal sealed partial class KeycloakAuthEventPollerJob(
     var json = await response.Content.ReadAsStringAsync(ct);
     using var doc = JsonDocument.Parse(json);
 
-    return doc.RootElement
-      .TryGetProperty("access_token", out var tokenElement)
+    return doc.RootElement.TryGetProperty("access_token", out var tokenElement)
       ? tokenElement.GetString()
       : null;
   }
@@ -151,7 +175,8 @@ internal sealed partial class KeycloakAuthEventPollerJob(
   private async Task<List<KeycloakEventDto>> FetchEventsAsync(
     string token,
     DateTimeOffset? since,
-    CancellationToken ct)
+    CancellationToken ct
+  )
   {
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -171,9 +196,11 @@ internal sealed partial class KeycloakAuthEventPollerJob(
     }
 
     var json = await response.Content.ReadAsStringAsync(ct);
-    var allEvents = System.Text.Json.JsonSerializer.Deserialize<List<KeycloakEventDto>>(json,
-      Common.Infrastructure.Serialization.SerializerOptions.Instance)
-      ?? [];
+    var allEvents =
+      System.Text.Json.JsonSerializer.Deserialize<List<KeycloakEventDto>>(
+        json,
+        Common.Infrastructure.Serialization.SerializerOptions.Instance
+      ) ?? [];
 
     return since.HasValue
       ? allEvents.Where(e => e.OccurredOnUtc > since.Value).ToList()
@@ -200,10 +227,10 @@ internal sealed partial class KeycloakAuthEventPollerJob(
     public string? ClientId { get; init; } = default!;
     public string? IpAddress { get; init; } = default!;
     public Dictionary<string, string>? Details { get; init; } = default!;
+
     // Keycloak returns "time" as Unix milliseconds
     public long Time { get; init; } = default!;
 
-    public DateTimeOffset OccurredOnUtc =>
-        DateTimeOffset.FromUnixTimeMilliseconds(Time);
+    public DateTimeOffset OccurredOnUtc => DateTimeOffset.FromUnixTimeMilliseconds(Time);
   }
 }

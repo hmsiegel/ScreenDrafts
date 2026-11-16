@@ -17,11 +17,12 @@ internal sealed partial class ResolvePodcastLinksJob(
   private readonly PodcastLinksOptions _options = options.Value;
   private readonly ILogger<ResolvePodcastLinksJob> _logger = logger;
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(
+    IJobExecutionContext context,
+    CancellationToken cancellationToken = default
+  )
   {
     ArgumentNullException.ThrowIfNull(context);
-
-    var cancellationToken = CancellationToken.None;
 
     await using var scope = _serviceScopeFactory.CreateAsyncScope();
     var services = scope.ServiceProvider;

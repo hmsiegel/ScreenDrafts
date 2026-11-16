@@ -2,30 +2,42 @@
 
 [DisallowConcurrentExecution]
 internal sealed class ProcessOutboxJob(
-    IDbConnectionFactory dbConnectionFactory,
-    IServiceScopeFactory serviceScopeFactory,
-    IDateTimeProvider dateTimeProvider,
-    IOptions<OutboxOptions> outboxOptions,
-    ILogger<ProcessOutboxJob> logger,
-    IAdministrationDomainEventDispatcher domainEventDispatcher) : IJob
+  IDbConnectionFactory dbConnectionFactory,
+  IServiceScopeFactory serviceScopeFactory,
+  IDateTimeProvider dateTimeProvider,
+  IOptions<OutboxOptions> outboxOptions,
+  ILogger<ProcessOutboxJob> logger,
+  IAdministrationDomainEventDispatcher domainEventDispatcher
+) : IJob
 {
   private const string ModuleName = "Administration";
 
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
   private readonly IDateTimeProvider _dateTimeProvider = dateTimeProvider;
-  private readonly IAdministrationDomainEventDispatcher _domainEventDispatcher = domainEventDispatcher;
+  private readonly IAdministrationDomainEventDispatcher _domainEventDispatcher =
+    domainEventDispatcher;
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(
+    IJobExecutionContext context,
+    CancellationToken cancellationToken = default
+  )
   {
     OutboxLoggingMessages.BeginningToProcessOutboxMessages(_logger, ModuleName);
 
-    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(CancellationToken.None);
-    await using DbTransaction transaction = await connection.BeginTransactionAsync(CancellationToken.None);
+    await using DbConnection connection = await _dbConnectionFactory.OpenConnectionAsync(
+      cancellationToken
+    );
+    await using DbTransaction transaction = await connection.BeginTransactionAsync(
+      cancellationToken
+    );
 
-    IReadOnlyList<OutboxMessageResponse> outboxMessages = await GetOutboxMessagesAsync(connection, transaction);
+    IReadOnlyList<OutboxMessageResponse> outboxMessages = await GetOutboxMessagesAsync(
+      connection,
+      transaction
+    );
 
     foreach (var outboxMessage in outboxMessages)
     {
@@ -33,21 +45,21 @@ internal sealed class ProcessOutboxJob(
       try
       {
         IDomainEvent domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(
-            outboxMessage.Content,
-            SerializerSettings.Instance)!;
+          outboxMessage.Content,
+          SerializerSettings.Instance
+        )!;
 
         using var scope = _serviceScopeFactory.CreateScope();
 
-        await _domainEventDispatcher.DispatchAsync(
-            domainEvent,
-            scope.ServiceProvider);
+        await _domainEventDispatcher.DispatchAsync(domainEvent, scope.ServiceProvider);
       }
       catch (InvalidOperationException caughtException)
       {
         OutboxLoggingMessages.ExceptionWhileProcessingOutboxMessage(
           _logger,
           ModuleName,
-          outboxMessage.Id);
+          outboxMessage.Id
+        );
 
         exception = caughtException;
       }
@@ -55,58 +67,60 @@ internal sealed class ProcessOutboxJob(
       await UpdateOutboxMessageAsync(connection, transaction, outboxMessage, exception);
     }
 
-    await transaction.CommitAsync(CancellationToken.None);
+    await transaction.CommitAsync(cancellationToken);
 
     OutboxLoggingMessages.CompletedProcessingOutboxMessages(_logger, ModuleName);
   }
 
   private async Task<IReadOnlyList<OutboxMessageResponse>> GetOutboxMessagesAsync(
-      IDbConnection connection,
-      IDbTransaction transaction)
+    IDbConnection connection,
+    IDbTransaction transaction
+  )
   {
-    var sql =
-        $"""
-             SELECT
-                id AS {nameof(OutboxMessageResponse.Id)},
-                content AS {nameof(OutboxMessageResponse.Content)}
-             FROM administration.outbox_messages
-             WHERE processed_on_utc IS NULL
-             ORDER BY occurred_on_utc
-             LIMIT @batchSize
-             FOR UPDATE
-             """;
+    var sql = $"""
+      SELECT
+         id AS {nameof(OutboxMessageResponse.Id)},
+         content AS {nameof(OutboxMessageResponse.Content)}
+      FROM administration.outbox_messages
+      WHERE processed_on_utc IS NULL
+      ORDER BY occurred_on_utc
+      LIMIT @batchSize
+      FOR UPDATE
+      """;
 
     var outboxMessages = await connection.QueryAsync<OutboxMessageResponse>(
-        sql,
-        new { batchSize = _outboxOptions.BatchSize },
-        transaction: transaction);
+      sql,
+      new { batchSize = _outboxOptions.BatchSize },
+      transaction: transaction
+    );
 
     return outboxMessages.ToList();
   }
 
   private async Task UpdateOutboxMessageAsync(
-      IDbConnection connection,
-      IDbTransaction transaction,
-      OutboxMessageResponse outboxMessage,
-      Exception? exception)
+    IDbConnection connection,
+    IDbTransaction transaction,
+    OutboxMessageResponse outboxMessage,
+    Exception? exception
+  )
   {
-    const string sql =
-        """
-            UPDATE administration.outbox_messages
-            SET processed_on_utc = @ProcessedOnUtc,
-                error = @Error
-            WHERE id = @Id
-            """;
+    const string sql = """
+      UPDATE administration.outbox_messages
+      SET processed_on_utc = @ProcessedOnUtc,
+          error = @Error
+      WHERE id = @Id
+      """;
 
     await connection.ExecuteAsync(
-        sql,
-        new
-        {
-          outboxMessage.Id,
-          ProcessedOnUtc = _dateTimeProvider.UtcNow,
-          Error = exception?.ToString()
-        },
-        transaction: transaction);
+      sql,
+      new
+      {
+        outboxMessage.Id,
+        ProcessedOnUtc = _dateTimeProvider.UtcNow,
+        Error = exception?.ToString(),
+      },
+      transaction: transaction
+    );
   }
 
   internal sealed record OutboxMessageResponse(Guid Id, string Content);
