@@ -27,9 +27,9 @@
     <!-- Web -->
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.Uris" Version="9.0.0" />
-    <PackageVersion Include="FastEndpoints" Version="8.3.0" />
+    <PackageVersion Include="FastEndpoints" Version="9.0.0" />
     <PackageVersion Include="FastEndpoints.Security" Version="8.2.0" />
-    <PackageVersion Include="FastEndpoints.Swagger" Version="8.3.0" />
+    <PackageVersion Include="FastEndpoints.Swagger" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.14" />
     <PackageVersion Include="Microsoft.OpenApi" Version="2.13.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
