@@ -74,6 +74,7 @@ builder.Configuration.AddModuleConfiguration(
   ModuleReferences.Modules,
   builder.Environment.EnvironmentName
 );
+builder.Configuration.AddEnvironmentVariables();
 
 var keyCloakHealthUrl = builder.Configuration.GetKeyCloakHealthUrl();
 
