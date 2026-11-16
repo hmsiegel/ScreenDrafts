@@ -172,7 +172,7 @@ internal sealed partial class DraftPartCompletedIntegrationEventConsumer(
         e.tmdb_id          AS TmdbId,
         e.order_index      AS OrderIndex,
         e.is_correct       AS IsCorrect,
-        COALESC(rr.prediction_mode IN (2,3), FALSE) AS IsRanked
+        COALESCE(rr.prediction_mode IN (2,3), FALSE) AS IsRanked
       FROM drafts.draft_prediction_sets s
       JOIN drafts.draft_parts dp           ON dp.id = s.draft_part_id
       JOIN drafts.prediction_contestants c ON c.id  = s.contestant_id

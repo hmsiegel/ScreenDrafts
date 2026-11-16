@@ -20,11 +20,11 @@ public static class IntegrationsInfrastructure
 
     services.Configure<OutboxOptions>(configuration.GetSection("Integrations:Outbox"));
 
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
 
     services.Configure<InboxOptions>(configuration.GetSection("Integrations:Inbox"));
 
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     services.AddOptions<ImdbSettings>()
       .Bind(configuration.GetSection("Integrations:Imdb"))

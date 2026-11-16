@@ -28,7 +28,7 @@ public static class OutboxInboxRunner
       sp.GetRequiredService<IGuestDraftsDomainEventDispatcher>()
     );
 
-    await job.Execute(JobContext(cancellationToken));
+    await job.Execute(JobContext(cancellationToken), cancellationToken);
   }
 
   public static async Task RunInboxAsync(
@@ -50,7 +50,7 @@ public static class OutboxInboxRunner
       sp.GetRequiredService<IGuestDraftsIntegrationEventDispatcher>()
     );
 
-    await job.Execute(JobContext(cancellationToken));
+    await job.Execute(JobContext(cancellationToken), cancellationToken);
   }
 
   /// <summary>Writes the event into <c>guest_drafts.inbox_messages</c> through the real consumer.</summary>

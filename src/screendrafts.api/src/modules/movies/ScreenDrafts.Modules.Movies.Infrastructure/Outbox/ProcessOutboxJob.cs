@@ -18,7 +18,7 @@ internal sealed class ProcessOutboxJob(
   private readonly ILogger<ProcessOutboxJob> _logger = logger;
   private readonly OutboxOptions _outboxOptions = outboxOptions.Value;
 
-  public async Task Execute(IJobExecutionContext context)
+  public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
   {
     OutboxLoggingMessages.BeginningToProcessOutboxMessages(_logger, ModuleName);
 

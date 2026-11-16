@@ -23,9 +23,9 @@ public static class UsersInfrastructure
     services.AddScoped<IEmailBootstrapTokenService, EmailBootstrapTokenService>();
 
     services.Configure<OutboxOptions>(configuration.GetSection("Users:Outbox"));
-    services.ConfigureOptions<ConfigureProcessOutboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessOutboxJob.Configure);
     services.Configure<InboxOptions>(configuration.GetSection("Users:Inbox"));
-    services.ConfigureOptions<ConfigureProcessInboxJob>();
+    services.ConfigureAllQuartzSchedulers(ConfigureProcessInboxJob.Configure);
 
     return services;
   }

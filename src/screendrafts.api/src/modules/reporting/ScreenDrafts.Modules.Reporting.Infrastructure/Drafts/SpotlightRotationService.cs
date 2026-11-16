@@ -11,7 +11,7 @@ internal sealed class SpotlightRotationService(ISchedulerFactory schedulerFactor
 
     var jobKey = new JobKey(typeof(WeeklySpotlightRotationJob).FullName!);
 
-    if (!await scheduler.CheckExists(jobKey, cancellationToken))
+    if (!await scheduler.Exists(jobKey, cancellationToken))
     {
       throw new ScreenDraftsException($"Job '{jobKey}' not registered.");
     }

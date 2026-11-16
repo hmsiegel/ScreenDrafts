@@ -1,17 +1,19 @@
 ﻿namespace ScreenDrafts.Modules.Reporting.Infrastructure.Drafts;
 
-internal sealed class ConfigureWeeklySpotlightRotationJob : IConfigureOptions<QuartzOptions>
+internal static class ConfigureWeeklySpotlightRotationJob
 {
-  public void Configure(QuartzOptions options)
+  public static void Configure(IQuartzBuilder quartz)
   {
     var jobName = typeof(WeeklySpotlightRotationJob).FullName!;
 
-    options
-      .AddJob<WeeklySpotlightRotationJob>(configure => configure.WithIdentity(jobName))
-      .AddTrigger(configure =>
-        configure
-          .ForJob(jobName)
-          .WithCronSchedule("0 0 0 ? * MON *", x => x.InTimeZone(TimeZoneInfo.Utc))
-      );
+    quartz.AddJob<WeeklySpotlightRotationJob>(job => job.WithIdentity(jobName));
+    quartz.AddTrigger<WeeklySpotlightRotationJob>(trigger =>
+      trigger
+        .ForJob(jobName)
+        .WithCronSchedule(
+          CronExpression.Parse("0 0 0 ? * MON *", CronFormat.Quartz),
+          cron => cron.InTimeZone(TimeZoneInfo.Utc)
+        )
+    );
   }
 }
