@@ -961,6 +961,16 @@ export interface IClient {
     /**
      * @return OK
      */
+    media_StartPeopleResync(body: StartMediaPeopleResyncRequest): Promise<MediaPeopleResyncStatusResponse>;
+
+    /**
+     * @return OK
+     */
+    media_GetPeopleResyncStatus(): Promise<MediaPeopleResyncStatusResponse>;
+
+    /**
+     * @return OK
+     */
     media_SearchYouTube(body: SearchYouTubeMediaRequest): Promise<SearchYouTubeMediaResponse>;
 
     /**
@@ -1037,6 +1047,11 @@ export interface IClient {
      * @return OK
      */
     media_GetByExternalIds(body: GetMediaByExternalIdsRequest): Promise<GetMediaByExternalIdsResponse>;
+
+    /**
+     * @return OK
+     */
+    media_CancelPeopleResync(): Promise<MediaPeopleResyncStatusResponse>;
 
     /**
      * @return No Content
@@ -11094,6 +11109,104 @@ export class Client implements IClient {
     /**
      * @return OK
      */
+    media_StartPeopleResync(body: StartMediaPeopleResyncRequest, signal?: AbortSignal): Promise<MediaPeopleResyncStatusResponse> {
+        let url_ = this.baseUrl + "/media/people-resync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            signal,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_StartPeopleResync(_response);
+        });
+    }
+
+    protected processMedia_StartPeopleResync(response: Response): Promise<MediaPeopleResyncStatusResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MediaPeopleResyncStatusResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 409) {
+            return response.text().then((_responseText) => {
+            return throwException("Conflict", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MediaPeopleResyncStatusResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_GetPeopleResyncStatus(signal?: AbortSignal): Promise<MediaPeopleResyncStatusResponse> {
+        let url_ = this.baseUrl + "/media/people-resync";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_GetPeopleResyncStatus(_response);
+        });
+    }
+
+    protected processMedia_GetPeopleResyncStatus(response: Response): Promise<MediaPeopleResyncStatusResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MediaPeopleResyncStatusResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MediaPeopleResyncStatusResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     media_SearchYouTube(body: SearchYouTubeMediaRequest, signal?: AbortSignal): Promise<SearchYouTubeMediaResponse> {
         let url_ = this.baseUrl + "/media/search-youtube";
         url_ = url_.replace(/[?&]$/, "");
@@ -11829,6 +11942,51 @@ export class Client implements IClient {
             });
         }
         return Promise.resolve<GetMediaByExternalIdsResponse>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    media_CancelPeopleResync(signal?: AbortSignal): Promise<MediaPeopleResyncStatusResponse> {
+        let url_ = this.baseUrl + "/media/people-resync/cancel";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "POST",
+            signal,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processMedia_CancelPeopleResync(_response);
+        });
+    }
+
+    protected processMedia_CancelPeopleResync(response: Response): Promise<MediaPeopleResyncStatusResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver) as MediaPeopleResyncStatusResponse;
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MediaPeopleResyncStatusResponse>(null as any);
     }
 
     /**
@@ -16807,6 +16965,21 @@ export interface MediaListItemResponse {
     [key: string]: any;
 }
 
+export interface MediaPeopleResyncStatusResponse {
+    state?: string;
+    total?: number;
+    succeeded?: number;
+    failed?: number;
+    perMinute?: number | undefined;
+    eta?: string | undefined;
+    startedAt?: Date | undefined;
+    finishedAt?: Date | undefined;
+    stopReason?: string | undefined;
+    pending?: number | undefined;
+
+    [key: string]: any;
+}
+
 export interface MediaPersonCreditGroupResponse {
     role?: string;
     credits?: MediaPersonCreditResponse[];
@@ -18284,6 +18457,12 @@ export interface SpotlightPickResponse {
     position?: number;
     mediaPublicId?: string;
     mediaTitle?: string;
+
+    [key: string]: any;
+}
+
+export interface StartMediaPeopleResyncRequest {
+    limit?: number | undefined;
 
     [key: string]: any;
 }
