@@ -174,8 +174,8 @@ importers:
         specifier: 0.41.3
         version: 0.41.3
       '@microsoft/signalr':
-        specifier: ^10.0.11
-        version: 10.0.11
+        specifier: ^11.0.0
+        version: 11.0.0
       '@tanstack/react-query':
         specifier: ^5.107.1
         version: 5.107.1(@types/react@19.3.0)(react@19.3.1)
@@ -612,8 +612,8 @@ packages:
     peerDependencies:
       solid-js: ^1.8.8
 
-  '@microsoft/signalr@10.0.11':
-    resolution: {integrity: sha512-FulOJ2EEtKvLQcswe/U7v8pzyXyk7Jua5xgWJPPwyQU/2Z9ORvKcVjyO75VvLsem+CJ1ORRexJ+7Bz1FCei2aw==}
+  '@microsoft/signalr@11.0.0':
+    resolution: {integrity: sha512-NNYwAOYFaVH8HRt3YWUFJYETZ66G8P3K/g3Ch/6Od+Rrdpe/Uafe8iZp81UI7TIM7qRzjDe5DKUAuwsnt391zg==}
 
   '@napi-rs/wasm-runtime@1.2.5':
     resolution: {integrity: sha512-HshSvXzmBxNzqejd3k/KemgQ3hdREUYFRRrgxOZ+gPljDIsO2SDZrVZMd4Z/HsxudQbE62OVyVFE8z9BCurfjA==}
@@ -3170,7 +3170,7 @@ snapshots:
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.17)
       solid-js: 1.9.17
 
-  '@microsoft/signalr@10.0.11':
+  '@microsoft/signalr@11.0.0':
     dependencies:
       abort-controller: 3.0.0
       eventsource: 2.0.2
