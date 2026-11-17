@@ -322,7 +322,7 @@ function CreditLink({
   if (kind === "person") {
     const path = personPath(credit.tmdbId, credit.imdbId);
     return path ? (
-      <Link href={path} className={`${className} ${hover}`}>
+      <Link href={path} prefetch={false} className={`${className} ${hover}`}>
         {credit.name}
       </Link>
     ) : (
