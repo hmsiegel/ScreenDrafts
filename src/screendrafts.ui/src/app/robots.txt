@@ -1,3 +1,21 @@
 # app/robots.txt
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: MJ12bot
+User-agent: DotBot
+User-agent: ElevenLabsCrawler
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: CCBot
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: PerplexityBot
+Disallow: /
+
 User-agent: *
 Disallow: /admin
+Disallow: /api/
+Disallow: /media?
+Disallow: /cast-crew?
+Disallow: /drafters?
+Disallow: /drafts?

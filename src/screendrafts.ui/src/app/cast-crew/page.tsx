@@ -33,7 +33,7 @@ export default async function CastCrewPage(props: { searchParams: SearchParams }
           <h1 className="font-oswald font-bold text-[44px] sm:text-[56px] lg:text-[72px] leading-[0.95] text-white">
             CAST &amp; CREW
           </h1>
-          <p className="font-serif italic text-[15px] lg:text-[17px] leading-relaxed text-white/70 max-w-[480px] lg:text-right">
+          <p className="font-serif italic text-[15px] lg:text-[17px] leading-relaxed text-white/70 max-w-120 lg:text-right">
             Everyone who acted in, directed, wrote or produced a title in the Vault.
           </p>
         </div>

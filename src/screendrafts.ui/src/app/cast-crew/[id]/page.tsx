@@ -11,7 +11,7 @@ import Link from "next/link";
 
 type Props = { params: Promise<{ id: string }> };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 
 // Long filmographies fold after this many rows.
 const CREDITS_VISIBLE = 20;
@@ -104,7 +104,7 @@ export default async function CastCrewPage({ params }: Props) {
 
       <div className="h-1 bg-sd-red" />
 
-      <div className="page-x py-6 lg:py-10 max-w-[1400px] mx-auto">
+      <div className="page-x py-6 lg:py-10 max-w-350 mx-auto">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10">
           {/* Sidebar */}
           <div className="flex flex-col gap-6">
@@ -123,6 +123,7 @@ export default async function CastCrewPage({ params }: Props) {
               <div className="flex flex-col gap-1.5">
                 <Link
                   href={vaultHref(person)}
+                  rel="nofollow"
                   className="font-oswald text-[15px] text-sd-ink leading-tight transition-colors hover:text-sd-blue"
                 >
                   All in the Vault
