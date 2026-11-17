@@ -11,7 +11,7 @@ const apiBase = env.apiUrl;
 export async function fetchMediaPerson(id: string): Promise<MediaPersonProfileResponse | null> {
   const response = await fetch(`${apiBase}/media/people/${encodeURIComponent(id)}`, {
     method: "GET",
-    next: { revalidate: 0 },
+    next: { revalidate: 86400, tags: ["media-people"] },
   });
 
   if (response.status === 404) {
