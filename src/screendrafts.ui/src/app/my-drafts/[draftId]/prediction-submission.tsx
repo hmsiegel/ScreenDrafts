@@ -13,6 +13,7 @@ import {
   SubmitPredictionEntry,
 } from "@/services/drafts/fetch-my-drafts";
 import { parseApiErrorMessage } from "@/lib/parse-api-error";
+import { ImportProgress } from "@/components/drafts/import-progress";
 
 interface Props {
   accessToken: string;
@@ -353,9 +354,7 @@ export default function PredictionSubmission({
                 disabled={resolving}
                 fixedSeriesTmdbId={restrictedTvSeriesTmdbId ?? undefined}
               />
-              {resolving && (
-                <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Resolving episode…</p>
-              )}
+              {resolving && <ImportProgress className="mt-2"/>}
             </div>
           )}
 

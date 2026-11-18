@@ -24,6 +24,7 @@ import {
   MEDIA_TYPE_TV_EPISODE,
   type SeasonEpisode,
 } from "@/lib/tv-episode-resolve";
+import { ImportProgress } from "@/components/drafts/import-progress";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -251,13 +252,12 @@ export function SeedSpeedDraftStep({ draft, participants, accessToken, onDone }:
         {subDrafts.map((s) => (
           <li
             key={s.publicId}
-            className={`px-3 py-1.5 text-[11px] font-mono tracking-widest uppercase rounded border ${
-              s.publicId === current.subDraftPublicId
+            className={`px-3 py-1.5 text-[11px] font-mono tracking-widest uppercase rounded border ${s.publicId === current.subDraftPublicId
                 ? "bg-sd-ink text-white border-sd-ink"
                 : s.status === SUB_DRAFT_STATUS.Completed
                   ? "bg-white text-sd-ink border-sd-ink/30"
                   : "bg-sd-paper text-sd-ink/30 border-sd-ink/10"
-            }`}
+              }`}
           >
             Sub-Draft {s.index}
             {s.status === SUB_DRAFT_STATUS.Completed && " ✓"}
@@ -624,6 +624,7 @@ function SpeedDraftPicksSection({
   // instead of a single search result, more than one row can show a PICK
   // button at once, so each needs its own loading state.
   const [submitting, setSubmitting] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
 
   const [browseLoading, setBrowseLoading] = useState(true);
   const [browseError, setBrowseError] = useState<string | null>(null);
@@ -784,13 +785,15 @@ function SpeedDraftPicksSection({
     try {
       let resolvedPublicId = mediaPublicId;
       if (!resolvedPublicId) {
-        resolvedPublicId =
-          item.mediaType === MEDIA_TYPE_TV_EPISODE &&
-          item.tmdbId != null &&
-          item.tvSeriesTmdbId &&
-          item.seasonNumber &&
-          item.episodeNumber
-            ? await importAndResolveEpisode(
+        setImporting(true);
+        try {
+          resolvedPublicId =
+            item.mediaType === MEDIA_TYPE_TV_EPISODE &&
+              item.tmdbId != null &&
+              item.tvSeriesTmdbId &&
+              item.seasonNumber &&
+              item.episodeNumber
+              ? await importAndResolveEpisode(
                 item.tmdbId,
                 item.tvSeriesTmdbId,
                 item.seasonNumber,
@@ -798,7 +801,10 @@ function SpeedDraftPicksSection({
                 accessToken,
                 25000
               )
-            : await importAndResolveTitle(item, accessToken);
+              : await importAndResolveTitle(item, accessToken);
+        } finally {
+          setImporting(false);
+        }
         if (!resolvedPublicId) {
           setError("Title could not be imported in time — try again in a moment.");
           return;
@@ -1037,9 +1043,8 @@ function SpeedDraftPicksSection({
                   setView("subject");
                   setDrillSeries(null);
                 }}
-                className={`px-2 py-1 border ${
-                  view === "subject" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
-                }`}
+                className={`px-2 py-1 border ${view === "subject" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
+                  }`}
               >
                 Titles
               </button>
@@ -1049,13 +1054,13 @@ function SpeedDraftPicksSection({
                   setView("episode");
                   setDrillSeries(null);
                 }}
-                className={`px-2 py-1 border ${
-                  view === "episode" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
-                }`}
+                className={`px-2 py-1 border ${view === "episode" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
+                  }`}
               >
                 TV Episode
               </button>
             </div>
+            {importing && <ImportProgress className="mb-2" />}
 
             {view === "subject" && (
               <>
@@ -1068,18 +1073,16 @@ function SpeedDraftPicksSection({
                     <button
                       type="button"
                       onClick={() => setKind("movie")}
-                      className={`px-2 py-1 border ${
-                        kind === "movie" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
-                      }`}
+                      className={`px-2 py-1 border ${kind === "movie" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
+                        }`}
                     >
                       Movies
                     </button>
                     <button
                       type="button"
                       onClick={() => setKind("tv")}
-                      className={`px-2 py-1 border ${
-                        kind === "tv" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
-                      }`}
+                      className={`px-2 py-1 border ${kind === "tv" ? LIGHT_THEME.toggleActive : LIGHT_THEME.toggleInactive
+                        }`}
                     >
                       TV Shows
                     </button>
@@ -1304,9 +1307,6 @@ function SpeedDraftPicksSection({
                   onSelect={handleEpisodeSelect}
                   disabled={submitting !== null || position === "" || !participantIdValue}
                 />
-                {submitting?.startsWith("episode-") && (
-                  <p className="text-[11px] font-mono text-sd-ink/40">Importing episode…</p>
-                )}
               </div>
             )}
           </div>

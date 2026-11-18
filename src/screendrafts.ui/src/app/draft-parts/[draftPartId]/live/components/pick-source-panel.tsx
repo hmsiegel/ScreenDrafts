@@ -7,6 +7,7 @@ import { importAndResolve, ResolvedMovie, resolveTmdbIds } from '@/lib/movie-res
 import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from '@/lib/tv-episode-resolve';
 import { MediaPicker, type SelectedMedia } from '@/components/drafts/media-picker';
 import { DARK_THEME } from '@/components/drafts/media-picker-theme';
+import { ImportProgress } from '@/components/drafts/import-progress';
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -48,6 +49,7 @@ export function PickSourcePanel({
 
   const [activeTab, setActiveTab] = useState<SourceTab>(availableTabs[0]?.key ?? 'search');
   const [submitting, setSubmitting] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Prevent picking if the slot is already filled (e.g. from a race between
@@ -68,7 +70,9 @@ export function PickSourcePanel({
 
       // Movie not in DB yet — import from TMDb then wait for it to land.
       if (!movie.mediaPublicId) {
+        setImporting(true);
         const imported = await importAndResolve(movie.tmdbId, accessToken);
+        setImporting(false);
         if (!imported) {
           setError('Movie could not be imported in time. Try again in a moment.');
           return;
@@ -102,6 +106,7 @@ export function PickSourcePanel({
       setError(e instanceof Error ? e.message : 'Failed to submit pick.');
     } finally {
       setSubmitting(null);
+      setImporting(false);
     }
   }
 
@@ -113,11 +118,10 @@ export function PickSourcePanel({
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-4 py-2 font-oswald text-xs tracking-widest transition-colors ${
-              activeTab === tab.key
-                ? 'text-sd-paper border-b-2 border-sd-red'
-                : 'text-white/40 hover:text-white/60'
-            }`}
+            className={`px-4 py-2 font-oswald text-xs tracking-widest transition-colors ${activeTab === tab.key
+              ? 'text-sd-paper border-b-2 border-sd-red'
+              : 'text-white/40 hover:text-white/60'
+              }`}
           >
             {tab.label}
           </button>
@@ -125,6 +129,7 @@ export function PickSourcePanel({
       </div>
 
       {error && <p className="px-4 py-2 text-sd-red text-xs font-mono">{error}</p>}
+      {importing && <ImportProgress theme="dark" className="px-4 py-2" />}
 
       <div className="max-h-72 overflow-y-auto">
         {activeTab === 'pool' && (
@@ -364,6 +369,7 @@ function SearchSource({
   fixedSeriesTmdbId?: number;
 }) {
   const [resolving, setResolving] = useState(false);
+  const [importingEpisode, setImportingEpisode] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleMediaSelect(media: SelectedMedia) {
@@ -375,6 +381,7 @@ function SearchSource({
         return;
       }
       setResolving(true);
+      setImportingEpisode(true);
       try {
         const publicId = await importAndResolveEpisode(
           media.tmdbId,
@@ -396,6 +403,7 @@ function SearchSource({
         });
       } finally {
         setResolving(false);
+        setImportingEpisode(false);
       }
       return;
     }
@@ -434,7 +442,12 @@ function SearchSource({
           theme={DARK_THEME}
         />
       </div>
-      {resolving && <LoadingRows />}
+      {resolving &&
+        (importingEpisode ? (
+          <ImportProgress theme="dark" className="px-4 py-3" />
+        ) : (
+          <LoadingRows />
+        ))}
       {error && <p className="px-4 py-2 text-sd-red text-xs font-mono">{error}</p>}
     </div>
   );
@@ -498,11 +511,10 @@ function MovieList({
             <button
               onClick={() => onPick(movie)}
               disabled={submitting !== null || disabled}
-              className={`shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest transition-colors ${
-                submitting === movie.mediaPublicId || submitting === `importing-${movie.tmdbId}`
-                  ? 'bg-sd-red/50 text-white cursor-wait'
-                  : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
-              }`}
+              className={`shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest transition-colors ${submitting === movie.mediaPublicId || submitting === `importing-${movie.tmdbId}`
+                ? 'bg-sd-red/50 text-white cursor-wait'
+                : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
+                }`}
             >
               {submitting === movie.mediaPublicId || submitting === `importing-${movie.tmdbId}` ? '…' : 'PICK'}
             </button>
