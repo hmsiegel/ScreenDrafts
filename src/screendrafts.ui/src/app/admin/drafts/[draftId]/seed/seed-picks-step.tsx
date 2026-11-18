@@ -23,6 +23,7 @@ import { importAndResolve, type ResolvedMovie } from "@/lib/movie-resolve";
 import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from "@/lib/tv-episode-resolve";
 import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picker";
 import type { SeedDraftState } from "./seed-draft-wizard";
+import { ImportProgress } from "@/components/drafts/import-progress";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -568,7 +569,7 @@ export function SeedPicksStep({
               (pos) => pos.assignedParticipantId === b.participantPublicId
             );
             return (
-              <div key={b.participantId} className="flex-1 min-w-[160px] px-4 py-2">
+              <div key={b.participantId} className="flex-1 min-w-40 px-4 py-2">
                 <div className="flex items-center gap-2 mb-1">
                   {position && (
                     <span className="font-oswald text-sd-red font-bold text-sm">
@@ -809,7 +810,7 @@ export function SeedPicksStep({
                   disabled={importing}
                   fixedSeriesTmdbId={draft.restrictedTvSeriesTmdbId ?? undefined}
                 />
-                {importing && <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Importing…</p>}
+                {importing && <ImportProgress className="mt-2" />}
 
                 {/* Manual TMDb-ID fallback — movie-only. There's no episode
                   equivalent: TMDb has no title search over episodes, so the
@@ -823,7 +824,7 @@ export function SeedPicksStep({
                     <input
                       type="number"
                       placeholder="TMDb ID"
-                      className={`${INPUT} max-w-[140px]`}
+                      className={`${INPUT} max-w-35`}
                       value={manualTmdbId}
                       onChange={(e) => setManualTmdbId(e.target.value)}
                     />

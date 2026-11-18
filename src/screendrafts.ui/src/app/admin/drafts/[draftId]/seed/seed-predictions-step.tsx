@@ -18,6 +18,7 @@ import { MediaPicker, type SelectedMedia } from "@/components/drafts/media-picke
 import { MEDIA_TYPE_TV_EPISODE, importAndResolveEpisode } from "@/lib/tv-episode-resolve";
 import { SeedPredictionsSetup } from "./seed-predictions-setup";
 import { SurrogateAssignmentPanel } from "../../new/surrogate-assignment-panel";
+import { ImportProgress } from "@/components/drafts/import-progress";
 
 const LABEL = "block text-[11px] font-mono tracking-widest text-sd-ink/60 uppercase mb-1";
 const INPUT =
@@ -458,9 +459,7 @@ function ContestantEntryRow({
                   disabled={resolving}
                   fixedSeriesTmdbId={restrictedTvSeriesTmdbId ?? undefined}
                 />
-                {resolving && (
-                  <p className="text-[11px] font-mono text-sd-ink/40 mt-1">Resolving episode…</p>
-                )}
+                {resolving && <ImportProgress className="mt-2" />}
               </div>
             </div>
           )}

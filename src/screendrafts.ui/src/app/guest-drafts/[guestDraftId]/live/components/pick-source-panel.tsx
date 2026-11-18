@@ -8,6 +8,7 @@ import { importAndResolve, ResolvedMovie, resolveTmdbIds } from '@/lib/movie-res
 import { importAndResolveEpisode, MEDIA_TYPE_TV_EPISODE } from '@/lib/tv-episode-resolve';
 import { MediaPicker, type SelectedMedia } from '@/components/drafts/media-picker';
 import { DARK_THEME } from '@/components/drafts/media-picker-theme';
+import { ImportProgress } from '@/components/drafts/import-progress';
 
 // ── Props ─────────────────────────────────────────────────────────────────────
 
@@ -34,6 +35,7 @@ export function PickSourcePanel({
   const { picks } = useGuestDraftLive();
 
   const [submitting, setSubmitting] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Prevent picking if the slot is already filled (e.g. a SignalR update
@@ -52,7 +54,9 @@ export function PickSourcePanel({
 
       // Movie not in DB yet — import from TMDb then wait for it to land.
       if (!movie.mediaPublicId) {
+        setImporting(true);
         const imported = await importAndResolve(movie.tmdbId, accessToken);
+        setImporting(false);
         if (!imported) {
           setError('Movie could not be imported in time. Try again in a moment.');
           return;
@@ -71,12 +75,14 @@ export function PickSourcePanel({
       setError(e instanceof Error ? e.message : 'Failed to submit pick.');
     } finally {
       setSubmitting(null);
+      setImporting(false);
     }
   }
 
   return (
     <div className="mt-6 border border-white/10">
       {error && <p className="px-4 py-2 text-sd-red text-xs font-mono">{error}</p>}
+      {importing && <ImportProgress theme="dark" className="px-4 py-2" />}
       <div className="max-h-72 overflow-y-auto">
         <SearchSource
           accessToken={accessToken}
@@ -113,6 +119,7 @@ function SearchSource({
   fixedSeriesTmdbId?: number;
 }) {
   const [resolving, setResolving] = useState(false);
+  const [importingEpisode, setImportingEpisode] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleMediaSelect(media: SelectedMedia) {
@@ -124,6 +131,7 @@ function SearchSource({
         return;
       }
       setResolving(true);
+      setImportingEpisode(true);
       try {
         const publicId = await importAndResolveEpisode(
           media.tmdbId,
@@ -145,6 +153,7 @@ function SearchSource({
         });
       } finally {
         setResolving(false);
+        setImportingEpisode(false);
       }
       return;
     }
@@ -184,11 +193,14 @@ function SearchSource({
           theme={DARK_THEME}
         />
       </div>
-      {resolving && (
-        <div className="px-4 py-6 text-center text-white/30 text-xs font-mono animate-pulse">
-          Loading…
-        </div>
-      )}
+      {resolving &&
+        (importingEpisode ? (
+          <ImportProgress theme="dark" className="px-4 py-3" />
+        ) : (
+          <div className="px-4 py-6 text-center text-white/30 text-xs font-mono animate-pulse">
+            Loading…
+          </div>
+        ))}
       {error && <p className="px-4 py-2 text-sd-red text-xs font-mono">{error}</p>}
     </div>
   );
