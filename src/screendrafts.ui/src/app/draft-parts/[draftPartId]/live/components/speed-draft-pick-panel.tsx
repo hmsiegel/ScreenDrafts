@@ -10,6 +10,7 @@ import {
   MEDIA_TYPE_TV_EPISODE,
   type SeasonEpisode,
 } from '@/lib/tv-episode-resolve';
+import { ImportProgress } from '@/components/drafts/import-progress';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 // Replace with dto.ts imports after NSwag regen.
@@ -188,6 +189,7 @@ export function SpeedDraftPickPanel({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
 
   // Person subject state
   const [personPhotoUrl, setPersonPhotoUrl] = useState<string | null>(null);
@@ -344,13 +346,15 @@ export function SpeedDraftPickPanel({
       let resolvedPublicId = mediaPublicId;
 
       if (!resolvedPublicId) {
-        resolvedPublicId =
-          item.mediaType === MEDIA_TYPE_TV_EPISODE &&
-          item.tmdbId != null &&
-          item.tvSeriesTmdbId &&
-          item.seasonNumber &&
-          item.episodeNumber
-            ? await importAndResolveEpisode(
+        setImporting(true);
+        try {
+          resolvedPublicId =
+            item.mediaType === MEDIA_TYPE_TV_EPISODE &&
+              item.tmdbId != null &&
+              item.tvSeriesTmdbId &&
+              item.seasonNumber &&
+              item.episodeNumber
+              ? await importAndResolveEpisode(
                 item.tmdbId,
                 item.tvSeriesTmdbId,
                 item.seasonNumber,
@@ -358,7 +362,10 @@ export function SpeedDraftPickPanel({
                 accessToken,
                 25000,
               )
-            : await importAndResolve(item, accessToken);
+              : await importAndResolve(item, accessToken);
+        } finally {
+          setImporting(false);
+        }
         if (!resolvedPublicId) {
           setError('Title could not be imported in time. Try again in a moment.');
           return;
@@ -479,6 +486,7 @@ export function SpeedDraftPickPanel({
       )}
 
       {error && <p className="px-4 py-2 text-sd-red text-xs font-mono">{error}</p>}
+      {importing && <ImportProgress theme="dark" className="px-4 py-2" />}
 
       <div className="flex gap-1 px-3 py-2 border-b border-white/10 text-[11px] font-mono uppercase tracking-wide">
         <button
@@ -487,9 +495,8 @@ export function SpeedDraftPickPanel({
             setView('subject');
             setDrillSeries(null);
           }}
-          className={`px-2 py-1 border ${
-            view === 'subject' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
-          }`}
+          className={`px-2 py-1 border ${view === 'subject' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
+            }`}
         >
           Titles
         </button>
@@ -499,9 +506,8 @@ export function SpeedDraftPickPanel({
             setView('episode');
             setDrillSeries(null);
           }}
-          className={`px-2 py-1 border ${
-            view === 'episode' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
-          }`}
+          className={`px-2 py-1 border ${view === 'episode' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
+            }`}
         >
           TV Episode
         </button>
@@ -513,9 +519,8 @@ export function SpeedDraftPickPanel({
             <button
               type="button"
               onClick={() => setKind('all')}
-              className={`px-2 py-1 border ${
-                kind === 'all' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
-              }`}
+              className={`px-2 py-1 border ${kind === 'all' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
+                }`}
             >
               All
             </button>
@@ -523,18 +528,16 @@ export function SpeedDraftPickPanel({
           <button
             type="button"
             onClick={() => setKind('movie')}
-            className={`px-2 py-1 border ${
-              kind === 'movie' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
-            }`}
+            className={`px-2 py-1 border ${kind === 'movie' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
+              }`}
           >
             Movies
           </button>
           <button
             type="button"
             onClick={() => setKind('tv')}
-            className={`px-2 py-1 border ${
-              kind === 'tv' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
-            }`}
+            className={`px-2 py-1 border ${kind === 'tv' ? DARK_THEME.toggleActive : DARK_THEME.toggleInactive
+              }`}
           >
             TV Shows
           </button>
@@ -584,10 +587,10 @@ export function SpeedDraftPickPanel({
                     <img
                       src={c.posterUrl}
                       alt=""
-                      className="w-12 h-[72px] object-cover shrink-0 bg-white/10"
+                      className="w-12 h-18 object-cover shrink-0 bg-white/10"
                     />
                   ) : (
-                    <div className="w-12 h-[72px] bg-white/10 shrink-0" />
+                    <div className="w-12 h-18 bg-white/10 shrink-0" />
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="font-oswald text-lg truncate leading-tight text-sd-paper">
@@ -617,11 +620,10 @@ export function SpeedDraftPickPanel({
                       )
                     }
                     disabled={submitting !== null || slotAlreadyPicked}
-                    className={`shrink-0 px-4 py-2 font-oswald text-sm tracking-widest transition-colors ${
-                      submitting === submittingKey
-                        ? 'bg-sd-red/50 text-white cursor-wait'
-                        : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
-                    }`}
+                    className={`shrink-0 px-4 py-2 font-oswald text-sm tracking-widest transition-colors ${submitting === submittingKey
+                      ? 'bg-sd-red/50 text-white cursor-wait'
+                      : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
+                      }`}
                   >
                     {submitting === submittingKey ? '…' : 'PICK'}
                   </button>
@@ -630,68 +632,67 @@ export function SpeedDraftPickPanel({
             })}
 
           {!isPersonSubject && kind === 'tv' && (
-          <>
-            {tvLoading && (
-              <div className="px-4 py-6 text-center text-white/30 text-xs font-mono animate-pulse">
-                Loading…
-              </div>
-            )}
-            {!tvLoading && tvResults.length === 0 && (
-              <div className="px-4 py-6 text-center text-white/30 text-xs font-mono italic">
-                No shows for &ldquo;{searchQuery}&rdquo;.
-              </div>
-            )}
-            {!tvLoading &&
-              tvResults.map((show) => {
-                const submittingKey = `importing-tv-${show.tmdbId}`;
-                return (
-                  <div
-                    key={`tv-${show.tmdbId}`}
-                    className="flex items-center gap-3 px-3 py-2 border-b border-white/5 hover:bg-white/5 transition-colors"
-                  >
-                    {show.posterUrl ? (
-                      <img
-                        src={show.posterUrl}
-                        alt=""
-                        className="w-8 h-12 object-cover shrink-0 bg-white/10"
-                      />
-                    ) : (
-                      <div className="w-8 h-12 bg-white/10 shrink-0" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-oswald text-sm truncate leading-tight text-sd-paper">
-                        {show.title}
-                      </p>
-                      <p className="text-[11px] text-white/40 font-mono">
-                        {[show.year, 'TV'].filter(Boolean).join(' · ')}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => openEpisodes(show.tmdbId, show.title)}
-                      disabled={submitting !== null}
-                      className="shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/50 disabled:opacity-30 transition-colors"
+            <>
+              {tvLoading && (
+                <div className="px-4 py-6 text-center text-white/30 text-xs font-mono animate-pulse">
+                  Loading…
+                </div>
+              )}
+              {!tvLoading && tvResults.length === 0 && (
+                <div className="px-4 py-6 text-center text-white/30 text-xs font-mono italic">
+                  No shows for &ldquo;{searchQuery}&rdquo;.
+                </div>
+              )}
+              {!tvLoading &&
+                tvResults.map((show) => {
+                  const submittingKey = `importing-tv-${show.tmdbId}`;
+                  return (
+                    <div
+                      key={`tv-${show.tmdbId}`}
+                      className="flex items-center gap-3 px-3 py-2 border-b border-white/5 hover:bg-white/5 transition-colors"
                     >
-                      EPISODES
-                    </button>
-                    <button
-                      onClick={() => pickShow(show)}
-                      disabled={submitting !== null || slotAlreadyPicked}
-                      className={`shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest transition-colors ${
-                        submitting === submittingKey
+                      {show.posterUrl ? (
+                        <img
+                          src={show.posterUrl}
+                          alt=""
+                          className="w-8 h-12 object-cover shrink-0 bg-white/10"
+                        />
+                      ) : (
+                        <div className="w-8 h-12 bg-white/10 shrink-0" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-oswald text-sm truncate leading-tight text-sd-paper">
+                          {show.title}
+                        </p>
+                        <p className="text-[11px] text-white/40 font-mono">
+                          {[show.year, 'TV'].filter(Boolean).join(' · ')}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => openEpisodes(show.tmdbId, show.title)}
+                        disabled={submitting !== null}
+                        className="shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest border border-white/20 text-white/60 hover:text-white hover:border-white/50 disabled:opacity-30 transition-colors"
+                      >
+                        EPISODES
+                      </button>
+                      <button
+                        onClick={() => pickShow(show)}
+                        disabled={submitting !== null || slotAlreadyPicked}
+                        className={`shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest transition-colors ${submitting === submittingKey
                           ? 'bg-sd-red/50 text-white cursor-wait'
                           : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
-                      }`}
-                    >
-                      {submitting === submittingKey ? '…' : 'PICK'}
-                    </button>
-                  </div>
-                );
-              })}
-          </>
-        )}
+                          }`}
+                      >
+                        {submitting === submittingKey ? '…' : 'PICK'}
+                      </button>
+                    </div>
+                  );
+                })}
+            </>
+          )}
 
-        {!loading && !isPersonSubject && kind === 'movie' && titleResults.length === 0 && (
+          {!loading && !isPersonSubject && kind === 'movie' && titleResults.length === 0 && (
             <div className="px-4 py-6 text-center text-white/30 text-xs font-mono italic">
               No results for &ldquo;{searchQuery}&rdquo;.
             </div>
@@ -745,11 +746,10 @@ export function SpeedDraftPickPanel({
                       )
                     }
                     disabled={submitting !== null || slotAlreadyPicked}
-                    className={`shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest transition-colors ${
-                      submitting === submittingKey
-                        ? 'bg-sd-red/50 text-white cursor-wait'
-                        : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
-                    }`}
+                    className={`shrink-0 px-3 py-1.5 font-oswald text-xs tracking-widest transition-colors ${submitting === submittingKey
+                      ? 'bg-sd-red/50 text-white cursor-wait'
+                      : 'border border-sd-red/50 text-sd-red hover:border-sd-red hover:bg-sd-red hover:text-white disabled:opacity-30 disabled:cursor-not-allowed'
+                      }`}
                   >
                     {submitting === submittingKey ? '…' : 'PICK'}
                   </button>
@@ -796,9 +796,6 @@ export function SpeedDraftPickPanel({
             disabled={submitting !== null || slotAlreadyPicked}
             theme={DARK_THEME}
           />
-          {submitting?.startsWith('episode-') && (
-            <p className="text-[11px] font-mono text-white/40">Importing episode…</p>
-          )}
         </div>
       )}
     </div>
