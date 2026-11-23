@@ -12,8 +12,8 @@
   "dependencies": {
     "@auth/core": "0.41.3",
     "@microsoft/signalr": "^11.0.0",
-    "@tanstack/react-query": "^5.107.1",
-    "@tanstack/react-query-devtools": "^5.107.1",
+    "@tanstack/react-query": "^5.108.2",
+    "@tanstack/react-query-devtools": "^5.108.2",
     "date-fns": "^4.4.0",
     "next": "^16.4.6",
     "next-auth": "5.0.0-beta.32",
@@ -28,8 +28,8 @@
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.6",
-    "knip": "^6.45.1",
-    "postcss": "^8.5.32",
+    "knip": "^6.47.0",
+    "postcss": "^8.5.33",
     "tailwindcss": "^4.3.5",
     "typescript": "^6.0.3"
   }
