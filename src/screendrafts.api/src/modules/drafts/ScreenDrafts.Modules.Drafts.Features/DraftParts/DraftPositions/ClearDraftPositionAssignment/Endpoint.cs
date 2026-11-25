@@ -8,22 +8,25 @@ internal sealed class Endpoint : ScreenDraftsEndpoint<ClearDraftPositionAssignme
     Description(x =>
     {
       x.WithName(DraftsOpenApi.Names.DraftParts_ClearDraftPositionAssignment)
-      .WithTags(DraftsOpenApi.Tags.DraftPositions)
-      .Produces(StatusCodes.Status204NoContent)
-      .Produces(StatusCodes.Status400BadRequest)
-      .Produces(StatusCodes.Status401Unauthorized)
-      .Produces(StatusCodes.Status403Forbidden)
-      .Produces(StatusCodes.Status404NotFound);
+        .WithTags(DraftsOpenApi.Tags.DraftPositions)
+        .Produces(StatusCodes.Status204NoContent)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
+        .Produces(StatusCodes.Status404NotFound);
     });
     Policies(DraftsAuth.Permissions.DraftPartUpdate);
   }
 
-  public override async Task HandleAsync(ClearDraftPositionAssignmentRequest req, CancellationToken ct)
+  public override async Task HandleAsync(
+    ClearDraftPositionAssignmentRequest req,
+    CancellationToken ct
+  )
   {
     var command = new ClearDraftPositionAssignmentCommand
     {
       DraftPartId = req.DraftPartId,
-      PositionPublicId = req.PositionPublicId
+      PositionPublicId = req.PositionId,
     };
 
     var result = await Sender.Send(command, ct);

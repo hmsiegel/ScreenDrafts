@@ -30,6 +30,13 @@ internal sealed class SetDraftPositionsCommandHandler(
 
     var gameBoard = draftPart.GameBoard;
 
+    var revokeResult = draftPart.RevokeAwardsForAssignedPositions();
+
+    if (revokeResult.IsFailure)
+    {
+      return Result.Failure(revokeResult.Errors);
+    }
+
     gameBoard.ClearPositions();
 
     List<DraftPosition> draftPositions = [];

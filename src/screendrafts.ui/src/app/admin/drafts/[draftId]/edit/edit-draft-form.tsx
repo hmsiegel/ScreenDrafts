@@ -442,6 +442,7 @@ interface PartEditState {
   communityWasEnabled: boolean;
   positions: PositionConfig[];
   positionsLoaded: boolean;
+  positionSnapshop: string;
   predictionConfig: PredictionConfig;
   predictionsLoaded: boolean;
   // Legends Mega only — see BoostersChampionSection below. Not copied through by
@@ -548,6 +549,7 @@ function initPartState(parts: DraftPart[]): PartEditState[] {
       communityWasEnabled: hasCommunity,
       positions: getDefaultPositions(p.draftType?.name ?? ""),
       positionsLoaded: false,
+      positionSnapshop: "",
       predictionConfig: defaultPredictionConfig(),
       predictionsLoaded: false,
       boostersChampionAssignments: p.boostersChampionAssignments ?? [],
@@ -642,7 +644,13 @@ export default function EditDraftForm({
 
         setPartStates((prev) =>
           prev.map((p, i) =>
-            i === idx ? { ...p, positions: resolved, positionsLoaded: true } : p
+            i === idx
+              ? {
+                ...p,
+                positions: resolved,
+                positionsLoaded: true,
+                positionSnapshop: JSON.stringify(resolved),
+              } : p
           )
         );
       });
@@ -944,7 +952,8 @@ export default function EditDraftForm({
           // ([{name:"A",picks:[]}, {name:"B",picks:[]}]) — sending that as-is
           // throws DraftPosition.PicksAreRequired.
           const hasConfiguredPositions = part.positions.some((p) => p.picks.length > 0);
-          if (part.positionsLoaded && hasConfiguredPositions) {
+          const positionsChanged = JSON.stringify(part.positions) !== part.positionSnapshop;
+          if (part.positionsLoaded && hasConfiguredPositions && positionsChanged) {
             await setDraftPositions(accessToken, partPublicId, part.positions);
           }
 
@@ -1028,7 +1037,7 @@ export default function EditDraftForm({
       {draft.draftStatus.name === "Completed" && (
         <section>
           <h2 className={SECTION_HEADING}>Episode Number</h2>
-          <div className="max-w-[160px]">
+          <div className="max-w-40">
             <input
               type="number"
               min={1}
@@ -1059,7 +1068,7 @@ export default function EditDraftForm({
             <div className="md:col-span-2">
               <label className={LABEL}>Description</label>
               <textarea
-                className={`${INPUT} min-h-[80px] resize-y`}
+                className={`${INPUT} min-h-20 resize-y`}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Optional description"
@@ -1409,7 +1418,7 @@ export default function EditDraftForm({
                           Positions 1–{pp.maxPositions} (fixed by draft type)
                         </p>
                       ) : (
-                        <div className="max-w-[160px]">
+                        <div className="max-w-40">
                           <label className={LABEL}>Max Positions</label>
                           <input
                             type="number"
