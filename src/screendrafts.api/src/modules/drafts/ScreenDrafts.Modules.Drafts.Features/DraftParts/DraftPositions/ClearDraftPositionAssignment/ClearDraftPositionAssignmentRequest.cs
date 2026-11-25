@@ -1,4 +1,4 @@
-namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.DraftPositions.ClearDraftPositionAssignment;
+﻿namespace ScreenDrafts.Modules.Drafts.Features.DraftParts.DraftPositions.ClearDraftPositionAssignment;
 
 internal sealed record ClearDraftPositionAssignmentRequest
 {
@@ -6,5 +6,5 @@ internal sealed record ClearDraftPositionAssignmentRequest
   public string DraftPartId { get; init; } = default!;
 
   [FromRoute(Name = "positionId")]
-  public string PositionPublicId { get; init; } = default!;
+  public string PositionId { get; init; } = default!;
 }

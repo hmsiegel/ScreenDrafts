@@ -135,6 +135,41 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
+  public Result RevokeAwardsForAssignedPositions()
+  {
+    if (GameBoard is null)
+    {
+      return Result.Success();
+    }
+
+    foreach (var position in GameBoard.DraftPositions.Where(p => p.AssignedTo is not null))
+    {
+      var participant = position.AssignedTo!.Value;
+
+      if (!HasParticipant(participant))
+      {
+        continue;
+      }
+
+      if (position.HasBonusVeto)
+      {
+        RevokeParticipantAward(participant, isVeto: true);
+      }
+
+      if (position.HasBonusVetoOverride)
+      {
+        RevokeParticipantAward(participant, isVeto: false);
+      }
+
+      if (position.HasBonusFungibleToken)
+      {
+        RevokeParticipantFungibleTokenAward(participant);
+      }
+    }
+    UpdatedAtUtc = DateTime.UtcNow;
+    return Result.Success();
+  }
+
   public Result AddSubDraft(int index, string publicId)
   {
     if (DraftType != DraftType.SpeedDraft)
