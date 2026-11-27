@@ -23,6 +23,7 @@ internal static class DraftPartRoutes
 
   // Participants
   public const string Participants = ById + "/participants";
+  public const string ParticipantPhantom = Participants + "/phantom";
   public const string SetCommunityParticipant = ById + "/participants/community";
   public const string RemoveCommunityParticipant = ById + "/participants/community/{communityId}";
   public const string DraftPositions = ById + "/positions";

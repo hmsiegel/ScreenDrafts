@@ -72,6 +72,12 @@ internal sealed class DraftPartParticipantConfiguration
       .HasColumnName("awarded_fungible_tokens")
       .IsRequired();
 
+    builder
+      .Property(x => x.IsPhantom)
+      .HasColumnName("is_phantom")
+      .HasDefaultValue(false)
+      .IsRequired();
+
     // Usage Counters
     builder.Property(x => x.VetoesUsed).IsRequired();
     builder.Property(x => x.VetoOverridesUsed).IsRequired();

@@ -122,6 +122,36 @@ public sealed partial class DraftPart
     return _draftPartParticipants.Any(dp => dp.ParticipantId == participant);
   }
 
+  public Result SetPhantomParticipant(Participant participant, bool isPhantom)
+  {
+    Guard.Against.Null(participant);
+
+    if (participant.Kind != ParticipantKind.Drafter)
+    {
+      return Result.Failure(DraftPartErrors.OnlyDraftersCanBePhantoms);
+    }
+
+    var link = FindParticipant(participant);
+
+    if (link is null)
+    {
+      return Result.Failure(DraftPartErrors.ParticipantNotFound(participant.Value));
+    }
+
+    // Starting vetoes are only restored by Start, so clearing the mark on a started part would
+    // leave the drafter at 0.
+    if (!isPhantom && link.IsPhantom && Status != DraftPartStatus.Created)
+    {
+      return Result.Failure(DraftPartErrors.PhantomCannotBeClearedAfterStart);
+    }
+
+    link.SetPhantom(isPhantom);
+
+    UpdatedAtUtc = DateTime.UtcNow;
+
+    return Result.Success();
+  }
+
   /// <summary>
   /// fungibleTokens grants a single token spendable as either a veto or a veto override,
   /// used by Legends Super Draft-style formats in place of a normal starting veto (pass

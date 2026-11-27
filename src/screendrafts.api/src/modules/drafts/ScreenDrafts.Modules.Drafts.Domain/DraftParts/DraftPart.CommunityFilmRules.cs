@@ -17,7 +17,7 @@ public sealed partial class DraftPart
       return Result.Failure(CommunityFilmRuleErrors.NotModifiable);
     }
 
-    if (ruleKind == CommunityFilmRuleKind.BoostersPick && (targetSlot is null || targetSlot <= 0))
+    if (RequiresTargetSlot(ruleKind) && (targetSlot is null || targetSlot <= 0))
     {
       return Result.Failure(CommunityFilmRuleErrors.TargetSlotRequired);
     }
@@ -54,7 +54,7 @@ public sealed partial class DraftPart
       return Result.Failure(CommunityFilmRuleErrors.NotModifiable);
     }
 
-    if (ruleKind == CommunityFilmRuleKind.BoostersPick && (targetSlot is null || targetSlot <= 0))
+    if (RequiresTargetSlot(ruleKind) && (targetSlot is null || targetSlot <= 0))
     {
       return Result.Failure(CommunityFilmRuleErrors.TargetSlotRequired);
     }
@@ -66,10 +66,7 @@ public sealed partial class DraftPart
       return Result.Failure(CommunityFilmRuleErrors.NotFound(publicId));
     }
 
-    rule.Update(
-      ruleKind: ruleKind,
-      targetSlot: ruleKind == CommunityFilmRuleKind.BoostersPick ? targetSlot : null
-    );
+    rule.Update(ruleKind: ruleKind, targetSlot: RequiresTargetSlot(ruleKind) ? targetSlot : null);
 
     UpdatedAtUtc = DateTime.UtcNow;
 
@@ -119,6 +116,11 @@ public sealed partial class DraftPart
     return Result.Success();
   }
 
+  private static bool RequiresTargetSlot(CommunityFilmRuleKind ruleKind) =>
+    ruleKind == CommunityFilmRuleKind.BoostersPick
+    || ruleKind == CommunityFilmRuleKind.PhantomTopN
+    || ruleKind == CommunityFilmRuleKind.PhantomExactSlot;
+
   /// <summary>
   /// Checks whether the pick triggers a community film rule auto-veto and,
   /// if so, applies it without spending a veto token.
@@ -154,12 +156,18 @@ public sealed partial class DraftPart
         && rule.TargetSlot.HasValue
         && pick.Position > rule.TargetSlot.Value,
 
+      var k when k == CommunityFilmRuleKind.PhantomTopN => !rule.WasAutoVetoFired
+        && rule.TargetSlot.HasValue
+        && pick.Position > rule.TargetSlot.Value,
+
       var k when k == CommunityFilmRuleKind.BoostersPick => rule.TargetSlot.HasValue
+        && pick.Position != rule.TargetSlot.Value,
+
+      var k when k == CommunityFilmRuleKind.PhantomExactSlot => rule.TargetSlot.HasValue
         && pick.Position != rule.TargetSlot.Value,
 
       _ => false,
     };
-
     if (!shouldVeto)
     {
       return Result.Success();
@@ -181,9 +189,16 @@ public sealed partial class DraftPart
       pick: pick,
       issuedByParticipant: communityDraftPartParticipant,
       actedByPublicId: null,
-      note: rule.RuleKind == CommunityFilmRuleKind.BoostersVeto
-        ? $"Boosters veto: film must be played at slot {rule.TargetSlot} or higher."
-        : $"Boosters pick: film must be played at slot {rule.TargetSlot}."
+      note: rule.RuleKind switch
+      {
+        var k when k == CommunityFilmRuleKind.BoostersVeto =>
+          $"Boosters veto: film must be played at slot {rule.TargetSlot} or higher.",
+        var k when k == CommunityFilmRuleKind.PhantomTopN =>
+          $"Phantom pick: film must be played in the top {rule.TargetSlot}.",
+        var k when k == CommunityFilmRuleKind.PhantomExactSlot =>
+          $"Phantom pick: film must be played at slot {rule.TargetSlot}.",
+        _ => $"Boosters pick: film must be played at slot {rule.TargetSlot}.",
+      }
     );
 
     if (vetoResult.IsFailure)
@@ -198,7 +213,10 @@ public sealed partial class DraftPart
       return applyResult;
     }
 
-    if (rule.RuleKind == CommunityFilmRuleKind.BoostersVeto)
+    if (
+      rule.RuleKind == CommunityFilmRuleKind.BoostersVeto
+      || rule.RuleKind == CommunityFilmRuleKind.PhantomTopN
+    )
     {
       rule.MarkAutoVetoFired();
     }

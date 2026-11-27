@@ -92,14 +92,17 @@ internal sealed class FilmRuleInputValidator : AbstractValidator<CommunityFilmRu
     RuleFor(x => x.RuleKind).MustBeSmartEnumValue<CommunityFilmRuleInput, CommunityFilmRuleKind>();
 
     When(
-      x => CommunityFilmRuleKind.FromValue(x.RuleKind) == CommunityFilmRuleKind.BoostersPick,
+      x =>
+        CommunityFilmRuleKind.FromValue(x.RuleKind) == CommunityFilmRuleKind.BoostersPick
+        || CommunityFilmRuleKind.FromValue(x.RuleKind) == CommunityFilmRuleKind.PhantomTopN
+        || CommunityFilmRuleKind.FromValue(x.RuleKind) == CommunityFilmRuleKind.PhantomExactSlot,
       () =>
       {
         RuleFor(x => x.TargetSlot)
           .NotNull()
           .GreaterThan(0)
           .WithMessage(
-            "TargetSlot is required and must be greater than zero for BoostersPick rules."
+            "TargetSlot is required and must be greater than zero for BoostersPick and phantom pick rules."
           );
       }
     );

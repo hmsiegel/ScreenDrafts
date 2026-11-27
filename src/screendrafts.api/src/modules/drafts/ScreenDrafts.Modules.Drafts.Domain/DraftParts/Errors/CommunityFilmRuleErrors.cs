@@ -4,7 +4,7 @@ public static class CommunityFilmRuleErrors
 {
   public static readonly SDError TargetSlotRequired = SDError.Failure(
     code: "CommunityFilmRule.TargetSlotRequired",
-    description: "A target slot is required for a Boosters Pick rule."
+    description: "A target slot is required for this rule kind."
   );
 
   public static readonly SDError NotModifiable = SDError.Conflict(

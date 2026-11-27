@@ -28,6 +28,14 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
 
   public Participant ParticipantId => new(ParticipantIdValue, ParticipantKindValue);
 
+  /// <summary>
+  /// True when the drafter cancelled at the last minute and only a pick (or nothing) stands in
+  /// for them. A phantom gets no starting veto or fungible token and does not count as an
+  /// appearance. Any veto rolling in carries through to the next part untouched, because the
+  /// phantom starts with 0 and spends nothing.
+  /// </summary>
+  public bool IsPhantom { get; private set; }
+
   // Inventory inputs
 
   /// <summary>
@@ -113,14 +121,26 @@ public sealed class DraftPartParticipant : Entity<DraftPartParticipantId>
     int fungibleTokensRollingIn = 0
   )
   {
-    StartingVetoes = startingVetoes;
+    StartingVetoes = IsPhantom ? 0 : startingVetoes;
     VetoesRollingIn = vetoesRollingIn;
     VetoOverridesRollingIn = vetoOverridesRollingIn;
-    FungibleTokens = fungibleTokens;
+    FungibleTokens = IsPhantom ? 0 : fungibleTokens;
     FungibleTokensRollingIn = fungibleTokensRollingIn;
     VetoesUsed = 0;
     VetoOverridesUsed = 0;
     FungibleTokensUsed = 0;
+  }
+
+  internal void SetPhantom(bool isPhantom)
+  {
+    IsPhantom = isPhantom;
+
+    if (isPhantom)
+    {
+      // Also correct a part that already started: Start gave this drafter their normal allotment.
+      StartingVetoes = 0;
+      FungibleTokens = 0;
+    }
   }
 
   // Awards (granted via draft position post-trivia)

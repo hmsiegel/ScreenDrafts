@@ -245,4 +245,14 @@ public static class DraftPartErrors
       code: "DraftPart.SubDraftIndexAlreadyExists",
       description: $"Sub draft with index '{index}' already exists."
     );
+
+  public static readonly SDError OnlyDraftersCanBePhantoms = SDError.Conflict(
+    code: "DraftPart.OnlyDraftersCanBePhantoms",
+    description: "Only drafters can be marked as phantom drafters."
+  );
+
+  public static readonly SDError PhantomCannotBeClearedAfterStart = SDError.Conflict(
+    code: "DraftPart.PhantomCannotBeClearedAfterStart",
+    description: "A phantom mark can only be cleared before the draft part starts."
+  );
 }

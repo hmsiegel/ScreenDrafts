@@ -4781,6 +4781,44 @@
         ]
       }
     },
+    "/draft-parts/{draftPartId}/participants/phantom": {
+      "put": {
+        "tags": [
+          "DraftParts"
+        ],
+        "operationId": "DraftParts.SetParticipantPhantom",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPhantomParticipantRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          { }
+        ]
+      }
+    },
     "/draft-parts/{draftPartId}/participants": {
       "delete": {
         "tags": [
@@ -5142,11 +5180,6 @@
         "requestBody": {
           "content": {
             "*/*": {
-              "schema": {
-                "$ref": "#/components/schemas/ClearDraftPositionAssignmentRequest"
-              }
-            },
-            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ClearDraftPositionAssignmentRequest"
               }
@@ -11289,7 +11322,7 @@
           "draftPartId": {
             "type": "string"
           },
-          "positionPublicId": {
+          "positionId": {
             "type": "string"
           }
         }
@@ -23487,6 +23520,20 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "SetPhantomParticipantRequest": {
+        "type": "object",
+        "properties": {
+          "draftPartId": {
+            "type": "string"
+          },
+          "participantPublicId": {
+            "type": "string"
+          },
+          "isPhantom": {
+            "type": "boolean"
           }
         }
       },
