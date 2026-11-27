@@ -71,9 +71,11 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
         p.played_by_participant_id_value      AS PlayedByIdValue,
         EXISTS (
           SELECT 1 FROM drafts.commissioner_overrides co WHERE co.pick_id = p.id
-        )                                     AS IsCommissionerOverridden
+        )                                     AS IsCommissionerOverridden,
+        COALESCE(pdp.is_phantom_pick, false)            AS IsPhantomPick
       FROM drafts.picks p
       LEFT JOIN drafts.sub_drafts sd ON sd.id = p.sub_draft_id
+      LEFT JOIN drafts.draft_part_participants pdp ON pdp.id = p.played_by_participant_id
       WHERE p.draft_part_id = @DraftPartId
       ORDER BY sd.index NULLS FIRST, p.position
       """;
@@ -317,6 +319,7 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
           PlayedByPublicId: player.PublicId,
           PlayedByName: player.Name,
           IsCommissionerOverridden: pick.IsCommissionerOverridden,
+          IsPhantomPick: pick.IsPhantomPick,
           Vetoes: vetoes,
           Credits: credits
         )
@@ -381,7 +384,8 @@ internal sealed partial class DraftPartStatsDomainEventHandler(
     Guid MovieId,
     int PlayedByKind,
     Guid PlayedByIdValue,
-    bool IsCommissionerOverridden
+    bool IsCommissionerOverridden,
+    bool IsPhantomPick
   );
 
   private sealed record VetoRow(

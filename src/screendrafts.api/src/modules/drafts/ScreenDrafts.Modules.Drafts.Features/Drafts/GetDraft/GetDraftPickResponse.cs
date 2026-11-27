@@ -26,4 +26,7 @@ internal sealed record GetDraftPickResponse
   /// index of the sub-draft within the part that this pick belongs to.
   /// </summary>
   public int? SubDraftIndex { get; init; }
+
+  /// <summary>True when the pick was played by a phantom drafter (their stand-in pick).</summary>
+  public bool IsPhantomPick { get; init; }
 }

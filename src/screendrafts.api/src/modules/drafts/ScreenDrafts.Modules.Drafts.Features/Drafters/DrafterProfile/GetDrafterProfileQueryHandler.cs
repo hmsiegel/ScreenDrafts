@@ -49,7 +49,8 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       FROM drafts.draft_part_participants dpp
       JOIN drafts.draft_parts dp ON dpp.draft_part_id = dp.id
       WHERE dpp.participant_id_value = @DrafterInternalId
-        AND dpp.participant_kind_value = 0;
+        AND dpp.participant_kind_value = 0
+        AND NOT dpp.is_phantom;
       """;
 
     var stats = await connection.QuerySingleAsync<StatsRow>(
@@ -157,6 +158,7 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
       WHERE dpp.participant_id_value = @DrafterInternalId
         AND dpp.participant_kind_value = 0
+        AND NOT dpp.is_phantom
       GROUP BY d.id, d.public_id, d.title
       ORDER BY MIN(dr.release_date) ASC
       LIMIT 1
@@ -182,6 +184,7 @@ internal sealed class GetDrafterProfileQueryHandler(IDbConnectionFactory dbConne
       LEFT JOIN drafts.draft_releases dr ON dr.part_id = dp.id
       WHERE dpp.participant_id_value = @DrafterInternalId
         AND dpp.participant_kind_value = 0
+        AND NOT dpp.is_phantom
       GROUP BY d.id, d.public_id, d.title
       ORDER BY MAX(dr.release_date) DESC
       LIMIT 1

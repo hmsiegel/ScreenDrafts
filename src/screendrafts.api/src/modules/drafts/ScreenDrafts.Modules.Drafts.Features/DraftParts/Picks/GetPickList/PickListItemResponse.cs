@@ -13,4 +13,5 @@ internal sealed record PickListItemResponse
   public PickListVetoResponse? Veto { get; init; }
   public bool HasCommissionerOverride { get; init; }
   public bool IsRevealed { get; init; }
+  public bool IsPhantomPick { get; init; }
 }

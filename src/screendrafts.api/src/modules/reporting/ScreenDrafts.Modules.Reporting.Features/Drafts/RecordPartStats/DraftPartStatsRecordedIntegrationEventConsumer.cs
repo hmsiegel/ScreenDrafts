@@ -38,7 +38,8 @@ internal sealed partial class DraftPartStatsRecordedIntegrationEventConsumer(
     }
 
     var drafterIds = integrationEvent
-      .Picks.SelectMany(p => p.Credits)
+      .Picks.Where(p => !p.IsPhantomPick)
+      .SelectMany(p => p.Credits)
       .Select(c => c.DrafterIdValue)
       .Distinct()
       .ToList();

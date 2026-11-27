@@ -12,8 +12,9 @@ internal static class WikiText
   // participant_kind_value: 0 = drafter, 1 = team, 2 = community
   internal const int CommunityKind = 2;
   internal const string PatreonMembers = "Patreon Members";
+  internal const string PhantomPickLabel = "Phantom Pick";
 
-  private static readonly string[] Numerals =
+  private static readonly string[] _numerals =
   [
     "",
     "I",
@@ -33,7 +34,7 @@ internal static class WikiText
   internal const string CommissionerOverrideNote = "removed via [[Commissioner Override]]";
 
   internal static string Roman(int n) =>
-    n is > 0 and < 11 ? Numerals[n] : n.ToString(CultureInfo.InvariantCulture);
+    n is > 0 and < 11 ? _numerals[n] : n.ToString(CultureInfo.InvariantCulture);
 
   internal static string Ordinal(int n)
   {

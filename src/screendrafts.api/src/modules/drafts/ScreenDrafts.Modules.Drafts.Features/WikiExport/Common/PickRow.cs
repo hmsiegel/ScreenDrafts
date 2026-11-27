@@ -16,5 +16,6 @@ internal sealed record PickRow(
   Guid MovieId,
   string Title,
   string? Year,
-  bool WasCommissionerOverride
+  bool WasCommissionerOverride,
+  bool IsPhantomPick
 );

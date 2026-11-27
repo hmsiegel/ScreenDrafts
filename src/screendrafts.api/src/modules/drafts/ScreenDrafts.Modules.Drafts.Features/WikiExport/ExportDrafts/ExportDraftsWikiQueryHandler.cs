@@ -103,7 +103,8 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
         dpp.draft_part_id            AS PartId,
         dpp.participant_id_value     AS ParticipantValue,
         dpp.participant_kind_value   AS ParticipantKind,
-        COALESCE(pe.display_name, dt.name, @CommunityName) AS DisplayName
+        COALESCE(pe.display_name, dt.name, @CommunityName) AS DisplayName,
+        COALESCE(sd.is_phantom, FALSE) AS IsPhantom
       FROM drafts.draft_part_participants dpp
       LEFT JOIN drafts.drafters dr       ON dr.id = dpp.participant_id_value
                                         AND dpp.participant_kind_value = 0
@@ -142,11 +143,13 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
         pk.movie_id                    AS MovieId,
         m.movie_title                  AS Title,
         m.year                         AS Year,
-        (co.id IS NOT NULL)            AS WasCommissionerOverride
+        (co.id IS NOT NULL)            AS WasCommissionerOverride,
+        COALESCE(sd.is_phantom, FALSE) AS IsPhantomPick
       FROM drafts.picks pk
       JOIN drafts.movies m                       ON m.id = pk.movie_id
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
       LEFT JOIN drafts.sub_drafts sd             ON sd.id = pk.sub_draft_id
+      LEFT JOIN drafts.draft_part_participants dpp ON dpp.id = pk.played_by_participant_id
       WHERE pk.draft_part_id = ANY(@PartIds)
       """,
       new { PartIds = partIds }
@@ -406,7 +409,7 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
 
         return data
           .ParticipantsByPart.GetValueOrDefault(part.PartId, [])
-          .Where(p => p.ParticipantKind != WikiText.CommunityKind)
+          .Where(p => p.ParticipantKind != WikiText.CommunityKind && !p.IsPhantom)
           .OrderBy(p =>
             partPicks
               .Where(pk => pk.ParticipantRowId == p.ParticipantRowId)
@@ -595,8 +598,11 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
     Func<Guid?, string> nameOf
   )
   {
-    var core =
-      $"{pick.Position}. {WikiText.Link(pick.Title)} by {WikiText.Link(nameOf(pick.ParticipantRowId))}";
+    var by = WikiText.Link(nameOf(pick.ParticipantRowId));
+
+    var core = pick.IsPhantomPick
+      ? $"{pick.Position}. {WikiText.Link(pick.Title)} – {WikiText.PhantomPickLabel} (made by {by})"
+      : $"{pick.Position}. {WikiText.Link(pick.Title)} by {by}";
     var chain = WikiText.OverrideChain(vetoes, nameOf);
 
     if (pick.WasCommissionerOverride)
@@ -644,7 +650,10 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
             (s, i) =>
               new ArrangeSet(
                 s.ContestantName,
-                [.. columns[i].Select(e => new ArrangeEntry(e.Title, e.TmdbId, e.OrderIndex, e.IsCorrect))]
+                [
+                  .. columns[i]
+                    .Select(e => new ArrangeEntry(e.Title, e.TmdbId, e.OrderIndex, e.IsCorrect)),
+                ]
               )
           ),
         ],
@@ -755,7 +764,9 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
           .FirstOrDefault()
         ?? "Unknown";
 
-      var competitors = participants.Count(p => p.ParticipantKind != WikiText.CommunityKind);
+      var competitors = participants.Count(p =>
+        p.ParticipantKind != WikiText.CommunityKind && !p.IsPhantom
+      );
 
       string body =
         competitors == 2 && results.Count >= 2
@@ -792,7 +803,8 @@ internal sealed class ExportDraftsWikiQueryHandler(IDbConnectionFactory connecti
     Guid PartId,
     Guid ParticipantValue,
     int ParticipantKind,
-    string DisplayName
+    string DisplayName,
+    bool IsPhantom
   );
 
   private sealed record HostRow(Guid PartId, int Role, string DisplayName);

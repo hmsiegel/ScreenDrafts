@@ -2,20 +2,22 @@
 
 internal sealed class GetPickListQueryHandler(
   IDbConnectionFactory dbConnectionFactory,
-  ICacheService cacheService)
-  : IQueryHandler<GetPickListQuery, GetPickListResponse>
+  ICacheService cacheService
+) : IQueryHandler<GetPickListQuery, GetPickListResponse>
 {
   private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
   private readonly ICacheService _cacheService = cacheService;
 
   private static readonly TimeSpan _cacheExpiration = TimeSpan.FromSeconds(60);
 
-  public async Task<Result<GetPickListResponse>> Handle(GetPickListQuery request, CancellationToken cancellationToken)
+  public async Task<Result<GetPickListResponse>> Handle(
+    GetPickListQuery request,
+    CancellationToken cancellationToken
+  )
   {
     await using var connection = await _dbConnectionFactory.OpenConnectionAsync(cancellationToken);
 
-    const string hostCheckSql =
-      """
+    const string hostCheckSql = """
       SELECT EXISTS (
         SELECT 1
         FROM drafts.draft_hosts dh
@@ -31,7 +33,9 @@ internal sealed class GetPickListQueryHandler(
       new CommandDefinition(
         hostCheckSql,
         new { request.DraftPartId, request.CallerPublicId },
-        cancellationToken: cancellationToken));
+        cancellationToken: cancellationToken
+      )
+    );
 
     if (!callerIsPrimaryHost)
     {
@@ -45,8 +49,7 @@ internal sealed class GetPickListQueryHandler(
       }
     }
 
-    const string pickSql =
-      $"""
+    const string pickSql = $"""
       SELECT
         pk.id AS PickInternalId,
         pk.play_order AS {nameof(PickRow.PlayOrder)},
@@ -57,11 +60,13 @@ internal sealed class GetPickListQueryHandler(
         pk.played_by_participant_id_value AS {nameof(PickRow.PlayedByParticipantIdValue)},
         pk.played_by_participant_kind_value AS {nameof(PickRow.PlayedByParticipantKindValue)},
         pk.acted_by_public_id AS {nameof(PickRow.ActedByPublicId)},
-        pk.revealed_at AS {nameof(PickRow.RevealedAt)}
+        pk.revealed_at AS {nameof(PickRow.RevealedAt)},
+        COALESCE(pdp.is_phantom, false) AS {nameof(PickRow.IsPhantomPick)}
       FROM
         drafts.picks pk
         JOIN drafts.movies m ON pk.movie_id = m.id
         JOIN drafts.draft_parts dp ON pk.draft_part_id = dp.id
+        LEFT JOIN drafts.draft_part_participants pdp ON pk.played_by_participant_id = pdp.id
       WHERE dp.public_id = @DraftPartId
         AND (
             @CallerIsPrimaryHost = TRUE
@@ -71,31 +76,30 @@ internal sealed class GetPickListQueryHandler(
       ORDER BY pk.play_order ASC
       """;
 
-    var pickRows = (await connection.QueryAsync<PickRow>(
-      new CommandDefinition(
-        pickSql,
-        new
-        {
-          request.DraftPartId,
-          CallerIsPrimaryHost = callerIsPrimaryHost,
-          request.CallerPublicId
-        },
-        cancellationToken: cancellationToken)))
-      .ToList();
+    var pickRows = (
+      await connection.QueryAsync<PickRow>(
+        new CommandDefinition(
+          pickSql,
+          new
+          {
+            request.DraftPartId,
+            CallerIsPrimaryHost = callerIsPrimaryHost,
+            request.CallerPublicId,
+          },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
     if (pickRows.Count == 0)
     {
-      return Result.Success(new GetPickListResponse
-      {
-        Picks = []
-      });
+      return Result.Success(new GetPickListResponse { Picks = [] });
     }
 
     var pickInternalIds = pickRows.Select(r => r.PickInternalId).ToArray();
 
     // 2. Vetoes
-    const string vetoSql =
-      $"""
+    const string vetoSql = $"""
       SELECT
         v.target_pick_id AS PickId,
         v.id AS VetoId,
@@ -112,18 +116,20 @@ internal sealed class GetPickListQueryHandler(
         v.target_pick_id = ANY(@pickInternalIds)
       """;
 
-    var vetoRows = (await connection.QueryAsync<VetoRow>(
-      new CommandDefinition(
-        vetoSql,
-        new { pickInternalIds },
-        cancellationToken: cancellationToken)))
-      .ToList();
+    var vetoRows = (
+      await connection.QueryAsync<VetoRow>(
+        new CommandDefinition(
+          vetoSql,
+          new { pickInternalIds },
+          cancellationToken: cancellationToken
+        )
+      )
+    ).ToList();
 
     var vetoIds = vetoRows.Select(r => r.VetoId).ToArray();
 
     // 3. Overrides
-    const string overrideSql =
-      $"""
+    const string overrideSql = $"""
       SELECT
         vo.veto_id AS VetoId,
         dpp.participant_id_value AS {nameof(VetoOverrideRow.IssuedByParticipantIdValue)},
@@ -136,18 +142,21 @@ internal sealed class GetPickListQueryHandler(
         vo.veto_id = ANY(@vetoIds)
       """;
 
-    var vetoOverrideByVetoId = vetoIds.Length > 0
-      ? (await connection.QueryAsync<VetoOverrideRow>(
-      new CommandDefinition(
-        overrideSql,
-        new { vetoIds },
-        cancellationToken: cancellationToken)))
-        .ToDictionary(r => r.VetoId)
-      : [];
+    var vetoOverrideByVetoId =
+      vetoIds.Length > 0
+        ? (
+          await connection.QueryAsync<VetoOverrideRow>(
+            new CommandDefinition(
+              overrideSql,
+              new { vetoIds },
+              cancellationToken: cancellationToken
+            )
+          )
+        ).ToDictionary(r => r.VetoId)
+        : [];
 
     // 4. Commissioner overrides
-    const string commissionerOverrideSql =
-      $"""
+    const string commissionerOverrideSql = $"""
       SELECT
         co.pick_id AS PickId
       FROM
@@ -156,65 +165,71 @@ internal sealed class GetPickListQueryHandler(
         co.pick_id = ANY(@pickInternalIds)
       """;
 
-    var commissionerOverridePickIds = pickInternalIds.Length > 0
-      ? (await connection.QueryAsync<Guid>(
-              new CommandDefinition(
-                commissionerOverrideSql,
-                new { pickInternalIds },
-                cancellationToken: cancellationToken)))
-      : [];
+    var commissionerOverridePickIds =
+      pickInternalIds.Length > 0
+        ? (
+          await connection.QueryAsync<Guid>(
+            new CommandDefinition(
+              commissionerOverrideSql,
+              new { pickInternalIds },
+              cancellationToken: cancellationToken
+            )
+          )
+        )
+        : [];
 
     // Assemble
     var vetoByPickId = vetoRows.ToDictionary(r => r.PickId);
 
-    var picks = pickRows.Select(r =>
-    {
-      PickListVetoResponse? veto = null;
-      if (vetoByPickId.TryGetValue(r.PickInternalId, out var vetoRow))
+    var picks = pickRows
+      .Select(r =>
       {
-        PickListVetoOverrideResponse? vetoOverride = null;
-        if (vetoOverrideByVetoId.TryGetValue(vetoRow.VetoId, out var vo))
+        PickListVetoResponse? veto = null;
+        if (vetoByPickId.TryGetValue(r.PickInternalId, out var vetoRow))
         {
-          vetoOverride = new PickListVetoOverrideResponse
+          PickListVetoOverrideResponse? vetoOverride = null;
+          if (vetoOverrideByVetoId.TryGetValue(vetoRow.VetoId, out var vo))
           {
-            IssuedByParticipantIdValue = vo.IssuedByParticipantIdValue,
-            IssuedByParticipantKindValue = vo.IssuedByParticipantKindValue,
-            ActedByPublicId = vo.ActedByPublicId,
+            vetoOverride = new PickListVetoOverrideResponse
+            {
+              IssuedByParticipantIdValue = vo.IssuedByParticipantIdValue,
+              IssuedByParticipantKindValue = vo.IssuedByParticipantKindValue,
+              ActedByPublicId = vo.ActedByPublicId,
+            };
+          }
+
+          veto = new PickListVetoResponse
+          {
+            IssuedByParticipantIdValue = vetoRow.IssuedByParticipantIdValue,
+            IssuedByParticipantKindValue = vetoRow.IssuedByParticipantKindValue,
+            ActedByPublicId = vetoRow.ActedByPublicId,
+            Note = vetoRow.Note,
+            OccurredOntUtc = vetoRow.OccurredOntUtc,
+            IsOverridden = vetoRow.IsOverridden,
+            Override = vetoOverride,
           };
         }
 
-        veto = new PickListVetoResponse
+        return new PickListItemResponse
         {
-          IssuedByParticipantIdValue = vetoRow.IssuedByParticipantIdValue,
-          IssuedByParticipantKindValue = vetoRow.IssuedByParticipantKindValue,
-          ActedByPublicId = vetoRow.ActedByPublicId,
-          Note = vetoRow.Note,
-          OccurredOntUtc = vetoRow.OccurredOntUtc,
-          IsOverridden = vetoRow.IsOverridden,
-          Override = vetoOverride
+          PlayOrder = r.PlayOrder,
+          Position = r.Position,
+          MovieImdbId = r.MovieImdbId,
+          MovieTitle = r.MovieTitle,
+          MovieVersionName = r.MovieVersionName,
+          PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
+          PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
+          ActedByPublicId = r.ActedByPublicId,
+          IsRevealed = r.RevealedAt.HasValue,
+          IsPhantomPick = r.IsPhantomPick,
+          Veto = veto,
+          HasCommissionerOverride = commissionerOverridePickIds.Contains(r.PickInternalId),
         };
-      }
+      })
+      .ToList()
+      .AsReadOnly();
 
-      return new PickListItemResponse
-      {
-        PlayOrder = r.PlayOrder,
-        Position = r.Position,
-        MovieImdbId = r.MovieImdbId,
-        MovieTitle = r.MovieTitle,
-        MovieVersionName = r.MovieVersionName,
-        PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
-        PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
-        ActedByPublicId = r.ActedByPublicId,
-        IsRevealed = r.RevealedAt.HasValue,
-        Veto = veto,
-        HasCommissionerOverride = commissionerOverridePickIds.Contains(r.PickInternalId)
-      };
-    }).ToList().AsReadOnly();
-
-    var response = new GetPickListResponse
-    {
-      Picks = picks
-    };
+    var response = new GetPickListResponse { Picks = picks };
 
     if (!callerIsPrimaryHost)
     {
@@ -223,7 +238,8 @@ internal sealed class GetPickListQueryHandler(
         key: cacheKey,
         value: response,
         expiration: _cacheExpiration,
-        cancellationToken: cancellationToken);
+        cancellationToken: cancellationToken
+      );
     }
 
     return Result.Success(response);
@@ -233,8 +249,8 @@ internal sealed class GetPickListQueryHandler(
     Guid VetoId,
     Guid IssuedByParticipantIdValue,
     int IssuedByParticipantKindValue,
-    string? ActedByPublicId);
-
+    string? ActedByPublicId
+  );
 
   private sealed record VetoRow(
     Guid PickId,
@@ -244,7 +260,8 @@ internal sealed class GetPickListQueryHandler(
     string? ActedByPublicId,
     string? Note,
     DateTime OccurredOntUtc,
-    bool IsOverridden);
+    bool IsOverridden
+  );
 
   private sealed record PickRow(
     Guid PickInternalId,
@@ -256,5 +273,7 @@ internal sealed class GetPickListQueryHandler(
     Guid PlayedByParticipantIdValue,
     int PlayedByParticipantKindValue,
     string? ActedByPublicId,
-    DateTime? RevealedAt);
+    DateTime? RevealedAt,
+    bool IsPhantomPick
+  );
 }

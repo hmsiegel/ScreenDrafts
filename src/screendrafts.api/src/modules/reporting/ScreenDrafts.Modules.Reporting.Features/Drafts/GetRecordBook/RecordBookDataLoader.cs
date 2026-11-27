@@ -43,6 +43,7 @@ internal static class RecordBookDataLoader
          FROM reporting.draft_summaries ds
          WHERE ds.draft_id = sp.draft_id) AS EpisodeNumber,
         COUNT(*)::int                   AS PicksPlayed,
+        COUNT(*) FILTER (WHERE NOT sp.is_phantom_pick) > 0 AS Appeared,
         COUNT(*) FILTER (
           WHERE NOT sp.was_commissioner_overridden
             AND NOT (sp.was_vetoed AND NOT sp.was_veto_overridden)
@@ -244,11 +245,6 @@ internal static class RecordBookDataLoader
         new CommandDefinition(CreditedPicksSql, parameters, cancellationToken: cancellationToken)
       )
     ).ToList();
-
-    foreach (var row in credited)
-    {
-      row.Appeared = true;
-    }
 
     var rows = credited.ToDictionary(r => (r.DrafterId, r.DraftId));
 

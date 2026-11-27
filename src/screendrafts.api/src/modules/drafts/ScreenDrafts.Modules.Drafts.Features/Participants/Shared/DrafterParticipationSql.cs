@@ -1,4 +1,4 @@
-// Participants/Shared/DrafterParticipationSql.cs
+﻿// Participants/Shared/DrafterParticipationSql.cs
 namespace ScreenDrafts.Modules.Drafts.Features.Participants.Shared;
 
 /// <summary>
@@ -29,7 +29,7 @@ internal static class DrafterParticipationSql
   /// Derived table, one row per draft part the drafter took part in, limited to
   /// @AllowedChannels. Correlated: reads the drafter's id from the outer alias <c>d</c>
   /// (<c>d.id</c>). Columns: dpp_id, draft_part_id, draft_id, is_team, vetoes_used,
-  /// veto_overrides_used, commissioner_overrides.
+  /// veto_overrides_used, commissioner_overrides; appearance counts must filter it with NOT is_phantom
   /// </summary>
   public const string Slots = """
     SELECT
@@ -46,7 +46,8 @@ internal static class DrafterParticipationSql
       GREATEST(dpp.veto_overrides_used,
         (SELECT COUNT(*)::int FROM drafts.veto_overrides vo
          WHERE vo.issued_by_participant_id = dpp.id))          AS veto_overrides_used,
-      dpp.commissioner_overrides  AS commissioner_overrides
+      dpp.commissioner_overrides  AS commissioner_overrides,
+      dpp.is_phantom AS is_phantom
     FROM drafts.draft_part_participants dpp
     JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
     WHERE dpp.participant_kind_value = 0
@@ -71,7 +72,8 @@ internal static class DrafterParticipationSql
       GREATEST(dpp.veto_overrides_used,
         (SELECT COUNT(*)::int FROM drafts.veto_overrides vo
          WHERE vo.issued_by_participant_id = dpp.id)),
-      dpp.commissioner_overrides
+      dpp.commissioner_overrides,
+      false
     FROM drafts.draft_part_participants dpp
     JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
     WHERE dpp.participant_kind_value = 1

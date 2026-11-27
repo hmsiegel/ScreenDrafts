@@ -172,7 +172,7 @@ internal sealed class ListParticipantsQueryHandler(
       LEFT JOIN LATERAL (
         WITH drafter_slots AS ({DrafterParticipationSql.Slots})
         SELECT
-          COUNT(DISTINCT s.draft_part_id) AS total_drafts,
+          COUNT(DISTINCT s.draft_part_id) FILTER (WHERE NOT s.is_phantom) AS total_drafts,
           COALESCE(SUM(s.vetoes_used), 0) AS vetoes_used,
           (
             SELECT COUNT(*)

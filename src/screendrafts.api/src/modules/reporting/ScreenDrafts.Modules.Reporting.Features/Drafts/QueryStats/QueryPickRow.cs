@@ -1,6 +1,10 @@
-namespace ScreenDrafts.Modules.Reporting.Features.Drafts.QueryStats;
+﻿namespace ScreenDrafts.Modules.Reporting.Features.Drafts.QueryStats;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Instantiated by Dapper.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+  "Performance",
+  "CA1812:Avoid uninstantiated internal classes",
+  Justification = "Instantiated by Dapper."
+)]
 internal sealed class QueryPickRow
 {
   public Guid PickId { get; set; }
@@ -23,4 +27,5 @@ internal sealed class QueryPickRow
   public bool VetoStanding { get; set; }
 
   public bool CommissionerOverridden { get; set; }
+  public bool IsPhantomPick { get; set; }
 }

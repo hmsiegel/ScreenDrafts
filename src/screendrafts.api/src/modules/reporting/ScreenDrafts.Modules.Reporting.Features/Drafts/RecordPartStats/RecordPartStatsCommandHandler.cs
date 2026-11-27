@@ -47,6 +47,7 @@ internal sealed class RecordPartStatsCommandHandler(
         WasVetoed = p.Vetoes.Count > 0,
         WasVetoOverridden = p.Vetoes.Count > 0 && p.Vetoes.MaxBy(v => v.Sequence)!.IsOverridden,
         WasCommissionerOverridden = p.IsCommissionerOverridden,
+        p.IsPhantomPick,
         RecordedAtUtc = recordedAtUtc,
       })
       .ToList();
@@ -117,13 +118,13 @@ internal sealed class RecordPartStatsCommandHandler(
          draft_type, series_name, canonical_policy, sub_draft_index, position, play_order,
          media_public_id, media_title, played_by_kind, played_by_id_value,
          played_by_public_id, played_by_name, veto_count, was_vetoed,
-         was_veto_overridden, was_commissioner_overridden, recorded_at_utc)
+         was_veto_overridden, was_commissioner_overridden, is_phantom_pick, recorded_at_utc)
       VALUES
         (@Id, @DraftId, @DraftPublicId, @DraftPartPublicId, @PartIndex, @DraftTitle,
          @DraftType, @SeriesName, @CanonicalPolicy, @SubDraftIndex, @Position, @PlayOrder,
          @MediaPublicId, @MediaTitle, @PlayedByKind, @PlayedByIdValue,
          @PlayedByPublicId, @PlayedByName, @VetoCount, @WasVetoed,
-         @WasVetoOverridden, @WasCommissionerOverridden, @RecordedAtUtc);
+         @WasVetoOverridden, @WasCommissionerOverridden, @IsPhantomPick, @RecordedAtUtc);
       """;
 
     const string insertVetoSql = """

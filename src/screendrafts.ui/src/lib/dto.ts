@@ -15461,6 +15461,7 @@ export interface GameplayPickResponse {
     vetoSequence?: number;
     revealAuthorizedParticipantId?: string | undefined;
     revealAuthorizedByName?: string | undefined;
+    isPhantomPick?: boolean;
 
     [key: string]: any;
 }
@@ -15868,6 +15869,7 @@ export interface GetDraftPickResponse {
     vetoes?: GetDraftVetoResponse[];
     commissionerOverride?: GetDraftCommissionerOverrideResponse | undefined;
     subDraftIndex?: number | undefined;
+    isPhantomPick?: boolean;
 
     [key: string]: any;
 }
@@ -17532,6 +17534,7 @@ export interface PickListItemResponse {
     veto?: PickListVetoResponse | undefined;
     hasCommissionerOverride?: boolean;
     isRevealed?: boolean;
+    isPhantomPick?: boolean;
 
     [key: string]: any;
 }

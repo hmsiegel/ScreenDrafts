@@ -207,7 +207,8 @@ internal sealed class GetDraftPartGameplayQueryHandler(
         CASE
           WHEN dpp_ra.id IS NULL THEN NULL
           ELSE COALESCE(pe_ra.first_name || ' ' || pe_ra.last_name, dr_ra.public_id)
-        END                             AS {nameof(PickRow.RevealAuthorizedByName)}
+        END                             AS {nameof(PickRow.RevealAuthorizedByName)},
+        dpp.is_phantom                    AS {nameof(PickRow.IsPhantomPick)}
       FROM drafts.picks pk
       JOIN drafts.draft_parts dp ON dp.id = pk.draft_part_id
       JOIN drafts.draft_part_participants dpp ON dpp.id = pk.played_by_participant_id
@@ -648,6 +649,7 @@ internal sealed class GetDraftPartGameplayQueryHandler(
             VetoSequence = p.VetoSequence,
             RevealAuthorizedParticipantId = p.RevealAuthorizedParticipantIdValue,
             RevealAuthorizedByName = p.RevealAuthorizedByName,
+            IsPhantomPick = p.IsPhantomPick,
             VetoHistory =
             [
               .. vetoHistoryByPlayOrder
@@ -774,7 +776,8 @@ internal sealed class GetDraftPartGameplayQueryHandler(
     bool WasVetoOverrideFungible,
     int VetoSequence,
     Guid? RevealAuthorizedParticipantIdValue,
-    string? RevealAuthorizedByName
+    string? RevealAuthorizedByName,
+    bool IsPhantomPick
   );
 
   private sealed record VetoHistoryRow(

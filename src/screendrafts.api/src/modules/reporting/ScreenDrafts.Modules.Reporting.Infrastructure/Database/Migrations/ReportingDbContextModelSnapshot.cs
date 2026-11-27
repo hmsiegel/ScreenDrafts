@@ -18,7 +18,7 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("reporting")
-                .HasAnnotation("ProductVersion", "10.0.11")
+                .HasAnnotation("ProductVersion", "10.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -497,6 +497,10 @@ namespace ScreenDrafts.Modules.Reporting.Infrastructure.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("draft_type");
+
+                    b.Property<bool>("IsPhantomPick")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_phantom_pick");
 
                     b.Property<string>("MediaPublicId")
                         .IsRequired()

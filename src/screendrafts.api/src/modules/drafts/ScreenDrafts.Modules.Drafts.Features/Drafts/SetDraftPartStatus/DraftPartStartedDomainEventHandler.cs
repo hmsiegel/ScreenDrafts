@@ -73,6 +73,7 @@ internal sealed class DraftPartStartedDomainEventHandler(
       FROM drafts.draft_part_participants p
       WHERE p.draft_part_id = @DraftPartId
         AND p.participant_kind_value != 2
+        AND NOT p.is_phantom_pick
       """;
 
     var participantRows = (

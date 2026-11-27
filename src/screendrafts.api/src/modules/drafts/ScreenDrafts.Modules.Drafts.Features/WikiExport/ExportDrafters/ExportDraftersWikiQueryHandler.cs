@@ -90,7 +90,8 @@ internal sealed class ExportDraftersWikiQueryHandler(
         (dpp.starting_vetoes + dpp.vetoes_rolling_in + dpp.awarded_vetoes - dpp.vetoes_used)
                                   AS VetoesLeft,
         (dpp.veto_overrides_rolling_in + dpp.awarded_veto_overrides - dpp.veto_overrides_used)
-                                  AS OverridesLeft
+                                  AS OverridesLeft,
+        COALESCE(dpp.is_phantom, FALSE) AS IsPhantom
       FROM drafts.draft_part_participants dpp
       JOIN drafts.draft_parts dp ON dp.id = dpp.draft_part_id
       JOIN drafts.drafts d       ON d.id = dp.draft_id
@@ -118,11 +119,13 @@ internal sealed class ExportDraftersWikiQueryHandler(
         pk.movie_id                    AS MovieId,
         m.movie_title                  AS Title,
         m.year                         AS Year,
-        (co.id IS NOT NULL)            AS WasCommissionerOverride
+        (co.id IS NOT NULL)            AS WasCommissionerOverride,
+        COALESCE(sd.is_phantom, FALSE) AS IsPhantomPick
       FROM drafts.picks pk
       JOIN drafts.movies m                       ON m.id = pk.movie_id
       LEFT JOIN drafts.commissioner_overrides co ON co.pick_id = pk.id
       LEFT JOIN drafts.sub_drafts sd             ON sd.id = pk.sub_draft_id
+      LEFT JOIN drafts.draft_part_participants dpp ON dpp.id = pk.played_by_participant_id
       WHERE pk.played_by_participant_id = ANY(@RowIds)
       """,
       new { RowIds = rowIds }
@@ -271,8 +274,10 @@ internal sealed class ExportDraftersWikiQueryHandler(
       .SelectMany(p => data.PicksByRow.GetValueOrDefault(p.ParticipantRowId, []))
       .ToList();
 
-    // Same definitions as the drafter profile page, but main-feed drafts only (no Patreon).
-    var totalDrafts = participations.Select(p => p.DraftId).Distinct().Count();
+    // Appearances skip phantom parts. Picks, vetoes and rollover do not.
+    var appearances = participations.Where(p => !p.IsPhantom).ToList();
+
+    var totalDrafts = appearances.Select(p => p.DraftId).Distinct().Count();
     var vetoesUsed = participations.Sum(p => p.VetoesUsed);
 
     var filmsDrafted = picks.Count(p =>
@@ -285,10 +290,11 @@ internal sealed class ExportDraftersWikiQueryHandler(
     );
 
     var latest = participations.LastOrDefault();
+    var latestAppearance = appearances.LastOrDefault();
     var hasRolloverVeto = latest is not null && latest.VetoesLeft >= 1;
     var hasRolloverVetoOverride = latest is not null && latest.OverridesLeft >= 1;
 
-    var draftTitles = participations
+    var draftTitles = appearances
       .Select(p => p.DraftTitle)
       .Distinct(StringComparer.OrdinalIgnoreCase)
       .ToList();
@@ -317,10 +323,10 @@ internal sealed class ExportDraftersWikiQueryHandler(
     );
     Line($"  | drafts={totalDrafts.ToString(CultureInfo.InvariantCulture)}");
     Line(
-      $"  | first_draft={(participations.Count > 0 ? WikiText.Link(participations[0].DraftTitle) : string.Empty)}"
+      $"  | first_draft={(appearances.Count > 0 ? WikiText.Link(appearances[0].DraftTitle) : string.Empty)}"
     );
     Line(
-      $"  | last_draft={(latest is not null ? WikiText.Link(latest.DraftTitle) : string.Empty)}"
+      $"  | last_draft={(latestAppearance is not null ? WikiText.Link(latestAppearance.DraftTitle) : string.Empty)}"
     );
     Line($"  | filmsdrafted={filmsDrafted.ToString(CultureInfo.InvariantCulture)}");
     Line($"  | picksvetoed={timesVetoed.ToString(CultureInfo.InvariantCulture)}");
@@ -514,7 +520,8 @@ internal sealed class ExportDraftersWikiQueryHandler(
     DateOnly ReleaseDate,
     int VetoesUsed,
     int VetoesLeft,
-    int OverridesLeft
+    int OverridesLeft,
+    bool IsPhantom
   );
 
   private sealed record IssuedVetoRow(

@@ -16,6 +16,7 @@ public sealed record StatsPickRecord(
   string? PlayedByPublicId,
   string PlayedByName,
   bool IsCommissionerOverridden,
+  bool IsPhantomPick,
   IReadOnlyList<StatsVetoRecord> Vetoes,
   IReadOnlyList<StatsCreditRecord> Credits
 );

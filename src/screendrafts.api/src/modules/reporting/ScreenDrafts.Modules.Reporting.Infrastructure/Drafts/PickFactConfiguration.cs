@@ -30,6 +30,7 @@ internal sealed class PickFactConfiguration : IEntityTypeConfiguration<PickFact>
     builder.Property(x => x.WasVetoed);
     builder.Property(x => x.WasVetoOverridden);
     builder.Property(x => x.WasCommissionerOverridden);
+    builder.Property(x => x.IsPhantomPick).IsRequired();
     builder.Property(x => x.RecordedAtUtc);
 
     builder

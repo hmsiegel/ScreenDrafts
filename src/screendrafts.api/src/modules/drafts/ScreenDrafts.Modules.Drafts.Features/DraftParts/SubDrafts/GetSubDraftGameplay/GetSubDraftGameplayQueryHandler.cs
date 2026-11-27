@@ -89,7 +89,8 @@ internal sealed class GetSubDraftGameplayQueryHandler(IDbConnectionFactory dbCon
         (v.id IS NOT NULL AND v.is_overridden = FALSE)
                                         AS {nameof(PickRow.WasVetoed)},
         (v.id IS NOT NULL AND v.is_overridden = TRUE)
-                                        AS {nameof(PickRow.WasVetoOverridden)}
+                                        AS {nameof(PickRow.WasVetoOverridden)},
+        dpp.is_phantom                    AS {nameof(PickRow.IsPhantomPick)}
       FROM drafts.picks pk
       JOIN drafts.sub_drafts sd ON sd.id = pk.sub_draft_id
       JOIN drafts.draft_part_participants dpp ON dpp.id = pk.played_by_participant_id
@@ -196,6 +197,7 @@ internal sealed class GetSubDraftGameplayQueryHandler(IDbConnectionFactory dbCon
             WasCommissionerOverride = false,
             VetoedByName = null,
             SavedByName = null,
+            IsPhantomPick = p.IsPhantomPick,
           }),
         ],
         TriviaResults =
@@ -236,7 +238,8 @@ internal sealed class GetSubDraftGameplayQueryHandler(IDbConnectionFactory dbCon
     int PlayedByKindValue,
     string PlayedByName,
     bool WasVetoed,
-    bool WasVetoOverridden
+    bool WasVetoOverridden,
+    bool IsPhantomPick
   );
 
   private sealed record TriviaRow(

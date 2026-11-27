@@ -527,7 +527,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         GetDraftPickResponse.PlayedByParticipantKindValue
       )},
         sd.index AS {nameof(GetDraftPickResponse.SubDraftIndex)},
-        pk.id AS PickInternalId
+        pk.id AS PickInternalId,
+        COALESCE(pdp.is_phantom, false) AS {nameof(GetDraftPickResponse.IsPhantomPick)}
       FROM drafts.picks pk
       JOIN drafts.movies m ON m.id = pk.movie_id
       LEFT JOIN drafts.sub_drafts sd ON sd.id = pk.sub_draft_id
@@ -547,7 +548,8 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
         Guid PlayedByParticipantIdValue,
         ParticipantKind PlayedByParticipantKindValue,
         int? SubDraftIndex,
-        Guid PickInternalId
+        Guid PickInternalId,
+        bool IsPhantomPick
       )>(new CommandDefinition(pickSql, new { partIds }))
     ).ToList();
 
@@ -1044,6 +1046,7 @@ internal sealed class GetDraftQueryHandler(IDbConnectionFactory dbConnectionFact
           PlayedByParticipantIdValue = r.PlayedByParticipantIdValue,
           PlayedByParticipantKindValue = r.PlayedByParticipantKindValue,
           SubDraftIndex = r.SubDraftIndex,
+          IsPhantomPick = r.IsPhantomPick,
           Vetoes = [.. vetoes],
           CommissionerOverride = commissionerOverrideResponse,
         }

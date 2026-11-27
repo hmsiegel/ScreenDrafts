@@ -13593,6 +13593,9 @@
               "null",
               "string"
             ]
+          },
+          "isPhantomPick": {
+            "type": "boolean"
           }
         }
       },
@@ -15051,6 +15054,9 @@
               "string"
             ],
             "format": "int32"
+          },
+          "isPhantomPick": {
+            "type": "boolean"
           }
         }
       },
@@ -20803,6 +20809,9 @@
             "type": "boolean"
           },
           "isRevealed": {
+            "type": "boolean"
+          },
+          "isPhantomPick": {
             "type": "boolean"
           }
         }

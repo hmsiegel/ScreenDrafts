@@ -50,4 +50,5 @@ internal sealed record GameplayPickResponse
   public Guid? RevealAuthorizedParticipantId { get; init; }
 
   public string? RevealAuthorizedByName { get; init; }
+  public bool IsPhantomPick { get; init; }
 }

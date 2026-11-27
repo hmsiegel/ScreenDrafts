@@ -32,6 +32,7 @@ public sealed class PickFact : Entity
     bool wasVetoed,
     bool wasVetoOverridden,
     bool wasCommissionerOverridden,
+    bool isPhantomPick,
     DateTime recordedAtUtc
   )
   {
@@ -57,6 +58,7 @@ public sealed class PickFact : Entity
     WasVetoed = wasVetoed;
     WasVetoOverridden = wasVetoOverridden;
     WasCommissionerOverridden = wasCommissionerOverridden;
+    IsPhantomPick = isPhantomPick;
     RecordedAtUtc = recordedAtUtc;
   }
 
@@ -88,6 +90,7 @@ public sealed class PickFact : Entity
   /// <summary>True when the pick's last veto (highest sequence) was overridden.</summary>
   public bool WasVetoOverridden { get; private set; }
   public bool WasCommissionerOverridden { get; private set; }
+  public bool IsPhantomPick { get; private set; }
   public DateTime RecordedAtUtc { get; private set; }
 
   public static PickFact Create(
@@ -113,6 +116,7 @@ public sealed class PickFact : Entity
     bool wasVetoed,
     bool wasVetoOverridden,
     bool wasCommissionerOverridden,
+    bool isPhantomPick,
     DateTime recordedAtUtc
   ) =>
     new(
@@ -138,6 +142,7 @@ public sealed class PickFact : Entity
       wasVetoed,
       wasVetoOverridden,
       wasCommissionerOverridden,
+      isPhantomPick,
       recordedAtUtc
     );
 }
